@@ -25,11 +25,16 @@
             font-size: 16px;
             cursor: pointer;
         }
+        body {
+                 background-image: url("images.jfif");
+                    background-size: 1300px 1000px;
+                background-repeat: no-repeat;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Please enter the password to access the page</h2>
+        <h1 style="color: orange; font-size: xx-large;"><MARQUEE>WELCOME TO CENTRAL RAILWAY, BHUSAWAL DIVISION ,TRO BRANCH</MARQUEE></h1>
         <input type="password" id="password" placeholder="Enter password">
         <button onclick="checkPassword()">Submit</button>
         <p id="error" style="color: red; display: none;">Incorrect password. Please try again.</p>
