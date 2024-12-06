@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Dashboard</title>
+    <style>
+        /* Basic styling for table and buttons */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .filters {
+            margin-bottom: 20px;
+        }
+
+        .filters select, .filters button {
+            margin-right: 10px;
+            padding: 8px;
+        }
+
+        .count {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .button-group {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome, <span id="usernameDisplay"></span></h1>
+
+        <!-- Filter Section -->
+        <div class="filters">
+            <select id="lpFilter">
+                <option value="">Select LP</option>
+                <!-- Options will be added dynamically -->
+            </select>
+            <select id="lpTypeFilter">
+                <option value="">Select LP Type</option>
+                <!-- Options will be added dynamically -->
+            </select>
+            <select id="lpCatFilter">
+                <option value="">Select LP Cat</option>
+                <!-- Options will be added dynamically -->
+            </select>
+            <select id="coachingFilter">
+                <option value="">Select Coaching/Goods</option>
+                <!-- Options will be added dynamically -->
+            </select>
+            <select id="loadedFilter">
+                <option value="">Select Loaded/Empty</option>
+                <!-- Options will be added dynamically -->
+            </select>
+            <select id="dayNightFilter">
+                <option value="">Select Day/Night</option>
+                <!-- Options will be added dynamically -->
+            </select>
+            <button id="clearFilterBtn">Clear Filters</button>
+        </div>
+
+        <!-- Total Count Display -->
+        <div class="count">Total Records: <span id="totalCount">0</span></div>
+
+        <!-- Table to display user-specific data -->
+        <h3>User Data:</h3>
+        <table id="userDataTable">
+            <thead>
+                <tr>
+                    <th>CLI Name</th>
+                    <th>Inspection Id</th>
+                    <th>Inspection Date</th>
+                    <th>Select LP</th>
+                    <th>LP Name</th>
+                    <th>LP Type</th>
+                    <th>LP Cat</th> 
+                    <th>ALP Name</th>
+                    <th>ALP Type</th>
+                    <th>Train No</th>
+                    <th>Train Load</th>
+                    <th>Safety Drive</th>
+                    <th>GI Counselled</th>
+                    <th>Case Study</th>
+                    <th>LP Due Date</th>
+                    <th>Coaching/Goods</th>
+                    <th>Loaded/Empty</th>
+                    <th>Day/Night</th>
+                    <th>Irregularity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Buttons for Print and Download -->
+        <div class="button-group">
+            <button id="printBtn">Print</button>
+            <button id="downloadBtn">Download CSV</button>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Get the username from the URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('user');
+        document.getElementById('usernameDisplay').textContent = username;
+
+        // 2. Google Sheets API URL (Replace with your sheet's ID and range)
+        const sheetID = '1zm_ZzIfmm2KSU1cZzNDGY-KnMd5cQFToz3z22d5lJ68';  // Your Google Sheet ID
+        const range = 'Sheet1!A1:AM100';  // Adjust range to include all columns (e.g., Sheet1!A1:AM100)
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';  // Your API Key
+        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=${apiKey}`;
+
+        // Filtered data variables
+        let filteredData = [];
+
+        // 3. Fetch data from Google Sheets API
+        function fetchDataFromGoogleSheet() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.values) {
+                        // Extract data from the sheet
+                        const rows = data.values;
+                        const tableBody = document.getElementById('userDataTable').getElementsByTagName('tbody')[0];
+                        
+                        // Clear the existing rows
+                        tableBody.innerHTML = '';
+
+                        // Filter data based on username
+                        filteredData = rows.filter(row => row[0] === username);
+                        
+                        // Populate filters options
+                        populateFilters(filteredData);
+
+                        // Render data
+                        renderTable(filteredData);
+                    } else {
+                        alert('No data found.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching Google Sheet data:', error);
+                    alert('Error fetching data from Google Sheets.');
+                });
+        }
+
+        // Populate the dropdown filters based on data
+        function populateFilters(data) {
+            const lpSet = new Set();
+            const lpTypeSet = new Set();
+            const lpCatSet = new Set();
+            const coachingSet = new Set();
+            const loadedSet = new Set();
+            const dayNightSet = new Set();
+
+            data.forEach(row => {
+                lpSet.add(row[3]); // Select LP
+                lpTypeSet.add(row[5]); // LP Type
+                lpCatSet.add(row[6]); // LP Cat
+                coachingSet.add(row[15]); // Coaching/Goods
+                loadedSet.add(row[16]); // Loaded/Empty
+                dayNightSet.add(row[17]); // Day/Night
+            });
+
+            // Populate LP filter
+            const lpFilter = document.getElementById('lpFilter');
+            lpFilter.innerHTML = '<option value="">Select LP</option>';
+            lpSet.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                lpFilter.appendChild(option);
+            });
+
+            // Populate LP Type filter
+            const lpTypeFilter = document.getElementById('lpTypeFilter');
+            lpTypeFilter.innerHTML = '<option value="">Select LP Type</option>';
+            lpTypeSet.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                lpTypeFilter.appendChild(option);
+            });
+
+            // Populate LP Cat filter
+            const lpCatFilter = document.getElementById('lpCatFilter');
+            lpCatFilter.innerHTML = '<option value="">Select LP Cat</option>';
+            lpCatSet.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                lpCatFilter.appendChild(option);
+            });
+
+            // Populate Coaching/Goods filter
+            const coachingFilter = document.getElementById('coachingFilter');
+            coachingFilter.innerHTML = '<option value="">Select Coaching/Goods</option>';
+            coachingSet.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                coachingFilter.appendChild(option);
+            });
+
+            // Populate Loaded/Empty filter
+            const loadedFilter = document.getElementById('loadedFilter');
+            loadedFilter.innerHTML = '<option value="">Select Loaded/Empty</option>';
+            loadedSet.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                loadedFilter.appendChild(option);
+            });
+
+            // Populate Day/Night filter
+            const dayNightFilter = document.getElementById('dayNightFilter');
+            dayNightFilter.innerHTML = '<option value="">Select Day/Night</option>';
+            dayNightSet.forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                dayNightFilter.appendChild(option);
+            });
+        }
+
+        // Render the table with the filtered data
+        function renderTable(data) {
+            const tableBody = document.getElementById('userDataTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            data.forEach((row) => {
+                let newRow = tableBody.insertRow();
+                row.forEach((cell) => {
+                    let newCell = newRow.insertCell();
+                    newCell.textContent = cell;
+                });
+            });
+
+            // Update the total count
+            document.getElementById('totalCount').textContent = data.length;
+        }
+
+        // 4. Apply filters
+        function applyFilters() {
+            let filtered = filteredData;
+            const lpValue = document.getElementById('lpFilter').value;
+            const lpTypeValue = document.getElementById('lpTypeFilter').value;
+            const lpCatValue = document.getElementById('lpCatFilter').value;
+            const coachingValue = document.getElementById('coachingFilter').value;
+            const loadedValue = document.getElementById('loadedFilter').value;
+            const dayNightValue = document.getElementById('dayNightFilter').value;
+
+            if (lpValue) {
+                filtered = filtered.filter(row => row[3] === lpValue);
+            }
+            if (lpTypeValue) {
+                filtered = filtered.filter(row => row[5] === lpTypeValue);
+            }
+            if (lpCatValue) {
+                filtered = filtered.filter(row => row[6] === lpCatValue);
+            }
+            if (coachingValue) {
+                filtered = filtered.filter(row => row[15] === coachingValue);
+            }
+            if (loadedValue) {
+                filtered = filtered.filter(row => row[16] === loadedValue);
+            }
+            if (dayNightValue) {
+                filtered = filtered.filter(row => row[17] === dayNightValue);
+            }
+
+            renderTable(filtered);
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            document.getElementById('lpFilter').value = '';
+            document.getElementById('lpTypeFilter').value = '';
+            document.getElementById('lpCatFilter').value = '';
+            document.getElementById('coachingFilter').value = '';
+            document.getElementById('loadedFilter').value = '';
+            document.getElementById('dayNightFilter').value = '';
+            renderTable(filteredData);
+        }
+
+        // 5. Print button functionality
+        function printTable() {
+            const tableContent = document.getElementById('userDataTable').outerHTML;
+            const newWindow = window.open('', '', 'width=600, height=400');
+            newWindow.document.write('<html><head><title>Print Table</title></head><body>');
+            newWindow.document.write(tableContent);
+            newWindow.document.write('</body></html>');
+            newWindow.document.close();
+            newWindow.print();
+        }
+
+        // 6. Download button functionality (CSV)
+        function downloadCSV() {
+            const rows = filteredData;
+            let csvContent = "CLI Name,Inspection Id,Inspection Date,Select LP,LP Name,LP Type,LP Cat,ALP Name,ALP Type,Train No,Train Load,Safety Drive,GI Counselled,Case Study,LP Due Date,Coaching/Goods,Loaded/Empty,Day/Night\n";
+
+            rows.forEach(row => {
+                csvContent += row.join(",") + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'user_data.csv';
+            link.click();
+        }
+
+        // Add event listeners to buttons and filters
+        document.getElementById('lpFilter').addEventListener('change', applyFilters);
+        document.getElementById('lpTypeFilter').addEventListener('change', applyFilters);
+        document.getElementById('lpCatFilter').addEventListener('change', applyFilters);
+        document.getElementById('coachingFilter').addEventListener('change', applyFilters);
+        document.getElementById('loadedFilter').addEventListener('change', applyFilters);
+        document.getElementById('dayNightFilter').addEventListener('change', applyFilters);
+        document.getElementById('clearFilterBtn').addEventListener('click', clearFilters);
+        document.getElementById('printBtn').addEventListener('click', printTable);
+        document.getElementById('downloadBtn').addEventListener('click', downloadCSV);
+
+        // Call the function to load data when the page is loaded
+        fetchDataFromGoogleSheet();
+
+    </script>
+
+</body>
+</html>
