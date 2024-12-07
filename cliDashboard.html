@@ -83,9 +83,10 @@
         <table id="userDataTable">
             <thead>
                 <tr>
-                    <th>CLI Name</th>
+                    
                     <th>Inspection Id</th>
                     <th>Inspection Date</th>
+                    <th>CLI Name</th>
                     <th>Select LP</th>
                     <th>LP Name</th>
                     <th>LP Type</th>
@@ -125,7 +126,7 @@
 
         // 2. Google Sheets API URL (Replace with your sheet's ID and range)
         const sheetID = '1zm_ZzIfmm2KSU1cZzNDGY-KnMd5cQFToz3z22d5lJ68';  // Your Google Sheet ID
-        const range = 'Sheet1!A1:AM100';  // Adjust range to include all columns (e.g., Sheet1!A1:AM100)
+        const range = 'Sheet1!A1:AM1000';  // Adjust range to include all columns (e.g., Sheet1!A1:AM100)
         const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';  // Your API Key
         const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=${apiKey}`;
 
@@ -141,13 +142,23 @@
                         // Extract data from the sheet
                         const rows = data.values;
                         const tableBody = document.getElementById('userDataTable').getElementsByTagName('tbody')[0];
-                        
+
                         // Clear the existing rows
                         tableBody.innerHTML = '';
 
-                        // Filter data based on username
-                        filteredData = rows.filter(row => row[0] === username);
+                        // Normalize the username from the URL (trim spaces, make lowercase)
+                        const normalizedUsername = username.trim().toLowerCase();
                         
+                        // Filter data based on normalized username
+                        filteredData = rows.filter(row => {
+                            // Access the third column (index 2) for CLI Name
+                            const rowUsername = row[2] ? row[2].trim().toLowerCase() : ''; // Now using row[2]
+                            return rowUsername === normalizedUsername;
+                        });
+
+                        // Log the filtered data for debugging purposes
+                        console.log("Filtered Data for user:", filteredData);
+
                         // Populate filters options
                         populateFilters(filteredData);
 
@@ -161,6 +172,23 @@
                     console.error('Error fetching Google Sheet data:', error);
                     alert('Error fetching data from Google Sheets.');
                 });
+        }
+
+        // Render the table with the filtered data
+        function renderTable(data) {
+            const tableBody = document.getElementById('userDataTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            data.forEach((row) => {
+                let newRow = tableBody.insertRow();
+                row.forEach((cell) => {
+                    let newCell = newRow.insertCell();
+                    newCell.textContent = cell;
+                });
+            });
+
+            // Update the total count
+            document.getElementById('totalCount').textContent = data.length;
         }
 
         // Populate the dropdown filters based on data
@@ -242,24 +270,7 @@
             });
         }
 
-        // Render the table with the filtered data
-        function renderTable(data) {
-            const tableBody = document.getElementById('userDataTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';
-
-            data.forEach((row) => {
-                let newRow = tableBody.insertRow();
-                row.forEach((cell) => {
-                    let newCell = newRow.insertCell();
-                    newCell.textContent = cell;
-                });
-            });
-
-            // Update the total count
-            document.getElementById('totalCount').textContent = data.length;
-        }
-
-        // 4. Apply filters
+        // Apply filters
         function applyFilters() {
             let filtered = filteredData;
             const lpValue = document.getElementById('lpFilter').value;
@@ -302,7 +313,7 @@
             renderTable(filteredData);
         }
 
-        // 5. Print button functionality
+        // Print button functionality
         function printTable() {
             const tableContent = document.getElementById('userDataTable').outerHTML;
             const newWindow = window.open('', '', 'width=600, height=400');
@@ -313,7 +324,7 @@
             newWindow.print();
         }
 
-        // 6. Download button functionality (CSV)
+        // Download button functionality (CSV)
         function downloadCSV() {
             const rows = filteredData;
             let csvContent = "CLI Name,Inspection Id,Inspection Date,Select LP,LP Name,LP Type,LP Cat,ALP Name,ALP Type,Train No,Train Load,Safety Drive,GI Counselled,Case Study,LP Due Date,Coaching/Goods,Loaded/Empty,Day/Night\n";
