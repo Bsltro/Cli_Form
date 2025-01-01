@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footplate Inspection Form</title>
+    <style>
+        /* Add some styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-outer {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="radio"] {
+            margin: 0 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Counselling Form</h2>
+        <form id="inspectionForm">
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Inspection ID</label>
+                <input type="number" name="inspectionid" id="inspectionid" required>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Inspection Date</label>
+                <input type="date" name="inspectiondate" id="inspectiondate" required readonly>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">CLI Name</label>
+                <input type="text" name="cliname" id="cliname" required readonly>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Name</label>
+                <input type="text" name="lpname" id="lpname" list="lpnames">
+                <datalist id="lpnames">
+                    <!-- Loco Pilot names will be populated here -->
+                </datalist>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Type</label>
+                <input type="text" name="lptype" id="lptype" readonly>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Category</label>
+                <input type="text" name="lpcat" id="lpcat" readonly>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP HQ</label>
+                <input type="text" name="lphq" id="lphq" readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Name</label>
+                <input type="text" name="alpname" id="alpname" list="alpnames">
+                <datalist id="alpnames">
+                    <!-- Assistant Loco Pilot names will be populated here -->
+                </datalist>
+            </div>
+           
+            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP HQ</label>
+                <input type="text" name="alphq" id="alphq" readonly>
+            </div>
+            <div class="form-outer">
+                <label for="trainNumber" style="color: red; font-weight: bold;">Train Number:</label>
+                <input type="text" name="trainNumber" id="trainNumber" placeholder="Enter train number" class="uppercase" required>
+            </div>
+           
+            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Loco No</label>
+                <input type="text" name="locono">
+            </div>
+            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
+                <input type="text" name="fromstation" id="fromstation" oninput="upperCase()" class="uppercase" required>
+            </div>
+            <div class="container">
+                <label for="startTime" style="color: red; font-weight: bold;">Start Time (HH:MM):</label>
+                <input type="time" id="startTime" name="startTime" required>
+            </div><br>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
+                <input type="text" name="tostation" id="tostation"  class="uppercase" required>
+            </div>
+            <div class="container">
+                <label for="endTime" style="color: red; font-weight: bold;">End Time (HH:MM):</label>
+                <input type="time" id="endTime" name="endTime" required>
+            </div><br>
+           
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">DAY/NIGHT</label><br><br>
+                    <div class="container">
+                        <label for="day" class="radio-inline">DAY
+                            <input type="radio" id="day" name="dynt" value="DAY">
+                        </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <label for="night" class="radio-inline">NIGHT
+                            <input type="radio" id="night" name="dynt" value="NIGHT">
+                        </label><br><br>
+                    </div>   
+            </div>
+            <!-- Irregularity Observed -->
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">Irregularity Observed</label><br><br>
+                <div class="container">
+                    <label for="irregularityYes" class="radio-inline">YES
+                        <input type="radio" id="irregularityYes" name="irregularity" value="YES">
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="irregularityNo" class="radio-inline">NO
+                        <input type="radio" id="irregularityNo" name="irregularity" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">REMARK</label>
+                <input type="text" name="remark" id="remark">
+            </div>
+            <div class ="form-outer">
+                <input type="submit" id="sub" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const sheetID = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08'; // Your sheet ID
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Your API key
+        const dataRange = 'Sheet1!A2:H1000'; // Range for Inspection ID, CLI Name, LP Name, ALP Name, LP Type, LP Category, LP HQ, ALP HQ
+    
+        // Construct the URL for the Google Sheets API
+        const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${dataRange}?key=${apiKey}`;
+    
+        // Function to fetch data from Google Sheets
+        function fetchSheetData() {
+            fetch(sheetURL)
+                .then(response => response.json())
+                .then(data => {
+                    const rows = data.values;
+                    // Store the sheet data for later use
+                    window.sheetData = rows;
+                    populateNames(); // Populate LP and ALP names after data is fetched
+                })
+                .catch(error => console.error('Error fetching data from Google Sheets:', error));
+        }
+    
+        // Function to populate the LP and ALP names into the datalist
+        function populateNames() {
+            const lpNames = document.getElementById('lpnames');
+            const alpNames = document.getElementById('alpnames');
+            
+            // Clear existing options
+            lpNames.innerHTML = '';
+            alpNames.innerHTML = '';
+    
+            // Loop through the rows and add LP and ALP names to the datalists
+            window.sheetData.forEach(row => {
+                const lpOption = document.createElement('option');
+                lpOption.value = row[2]; // LP Name is in the 3rd column (C)
+                lpNames.appendChild(lpOption);
+    
+                const alpOption = document.createElement('option');
+                alpOption.value = row[6]; // ALP Name is in the 7th column (G)
+                alpNames.appendChild(alpOption);
+            });
+        }
+    
+        // Function to auto-fill CLI Name and today's date based on the entered Inspection ID
+        function autoFillDetails() {
+            const inspectionID = document.getElementById('inspectionid').value;
+            if (!inspectionID) return; // Exit if no Inspection ID is entered
+    
+            // Find the row that matches the Inspection ID
+            const matchingRow = window.sheetData?.find(row => row[0] == inspectionID); // Inspection ID is in the first column
+    
+            if (matchingRow) {
+                // Auto-fill CLI Name (second column in Google Sheet)
+                document.getElementById('cliname').value = matchingRow[1];
+    
+                // Set today's date in the Inspection Date field
+                const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                document.getElementById('inspectiondate').value = today;
+            } else {
+                alert('Inspection ID not found!');
+            }
+        }
+    
+        // Event listener to auto-fill data when Inspection ID is entered
+        document.getElementById('inspectionid').addEventListener('input', autoFillDetails);
+    
+        // Event listener to auto-fill LP details when LP Name is selected
+        document.getElementById('lpname').addEventListener('input', function() {
+            const lpName = document.getElementById('lpname').value;
+            const matchingRow = window.sheetData?.find(row => row[2] === lpName); // LP Name is in the 3rd column
+    
+            if (matchingRow) {
+                // Auto-fill LP Type (from Column D)
+                document.getElementById('lptype').value = matchingRow[3]; // LP Type is in the 4th column (D)
+                
+                // Auto-fill LP Category (from Column E)
+                document.getElementById('lpcat').value = matchingRow[4]; // LP Category is in the 5th column (E)
+                
+                // Auto-fill LP HQ (from Column F)
+                document.getElementById('lphq').value = matchingRow[5]; // LP HQ is in the 6th column (F)
+    
+                // Automatically update the due date if LP Category and Inspection Date are both available
+                setDueDate();
+            }
+        });
+    
+        // Event listener to auto-fill ALP HQ when ALP Name is selected
+        document.getElementById('alpname').addEventListener('input', function() {
+            const alpName = document.getElementById('alpname').value;
+            const matchingRow = window.sheetData?.find(row => row[6] === alpName); // ALP Name is in the 7th column (G)
+    
+            if (matchingRow) {
+                // Auto-fill ALP HQ (from Column H)
+                document.getElementById('alphq').value = matchingRow[7]; // ALP HQ is in the 8th column (H)
+            }
+        });
+    
+        // Call to fetch sheet data when the page loads
+        window.onload = () => {
+            fetchSheetData();
+        };
+    
+    
+        // Auto-check Day or Night based on time input
+        document.querySelectorAll('input[type="time"]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                const startTime = document.getElementById('startTime').value;
+                const endTime = document.getElementById('endTime').value;
+                
+                const isNight = (time) => {
+                    const [hours] = time.split(':').map(n => parseInt(n, 10));
+                    return hours >= 22 || hours < 6;
+                };
+    
+                if (isNight(startTime) || isNight(endTime)) {
+                    document.getElementById('night').checked = true;  // Auto-check NIGHT
+                    document.getElementById('day').checked = false;
+                } else {
+                    document.getElementById('day').checked = true;  // Auto-check DAY
+                    document.getElementById('night').checked = false;
+                }
+            });
+        });
+    
+       
+    
+       
+         // Add event listeners to the submit buttons
+         document.getElementById
+            //JS code to bring tab1 data
+             //let form = document.querySelector("form");
+            let form = document.querySelector('#inspectionForm');
+            form.addEventListener('submit',(e)=>{
+                e.preventDefault();
+                document.querySelector("#sub").value="Submitting.........";
+                let data = new FormData(form);
+                fetch('https://script.google.com/macros/s/AKfycbz-mWM2svMI3g2ggacj6-onqnGnij2k0oQ9MffbWCiy-twnIYadvPqBY0IPELHDpe2e/exec',{
+                    method: "POST",
+                    body:data
+                })
+                .then(res => res.text())
+                .then(data => {
+                    document.querySelector("#sub").value="Submit";
+                    form.reset();
+                    alert("Footplating Data Saved Successfully...");
+                });
+            //})
+            });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,527 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SPM Form</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Times New Roman', Times, serif;
+            }
+        
+            body {
+                background-color: aqua;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-repeat: no-repeat;
+                padding: 20px;
+            }
+        
+            .main {
+                width: 100%;
+                max-width: 400px;
+                background: rgb(245, 242, 242);
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+        
+            .main h3 {
+                padding-bottom: 20px;
+                font-size: 30px;
+                color: #333;
+            }
+        
+            .main form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        
+            .form-outer {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        
+            .form-outer label {
+                display: block;
+                color: red;
+                font-weight: bold;
+                margin-bottom: 8px;
+                text-align: left;
+            }
+        
+            .form-outer input {
+                width: 100%;
+                height: 40px;
+                padding: 8px;
+                background-color: rgb(203, 218, 223);
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+            }
+        
+            .form-outer button {
+                width: 100%;
+                padding: 12px;
+                background-color: blueviolet;
+                color: white;
+                font-size: 18px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+        
+            .form-outer button:hover {
+                background-color: darkviolet;
+            }
+        
+            /* For mobile responsiveness */
+            @media (max-width: 600px) {
+                .main {
+                    padding: 15px;
+                    width: 100%;
+                    max-width: 100%;
+                }
+        
+                .form-outer input,
+                .form-outer button {
+                    height: 45px;
+                    font-size: 16px;
+                }
+        
+                .main h3 {
+                    font-size: 26px;
+                }
+        
+                .form-outer label {
+                    font-size: 14px;
+                }
+            }
+        
+            .dropbtn {
+                background-color: #04AA6D;
+                color: white;
+                padding: 16px;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+            }
+        </style>
+        
+        
+</head>
+<body>
+
+<form id="tab3" class="tabcontent">
+    <div id="res" style="color: brown;font-size: 14px;" class="tabcontent">
+        <div class="form-outer">
+            <label>Inspection ID</label>
+            <input type="number" name="spminspectionid" id="spminspectionid" required>
+        </div>
+        <div class="form-outer">
+            <label>Inspection Date</label>
+            <!-- <input type="date" name="spminspectiondate" id="spminspectiondate" required> -->
+            <input type="date" name="spminspectiondate" id="spminspectiondate" required>
+
+        </div>
+        <div class="form-outer">
+            <label style="color: red; font-weight: bold;">CLI Name</label>
+            <input type="text" name="spmcliname" id="spmcliname" required readonly>
+        </div>
+        <div class="form-outer">
+            <label>Train No</label>
+            <input type="text" name="spmTrainNumber" id="spmTrainNumber" required>
+        </div>
+        <div class="form-outer">
+            <label>Loco No</label>
+            <input type="text" name="spmlocono" id="spmlocono">
+        </div>
+        <div class="form-outer">
+            <label>From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
+            <input type="text" name="spmfromstation" id="spmfromstation" oninput="upperCase()" class="uppercase" required>
+        </div>
+        <div class="form-outer">
+            <label>Start Time</label>
+            <input type="time" name="spmstarttime" id="spmstarttime" required>
+        </div>
+        <div class="form-outer">
+            <label>To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
+            <input type="text" name="spmtostation" id="spmtostation" oninput="upperCase()" class="uppercase" required>
+        </div>
+        <div class="form-outer">
+            <label>End Time</label>
+            <input type="time" name="spmendtime" id="spmendtime" required>
+        </div>
+
+        <!-- Select whether BMBS% Less Than 50% -->
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">Select Whether BMBS% Less Than 50%</label><br><br>
+            <div class="container">
+                <label for="YES" class="radio-inline">YES
+                    <input type="radio" id="yes" name="spmselectbmbs" value="YES">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <label for="NO" class="radio-inline">NO
+                    <input type="radio" id="no" name="spmselectbmbs" value="NO">
+                </label><br><br>
+            </div>   
+        </div>
+
+        <div class="form-outer">
+            <label>Train Load In Tonn</label>
+            <input type="number" name="spmTrainLoad" id="spmTrainLoad" required>
+        </div>
+
+        <!-- Auto-populate Loco Pilot info -->
+        <div class="form-outer">
+            <label style="color: red; font-weight: bold;">LP Name</label>
+            <input type="text" name="spmlpname" id="spmlpname" list="spmlpnames" required>
+            <datalist id="spmlpnames">
+                <!-- Loco Pilot names will be populated here -->
+            </datalist>
+        </div>
+        <div class="form-outer">
+            <label style="color: red; font-weight: bold;">LP Type</label>
+            <input type="text" name="spmlptype" id="spmlptype" readonly>
+        </div>
+        <div class="form-outer">
+            <label style="color: red; font-weight: bold;">LP Category</label>
+            <input type="text" name="spmlpcat" id="spmlpcat" readonly>
+        </div>
+        <div class="form-outer">
+            <label style="color: red; font-weight: bold;">LP HQ</label>
+            <input type="text" name="spmlphq" id="spmlphq" readonly>
+        </div>
+
+        <!-- Data Sent Date -->
+        <div class="form-outer">
+            <label>Data Sent Date</label>
+            <input type="date" name="spmdatasent" id="spmdatasent" required>
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">BFT</label><br><br>
+            <div class="container">
+                
+                <label for="YES" class="radio-inline">YES
+                    <input type="radio" id="yes" name="spmbft" value="YES">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                
+                <label for="NO" class="radio-inline">NO
+                    <input type="radio" id="no" name="spmbft" value="NO">
+                </label><br><br>
+            </div>   
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">BPT</label><br><br>
+            <div class="container">
+                <label for="YES">YES
+                    <input type="radio" id="yes" name="spmbpt" value="YES">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                
+                <label for="NO">NO
+                    <input type="radio" id="no" name="spmbpt" value="NO">
+                </label><br><br>
+            </div>   
+        </div>
+    
+        <div class="form-outer">
+            <label>MPS Of Train</label>
+            <input type="Number" name="spmmps" id="spmmps" required>
+            </div>
+    
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">Run With MP's</label><br><br>
+            <div class="container">
+                <label for="YES">YES
+                    <input type="radio" id="yes" name="spmmp" value="YES">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                
+                <label for="NO">NO
+                    <input type="radio" id="no" name="spmmp" value="NO">
+                </label><br><br>
+            </div>   
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">Poor Controlling At C/O</label><br><br>
+            <div class="container">
+                <label for="YES">YES
+                    <input type="radio" id="yes" name="spmcont" value="YES">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                
+                <label for="NO">NO
+                    <input type="radio" id="no" name="spmcont" value="NO">
+                </label><br><br>
+            </div>   
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">Not Run With Constant Speed</label><br><br>
+            <div class="container">
+                <label for="YES">YES
+                    <input type="radio" id="yes" name="spmconstsp" value="YES">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                
+                <label for="NO">NO
+                    <input type="radio" id="no" name="spmconstsp" value="NO">
+                </label><br><br>
+            </div>   
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">Short Controlling</label><br><br>
+            <div class="container">
+            <label for="YES">YES
+                <input type="radio" id="yes" name="spmshort" value="YES">
+            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            
+            <label for="NO">NO
+                <input type="radio" id="no" name="spmshort" value="NO">
+            </label><br><br>
+            </div>   
+        </div>
+        <!-- Auto-select Coaching/ Goods, Loaded/ Empty, Day/Night -->
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">COACHING/GOODS</label><br><br>
+            <div class="container">
+                <label for="COACHING" class="radio-inline">COACHING
+                    <input type="radio" id="spmco" name="spmcogd" value="COACHING">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <label for="GOODS" class="radio-inline">GOODS
+                    <input type="radio" id="spmgd" name="spmcogd" value="GOODS">
+                </label><br><br>
+            </div>
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">LOADED/EMPTY</label><br><br>
+            <div class="container">
+                <label for="LOADED" class="radio-inline">LOADED
+                    <input type="radio" id="spmld" name="spmldemp" value="LOADED">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <label for="EMPTY" class="radio-inline">EMPTY
+                    <input type="radio" id="spmemp" name="spmldemp" value="EMPTY">
+                </label><br><br>
+            </div>
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">DAY/NIGHT</label><br><br>
+            <div class="container">
+                <label for="DAY" class="radio-inline">DAY
+                    <input type="radio" id="spmd" name="spmdn" value="DAY">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <label for="NIGHT" class="radio-inline">NIGHT
+                    <input type="radio" id="spmn" name="spmdn" value="NIGHT">
+                </label><br><br>
+            </div>
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">IRREGULARITY OBSERVED</label><br><br>
+            <div class="container">
+                <label for="yes" class="radio-inline">YES
+                    <input type="radio" id="spmyes" name="spmirr" value="YES">
+                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <label for="other" class="radio-inline">NO
+                    <input type="radio" id="spmno" name="spmirr" value="NO" checked>
+                </label><br><br>
+            </div>
+        </div>
+        <div class="form-outer">
+            <label style="color: red; font-weight: bold;">REMARK</label>
+            <input type="text" name="spmremark" id="spmremark">
+        </div>
+        <!-- Submit Button -->
+        <div class="form-outer">
+            <input type="submit" id="sub3">
+        </div>
+    </div>
+</form>
+
+<script>
+    const sheetIDspm = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
+    const apiKeyspm = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+    const dataRangespm = 'Sheet1!A2:H1000'; 
+
+    const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetIDspm}/values/${dataRangespm}?key=${apiKeyspm}`;
+
+    // Fetch data from Google Sheets
+    function fetchSheetDataspm() {
+        fetch(sheetURL)
+            .then(response => response.json())
+            .then(data => {
+                const rows = data.values;
+                window.sheetData = rows;
+                populateNamesspm();
+            })
+            .catch(error => console.error('Error fetching data from Google Sheets:', error));
+    }
+
+    // Populate Loco Pilot and Assistant Loco Pilot names
+    function populateNamesspm() {
+        const lpNames = document.getElementById('spmlpnames');
+        //const alpNames = document.getElementById('spmalpnames');
+        lpNames.innerHTML = '';
+        //alpNames.innerHTML = '';
+
+        window.sheetData.forEach(row => {
+            const lpOption = document.createElement('option');
+            lpOption.value = row[2];  // Loco Pilot Name (column C)
+            lpNames.appendChild(lpOption);
+
+            // const alpOption = document.createElement('option');
+            // alpOption.value = row[6]; // Assistant Loco Pilot Name (column G)
+            // alpNames.appendChild(alpOption);
+        });
+    }
+
+    // Auto-fill CLI Name and Inspection Date based on Inspection ID
+    // function autoFillDetailsspm() {
+    //     const inspectionID = document.getElementById('spminspectionid').value;
+    //     if (!inspectionID) return;
+
+    //     const matchingRow = window.sheetData?.find(row => row[0] == inspectionID);
+
+    //     if (matchingRow) {
+    //         document.getElementById('spmcliname').value = matchingRow[1]; // CLI Name (column B)
+    //         // const today = new Date().toISOString().split('T')[0];
+    //         // document.getElementById('spminspectiondate').value = today;
+    //          // Set today's date in the Inspection Date field
+    //          const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    //         document.getElementById('spminspectiondate').value = today;
+    //     } else {
+    //         alert('Inspection ID not found!');
+    //     }
+    // }
+    // Auto-fill CLI Name and Inspection Date based on Inspection ID
+// Auto-fill CLI Name and Inspection Date based on Inspection ID
+function autoFillDetailsspm() {
+    const inspectionID = document.getElementById('spminspectionid').value;
+    console.log("Inspection ID entered: ", inspectionID); // Log inspection ID to see if it's being captured
+
+    if (!inspectionID) return;
+
+    const matchingRow = window.sheetData?.find(row => row[0] == inspectionID);
+
+    if (matchingRow) {
+        console.log("Matching Row found:", matchingRow); // Log the matching row
+        document.getElementById('spmcliname').value = matchingRow[1]; // CLI Name (column B)
+    } else {
+        console.log("Inspection ID not found in sheet data.");
+        alert('Inspection ID not found!');
+    }
+
+    // Set today's date in the Inspection Date field
+    const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    console.log("Setting today's date: ", today); // Log today's date to verify it's correct
+    document.getElementById('spminspectiondate').value = today;
+}
+
+// Event listener for Inspection ID field
+document.getElementById('spminspectionid').addEventListener('input', autoFillDetailsspm);
+
+    document.getElementById('spminspectionid').addEventListener('input', autoFillDetailsspm);
+
+    // Event listener for LP Name to auto-fill LP Type, LP Category, and LP HQ
+    document.getElementById('spmlpname').addEventListener('input', function() {
+        const lpName = document.getElementById('spmlpname').value;
+        const matchingRow = window.sheetData?.find(row => row[2] === lpName); // Loco Pilot Name (column C)
+
+        if (matchingRow) {
+            document.getElementById('spmlptype').value = matchingRow[3]; // LP Type (column D)
+            document.getElementById('spmlpcat').value = matchingRow[4]; // LP Category (column E)
+            document.getElementById('spmlphq').value = matchingRow[5]; // LP HQ (column F)
+        }
+    });
+
+
+    // Logic to select radio buttons based on input values
+    function setRadioButtons() {
+        // Train Number Logic
+        const trainNumber = document.getElementById('spmTrainNumber').value;
+        if (/\d/.test(trainNumber)) {
+            document.getElementById('spmco').checked = true; // COACHING
+        } else {
+            document.getElementById('spmgd').checked = true; // GOODS
+        }
+
+        // Train Load Logic
+        const trainLoad = parseInt(document.getElementById('spmTrainLoad').value);
+        if (trainLoad > 1500) {
+            document.getElementById('spmld').checked = true; // LOADED
+        } else {
+            document.getElementById('spmemp').checked = true; // EMPTY
+        }
+
+        // Time Logic for Day/Night
+        const startTime = document.getElementById('spmstarttime').value;
+        const endTime = document.getElementById('spmendtime').value;
+
+        if (
+            (startTime >= "22:00" && startTime <= "23:59") ||
+            (endTime >= "22:00" && endTime <= "23:59") ||
+            (startTime >= "00:00" && startTime <= "06:00") ||
+            (endTime >= "00:00" && endTime <= "06:00")
+        ) {
+            document.getElementById('spmn').checked = true; // NIGHT
+        } else {
+            document.getElementById('spmd').checked = true; // DAY
+        }
+    }
+
+    // Add event listeners for the inputs to trigger radio button selection
+    document.getElementById('spmTrainNumber').addEventListener('input', setRadioButtons);
+    document.getElementById('spmTrainLoad').addEventListener('input', setRadioButtons);
+    document.getElementById('spmstarttime').addEventListener('input', setRadioButtons);
+    document.getElementById('spmendtime').addEventListener('input', setRadioButtons);
+
+    // Initial load function
+    window.onload = () => {
+        fetchSheetDataspm();
+    };
+
+
+    const form = document.getElementById('tab3');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+            alert("Please fill all the required fields.");
+            return;
+        }
+        document.querySelector("#sub3").value = "Submitting.........";
+
+        // Create a new FormData object
+        let data = new FormData(form);
+
+        // Convert all form data values to uppercase
+        data.forEach((value, key) => {
+            if (typeof value === 'string') {
+                data.set(key, value.toUpperCase());
+            }
+        });
+
+        // Send the data to the server
+        fetch('https://script.google.com/macros/s/AKfycbwbTvNtacpzOpKmE0dJMsJiL7TJd5F9neJmeOOhy8gvathkj1bdlXTZyi5h5qko8rGB/exec', {
+            method: "POST",
+            body: data
+        })
+        .then(res => res.text())
+        .then(data => {
+            document.querySelector("#sub3").value = "Submit";
+            form.reset();
+            alert("spm Data Saved Successfully...");
+        })
+        .catch(error => {
+            document.querySelector("#sub3").value = "Submit";
+            alert("An error occurred while saving the data. Please try again.");
+            console.error(error);
+        });
+    });
+
+    // Fetch sheet data on page load
+    fetchSheetDataspm();
+</script>
+</body>
+</html>

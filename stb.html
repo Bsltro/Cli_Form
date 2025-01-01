@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stabling Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Times New Roman', Times, serif;
+        }
+    
+        body {
+            background-color: aqua;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-repeat: no-repeat;
+            padding: 20px;
+        }
+    
+        .main {
+            width: 100%;
+            max-width: 400px;
+            background: rgb(245, 242, 242);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+    
+        .main h3 {
+            padding-bottom: 20px;
+            font-size: 30px;
+            color: #333;
+        }
+    
+        .main form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .form-outer {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    
+        .form-outer label {
+            display: block;
+            color: red;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+    
+        .form-outer input {
+            width: 100%;
+            height: 40px;
+            padding: 8px;
+            background-color: rgb(203, 218, 223);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    
+        .form-outer button {
+            width: 100%;
+            padding: 12px;
+            background-color: blueviolet;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        .form-outer button:hover {
+            background-color: darkviolet;
+        }
+    
+        /* For mobile responsiveness */
+        @media (max-width: 600px) {
+            .main {
+                padding: 15px;
+                width: 100%;
+                max-width: 100%;
+            }
+    
+            .form-outer input,
+            .form-outer button {
+                height: 45px;
+                font-size: 16px;
+            }
+    
+            .main h3 {
+                font-size: 26px;
+            }
+    
+            .form-outer label {
+                font-size: 14px;
+            }
+        }
+    
+        .dropbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="tab5" class="tabcontent">
+        <div id="res" style="color: brown;font-size: 14px;" class="tabcontent"></div>
+        <div class="form-outer">
+            <label>Inspection ID</label>
+            <input type="number" name="stbinspectionid" id="stbinspectionid" required>
+        </div>
+        <div class="form-outer">
+            <label>Inspection Date</label>
+            <input type="date" name="stbinspectiondate" id="stbinspectiondate" required>
+        </div>
+        <div class="form-outer">
+            <label style="color: red; font-weight: bold;">CLI Name</label>
+            <input type="text" name="stbcliname" id="stbcliname" required readonly>
+        </div>
+        <div class="form-outer">
+            <label>Start Time</label>
+            <input type="time" name="stbstarttime" id="stbstarttime">
+        </div>
+        <div class="form-outer">
+            <label>End Time</label>
+            <input type="time" name="stbendtime" id="stbendtime">
+        </div>
+        <div class="form-outer">
+            <div>
+                <label for="stbplace">Place/Station</label>
+                <datalist id="suggestionsstbplace">
+                    <option>BSL GOODS</option><option>BSL PASSANGER</option><option>PASS Shed</option>
+                    <option>ET</option><option>BPL</option><option>KNW</option>
+                    <option>NGN</option><option>MMR</option><option>BD</option><option>NGP</option><option>BSL/TRIP SHED</option>
+                </datalist>
+                <input autoComplete="on" list="suggestionsstbplace" name="stbplace" class="uppercase" required/> 
+            </div>
+        </div>
+        <div class="form-outer">
+            <label>On Duty Staff And Other Details</label>
+            <input type="text" name="stbondutystaff" id="stbondutystaff" oninput="upperCase()" class="uppercase" required>
+        </div>
+        <div class="form-outer">
+            <label>Remark Or R/Room Irregularity</label>
+            <input type="text" name="stbirregular" id="stbirregular" oninput="upperCase()" class="uppercase">
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">Day Or Night</label><br><br>
+            <div class="container">
+                <label for="DAY" class="radio-inline">DAY
+                    <input type="radio" id="day" name="stbdn" value="DAY" checked>
+                </label>
+                <label for="NIGHT" class="radio-inline">NIGHT
+                    <input type="radio" id="night" name="stbdn" value="NIGHT">
+                </label><br><br>
+            </div>   
+        </div>
+       <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
+       <div class ="form-outer">
+            <input type="submit" id="sub5" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
+        </div>
+    </form>
+
+<script>
+    const sheetIDstb = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
+    const apiKeystb = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+    const dataRangestb = 'Sheet1!A2:H1000'; 
+
+    const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetIDstb}/values/${dataRangestb}?key=${apiKeystb}`;
+
+    // Fetch data from Google Sheets
+    function fetchSheetDatastb() {
+        fetch(sheetURL)
+            .then(response => response.json())
+            .then(data => {
+                const rows = data.values;
+                window.sheetData = rows;
+                console.log(window.sheetData); // Log the data to see if it's fetched correctly
+            })
+            .catch(error => console.error('Error fetching data from Google Sheets:', error));
+    }
+
+    // Function to auto-fill CLI Name and Inspection Date
+    function autoFillDetailsstb() {
+        const inspectionID = document.getElementById('stbinspectionid').value;
+        console.log("Inspection ID entered: ", inspectionID); // Log inspection ID to see if it's being captured
+
+        if (!inspectionID) return;
+
+        const matchingRow = window.sheetData?.find(row => row[0] == inspectionID);
+
+        if (matchingRow) {
+            console.log("Matching Row found:", matchingRow); // Log the matching row
+            document.getElementById('stbcliname').value = matchingRow[1]; // CLI Name (column B)
+
+            // Set today's date in the Inspection Date field
+            const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            document.getElementById('stbinspectiondate').value = today;
+        } else {
+            console.log("Inspection ID not found in sheet data.");
+            alert('Inspection ID not found!');
+        }
+    }
+
+    // Event listener for Inspection ID field
+    document.getElementById('stbinspectionid').addEventListener('input', autoFillDetailsstb);
+
+    // Fetch sheet data on page load
+    window.onload = () => {
+        fetchSheetDatastb();
+    };
+
+    const form = document.getElementById('tab5');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+            alert("Please fill all the required fields.");
+            return;
+        }
+        document.querySelector("#sub5").value = "Submitting.........";
+
+        // Create a new FormData object
+        let data = new FormData(form);
+
+        // Convert all form data values to uppercase
+        data.forEach((value, key) => {
+            if (typeof value === 'string') {
+                data.set(key, value.toUpperCase());
+            }
+        });
+
+        // Send the data to the server
+        fetch('https://script.google.com/macros/s/AKfycbzTr4Yp5x6Fj8jslWnYiPnQyjF6nb8EM3f90fWKVuOLfrCUVomXcfSfJCZL4XGfqnHJOA/exec', {
+            method: "POST",
+            body: data
+        })
+        .then(res => res.text())
+        .then(data => {
+            document.querySelector("#sub5").value = "Submit";
+            form.reset();
+            alert("Stabling Data Saved Successfully...");
+        })
+        .catch(error => {
+            document.querySelector("#sub5").value = "Submit";
+            alert("An error occurred while saving the data. Please try again.");
+            console.error(error);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RR/LB Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Times New Roman', Times, serif;
+            }
+        
+            body {
+                background-color: aqua;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-repeat: no-repeat;
+                padding: 20px;
+            }
+        
+            .main {
+                width: 100%;
+                max-width: 400px;
+                background: rgb(245, 242, 242);
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+        
+            .main h3 {
+                padding-bottom: 20px;
+                font-size: 30px;
+                color: #333;
+            }
+        
+            .main form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        
+            .form-outer {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        
+            .form-outer label {
+                display: block;
+                color: red;
+                font-weight: bold;
+                margin-bottom: 8px;
+                text-align: left;
+            }
+        
+            .form-outer input {
+                width: 100%;
+                height: 40px;
+                padding: 8px;
+                background-color: rgb(203, 218, 223);
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+            }
+        
+            .form-outer button {
+                width: 100%;
+                padding: 12px;
+                background-color: blueviolet;
+                color: white;
+                font-size: 18px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+        
+            .form-outer button:hover {
+                background-color: darkviolet;
+            }
+        
+            /* For mobile responsiveness */
+            @media (max-width: 600px) {
+                .main {
+                    padding: 15px;
+                    width: 100%;
+                    max-width: 100%;
+                }
+        
+                .form-outer input,
+                .form-outer button {
+                    height: 45px;
+                    font-size: 16px;
+                }
+        
+                .main h3 {
+                    font-size: 26px;
+                }
+        
+                .form-outer label {
+                    font-size: 14px;
+                }
+            }
+        
+            .dropbtn {
+                background-color: #04AA6D;
+                color: white;
+                padding: 16px;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+            }
+        </style>
+</head>
+<body>
+
+    <form id="tab4" class="tabcontent">
+        <h2>Running Room Inspection</h2>
+        <div id="res" style="color: brown;font-size: 14px;" class="tabcontent"></div>
+        <div class="form-outer">
+            <label>Inspection ID</label>
+            <input type="number" name="rrinspectionid">
+        </div>
+        <div class="form-outer">
+            <label>Inspection Date</label>
+            <input type="date" name="rrinspectiondate">
+        </div>
+        <div class="form-outer">
+            <div>
+                <label for="stbcliname">CLI Name</label>
+                    <datalist id="suggestionscli">
+                        <option>A K PANDEY</option><option>A M SURADKAR</option><option>A T NEWARE</option><option>B S YADAV</option><option>CHANDRAPRAKASH</option><option>DHANANJAY SINGH</option><option>DEEPAK PAWAR</option><option>FARUK DESHPANDEY</option>
+                        <option>G M SABLE</option><option>H S SHARMA</option><option>ISMAIL KHAN</option><option>J P SINGH</option><option>JAVED KHAN</option><option>K M SINGH</option><option>K P BABY</option><option>K S RAJPUT</option>
+                        <option>M J RAWAT</option><option>M N AMBADE</option><option>M P NIKAM</option><option>MAHARAJ SINGH</option><option>MANVIR</option><option>N K GUPTA</option><option>N K SINGH</option><option>N M</option>
+                        <option>P M</option><option>P R TIKAS</option><option>P T</option><option>R L PATIL</option><option>R M</option><option>R N GHATE</option><option>R R</option><option>S K</option>
+                        <option>SANJEEV</option><option>SATISH</option><option>SUNIL</option><option>T C SIPPY</option><option>T P SINGH</option><option>U S MEENA</option><option>U S</option><option>V B</option>
+                        <option>V K DUBEY</option><option>V K KORETI</option><option>V M</option><option>V N</option><option>YUNUS</option>
+                    </datalist>
+                <input autoComplete="on" list="suggestionscli" name="rrcliname" oninput="upperCase()" class="uppercase"/> 
+            </div>
+        </div>
+        <div class="form-outer">
+            <label>Start Time</label>
+            <input type="time" name="rrstarttime">
+        </div>
+         <div class="form-outer">
+            <label>End Time</label>
+            <input type="time" name="rrendtime">
+        </div>
+        <div class="form-outer">
+            <div>
+                <label for="rrplace">Place/Station</label>
+                    <datalist id="suggestionsrrplace">
+                    <option>BSL GOODS</option>
+                    <option>BSL PASSANGER</option>
+                    <option>PASS Shed</option>
+                    <option>ET</option>
+                    <option>BPL</option>
+                    <option>KNW</option>
+                    <option>NGN</option>
+                    <option>MMR</option>
+                    <option>BD</option>
+                    <option>NGP</option>
+                    <option>BSL/TRIP SHED</option>
+                    </datalist>
+                <input  autoComplete="on" list="suggestionsrrplace" name="rrplace"/> 
+            </div>
+        </div>
+        <div class="form-outer">
+            <label>On Duty Staff And Other Details</label>
+            <input type="text" name="rrondutystaff" id="rrondutystaff" oninput="upperCase()" class="uppercase">
+        </div>
+        <div class="form-outer">
+            <label>Remark Or R/Room Irregularity</label>
+            <input type="text" name="rrirregular" oninput="upperCase()" id="rrirregular" class="uppercase">
+        </div>
+        <div class="justify-content">
+            <label style="color: red; font-weight: bold;">Day Or Night</label><br><br>
+            <div class="container">
+                <label for="DAY" class="radio-inline">DAY
+                    <input type="radio" id="day" name="rrdn" value="DAY">
+                </label>
+                
+                <label for="NIGHT" class="radio-inline">NIGHT
+                    <input type="radio" id="night" name="rrdn" value="NIGHT">
+                </label><br><br>
+            </div>   
+        </div>
+       <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
+       
+       <!-- Lobby Inspection Start -->
+       <h2>Lobby Inspection</h2>
+       <div id="res" style="color: brown;font-size: 14px;" class="tabcontent"></div>
+       <div class="form-outer">
+           <label>Inspection ID</label>
+           <input type="number" name="lbinspectionid">
+       </div>
+       <div class="form-outer">
+           <label>Inspection Date</label>
+           <input type="date" name="lbinspectiondate">
+       </div>
+       <div class="form-outer">
+           <div>
+               <label for="lbcliname">CLI Name</label>
+                   <datalist id="suggestionscli">
+                    <option>A K PANDEY</option><option>A M SURADKAR</option><option>A T NEWARE</option><option>B S YADAV</option><option>CHANDRAPRAKASH</option><option>DHANANJAY SINGH</option><option>DEEPAK PAWAR</option><option>FARUK DESHPANDEY</option>
+                    <option>G M SABLE</option><option>H S SHARMA</option><option>ISMAIL KHAN</option><option>J P SINGH</option><option>JAVED KHAN</option><option>K M SINGH</option><option>K P BABY</option><option>K S RAJPUT</option>
+                    <option>M J RAWAT</option><option>M N AMBADE</option><option>M P NIKAM</option><option>MAHARAJ SINGH</option><option>MANVIR</option><option>N K GUPTA</option><option>N K SINGH</option><option>N M</option>
+                    <option>P M</option><option>P R TIKAS</option><option>P T</option><option>R L PATIL</option><option>R M</option><option>R N GHATE</option><option>R R</option><option>S K</option>
+                    <option>SANJEEV</option><option>SATISH</option><option>SUNIL</option><option>T C SIPPY</option><option>T P SINGH</option><option>U S MEENA</option><option>U S</option><option>V B</option>
+                    <option>V K DUBEY</option><option>V K KORETI</option><option>V M</option><option>V N</option><option>YUNUS</option>
+                   </datalist>
+               <input autoComplete="on" list="suggestionscli" name="lbcliname" oninput="upperCase()" class="uppercase"/> 
+           </div>
+       </div>
+       <div class="form-outer">
+           <label>Start Time</label>
+           <input type="time" name="lbstarttime">
+       </div>
+        <div class="form-outer">
+           <label>End Time</label>
+           <input type="time" name="lbendtime">
+       </div>
+       <div class="form-outer">
+           <div>
+               <label for="lbplace">Place/Station</label>
+                   <datalist id="suggestionslbplace">
+                   <option>BSL GOODS</option>
+                   <option>BSL PASSANGER</option>
+                   <option>PASS Shed</option>
+                   <option>ET</option>
+                   <option>BPL</option>
+                   <option>KNW</option>
+                   <option>NGN</option>
+                   <option>MMR</option>
+                   <option>BD</option>
+                   <option>NGP</option>
+                   <option>BSL/TRIP SHED</option>
+                   </datalist>
+               <input  autoComplete="on" list="suggestionslbplace" name="lbplace"/> 
+           </div>
+       </div>
+       <div class="form-outer">
+           <label>On Duty Staff And Other Details</label>
+           <input type="text" name="lbondutystaff" id="lbondutystaff" oninput="upperCase()" class="uppercase">
+       </div>
+       <div class="form-outer">
+           <label>Remark Or R/Room Irregularity</label>
+           <input type="text" name="lbirregular" id="lbirregular" oninput="upperCase()" class="uppercase">
+       </div>
+       <div class="justify-content">
+           <label style="color: red; font-weight: bold;">Day Or Night</label><br><br>
+           <div class="container">
+               <label for="DAY" class="radio-inline">DAY
+                   <input type="radio" id="day" name="lbdn" value="DAY">
+               </label>
+               
+               <label for="NIGHT" class="radio-inline">NIGHT
+                   <input type="radio" id="night" name="lbdn" value="NIGHT">
+               </label><br><br>
+           </div>   
+       </div>
+       <br>
+       <!-- <div class="form-outer">
+           <label for="stb">Count Of RR And Lobby Inspection</label>
+           <input type="text" id="rrlbcount" name="rrlbcount" placeholder="Count Of Lobby And Running Room-">
+       </div>
+       <br> -->
+       <div class ="form-outer">
+        <input type="submit" id="sub4" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
+    </div>
+    </form>
+    
+
+
+    <script>
+        // Function to convert all text inputs to uppercase before submitting
+        function convertToUpperCase(form) {
+            // Get all input fields in the form
+            let inputs = form.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], input[type="time"]');
+            
+            // Loop through all the inputs and convert their values to uppercase
+            inputs.forEach(input => {
+                if (input.value) {
+                    input.value = input.value.toUpperCase(); // Convert to uppercase
+                }
+            });
+        }
+    
+        // JavaScript to handle form submission
+        let form4 = document.querySelector('#tab4');
+        form4.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent form from submitting the traditional way
+    
+            // Convert form data to uppercase before submitting
+            convertToUpperCase(form4);
+    
+            document.querySelector("#sub4").value = "Submitting..."; // Change button text to show submitting state
+    
+            let data4 = new FormData(form4); // Collect form data
+    
+            // Make the request to the Google Apps Script endpoint
+            fetch('https://script.google.com/macros/s/AKfycbzTr4Yp5x6Fj8jslWnYiPnQyjF6nb8EM3f90fWKVuOLfrCUVomXcfSfJCZL4XGfqnHJOA/exec', {
+                method: "POST",
+                body: data4
+            })
+            .then(res => res.text()) // Wait for response
+            .then(data4 => {
+                console.log('Response:', data4); // Log the response from the server
+                document.querySelector("#sub4").value = "Submit"; // Reset the button text
+                form4.reset(); // Reset form fields
+                alert("RR/Lobby Data Saved Successfully..."); // Show success message
+            })
+            .catch(error => {
+                console.error('Error during submission:', error);
+                document.querySelector("#sub4").value = "Submit"; // Reset the button text
+                alert("An error occurred while submitting. Please try again.");
+            });
+        });
+    </script>
+    
+</body>
+</html>

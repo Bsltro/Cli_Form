@@ -1,0 +1,779 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Footplate Inspection Form</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Times New Roman', Times, serif;
+            }
+        
+            body {
+                background-color: aqua;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-repeat: no-repeat;
+                padding: 20px;
+            }
+        
+            .main {
+                width: 100%;
+                max-width: 400px;
+                background: rgb(245, 242, 242);
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+        
+            .main h3 {
+                padding-bottom: 20px;
+                font-size: 30px;
+                color: #333;
+            }
+        
+            .main form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        
+            .form-outer {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        
+            .form-outer label {
+                display: block;
+                color: red;
+                font-weight: bold;
+                margin-bottom: 8px;
+                text-align: left;
+            }
+        
+            .form-outer input {
+                width: 100%;
+                height: 40px;
+                padding: 8px;
+                background-color: rgb(203, 218, 223);
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+            }
+        
+            .form-outer button {
+                width: 100%;
+                padding: 12px;
+                background-color: blueviolet;
+                color: white;
+                font-size: 18px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+        
+            .form-outer button:hover {
+                background-color: darkviolet;
+            }
+        
+            /* For mobile responsiveness */
+            @media (max-width: 600px) {
+                .main {
+                    padding: 15px;
+                    width: 100%;
+                    max-width: 100%;
+                }
+        
+                .form-outer input,
+                .form-outer button {
+                    height: 45px;
+                    font-size: 16px;
+                }
+        
+                .main h3 {
+                    font-size: 26px;
+                }
+        
+                .form-outer label {
+                    font-size: 14px;
+                }
+            }
+        
+            .dropbtn {
+                background-color: #04AA6D;
+                color: white;
+                padding: 16px;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+            }
+        </style>
+        
+        
+</head>
+<body>
+    <div class="container">
+        <h2>Footplate Inspection Form</h2>
+        <form id="inspectionForm">
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Inspection ID</label>
+                <input type="number" name="inspectionid" id="inspectionid" required>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Inspection Date</label>
+                <input type="date" name="inspectiondate" id="inspectiondate" required >
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">CLI Name</label>
+                <input type="text" name="cliname" id="cliname" required readonly>
+            </div>
+            <br>
+            <div class="justify-content">
+            <label style="color: red; font-weight: bold;">Select LP Nominated Or Other</label>
+            <div class="container">
+                <label for="nomi" class="radio-inline">NOMINATED
+                    <input type="radio" id="nomi" name="selectlp" value="NOMINATED">
+                </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <label for="other" class="radio-inline">OTHER
+                    <input type="radio" id="other" name="selectlp" value="OTHER">
+                </label>
+            </div> <br>  
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Name</label>
+                <input type="text" name="lpname" id="lpname" list="lpnames">
+                <datalist id="lpnames">
+                    <!-- Loco Pilot names will be populated here -->
+                </datalist>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Type</label>
+                <input type="text" name="lptype" id="lptype" readonly>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Category</label>
+                <input type="text" name="lpcat" id="lpcat" readonly>
+            </div>
+
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP HQ</label>
+                <input type="text" name="lphq" id="lphq" readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Name</label>
+                <input type="text" name="alpname" id="alpname" list="alpnames">
+                <datalist id="alpnames">
+                    <!-- Assistant Loco Pilot names will be populated here -->
+                </datalist>
+            </div><br>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">Select ALP Nominated Or Other</label><br><br>
+                <div class="container">
+                    <label for="nomi" class="radio-inline">NOMINATED
+                    <input type="radio" id="nomi" name="selectalp" value="NOMINATED">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="other" class="radio-inline">OTHER
+                    <input type="radio" id="other" name="selectalp" value="OTHER">
+                    </label>
+                </div>   
+            </div>
+            
+            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP HQ</label>
+                <input type="text" name="alphq" id="alphq" readonly>
+            </div>
+            <div class="form-outer">
+                <label for="trainNumber" style="color: red; font-weight: bold;">Train Number:</label>
+                <input type="text" name="trainNumber" id="trainNumber" placeholder="Enter train number" class="uppercase">
+            </div>
+            
+            <div class="form-outer">
+                <label for="trainLoad" style="color: red; font-weight: bold;">Train Load (in Tonn):</label>
+                <input type="number" name="trainLoad" id="trainLoad" placeholder="Enter train load">
+            </div>
+            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Loco No</label>
+                <input type="text" name="locono">
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">Select Whether BMBS% Less Than 50%</label><br><br>
+                    <div class="container">
+                        <label for="YES" class="radio-inline">YES
+                            <input type="radio" id="bmbsyes" name="selectbmbs" value="YES">
+                        </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <label for="NO" class="radio-inline">NO
+                            <input type="radio" id="bmbsno" name="selectbmbs" value="NO">
+                        </label><br><br>
+                    </div>   
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
+                <input type="text" name="fromstation" id="fromstation" oninput="upperCase()" class="uppercase" required>
+            </div>
+            <div class="container">
+                <label for="startTime" style="color: red; font-weight: bold;">Start Time (HH:MM):</label>
+                <input type="time" id="startTime" name="startTime" required>
+            </div><br>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
+                <input type="text" name="tostation" id="tostation"  class="uppercase" required>
+            </div>
+            <div class="container">
+                <label for="endTime" style="color: red; font-weight: bold;">End Time (HH:MM):</label>
+                <input type="time" id="endTime" name="endTime" required>
+            </div><br>
+            
+            <div class="form-outer">
+                <label for="signalcallinglp" style="color: red; font-weight: bold;">Signal Caling By LP</label>
+                <select name="sigcalllp" id="sigcalllp">
+                    <option value="select">-------Select Signal Calling By Loco Pilot-------</option>
+                    <option value="GOOD">GOOD(WITH HAND GESTURE)</option>
+                    <option value="AVERAGE">AVERAGE(WITHOUT HAND GESTURE)</option>
+                    <option value="POOR">POOR(NOT CALLING)</option>
+                </select>
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="signalcallingalp" style="color: red; font-weight: bold;">Signal Caling By ALP</label>
+                <select name="sigcallalp" id="sigcallalp">
+                    <option value="select">-------Select Signal Calling By Assistant Loco Pilot-------</option>
+                    <option value="GOOD">GOOD(WITH HAND GESTURE)</option>
+                    <option value="AVERAGE">AVERAGE(WITHOUT HAND GESTURE)</option>
+                    <option value="POOR">POOR(NOT CALLING)</option>
+                </select>
+            </div>
+            <br>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;" style="color: red; font-weight: bold;">Signal Exchange By ALP</label><br><br>
+                <div class="container">
+                    <label for="YES" class="radio-inline">YES
+                        <input type="radio" id="yes" name="sigexchange" value="YES">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="NO" class="radio-inline">NO
+                        <input type="radio" id="no" name="sigexchange" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <br>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;" style="color: red; font-weight: bold;">BFT/BPT</label><br><br>
+                <div class="container">
+                    <label for="YES" class="radio-inline">YES
+                        <input type="radio" id="yes" name="bftbpt" value="YES">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="NO" class="radio-inline">NO
+                        <input type="radio" id="no" name="bftbpt" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;" style="color: red; font-weight: bold;">Observe Caution Order</label><br><br>
+                <div class="container">
+                    <label for="YES" class="radio-inline">YES
+                        <input type="radio" id="yes" name="observeco" value="YES">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="NO" class="radio-inline">NO
+                        <input type="radio" id="no" name="observeco" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="knowledge" style="color: red; font-weight: bold;">Knowledge-->Loco Pilot</label>
+                <select name="knowledgelp" id="knowledgelp">
+                    <option value="select">-------Select Knowledge Of Loco Pilot-------</option>
+                    <option value="GOOD">GOOD</option>
+                    <option value="AVERAGE">AVERAGE</option>
+                    <option value="POOR">POOR</option>
+                </select>
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="knowledge" style="color: red; font-weight: bold;">Knowledge-->Assistant Loco Pilot</label>
+                <select name="knowledgealp" id="knowledgealp">
+                    <option value="select">-------Select Knowledge Of Assistant Loco Pilot-------</option>
+                    <option value="GOOD">GOOD</option>
+                    <option value="AVERAGE">AVERAGE</option>
+                    <option value="POOR">POOR</option>
+                </select>
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="knowledge" style="color: red; font-weight: bold;">Mobile</label>
+                <select name="mobile" id="mobile">
+                    <option value="select">-------Select Mobile Condition Of Crew-------</option>
+                    <option value="OFF">OFF(Both)</option>
+                    <option value="LPON">LP ON And ALP OFF</option>
+                    <option value="POOR">ALP ON And LP OFF</option>
+                    <option value="ON">ON(Both)</option>
+                </select>
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="whistling" style="color: red; font-weight: bold;">Whisteling By ALP</label>
+                <select name="whistling" id="whistling">
+                    <option value="select">-------Select Whisteling By Assistant Loco Pilot-------</option>
+                    <option value="GOOD">GOOD</option>
+                    <option value="AVERAGE">AVERAGE</option>
+                    <option value="POOR">POOR</option>
+                </select>
+            </div>
+            <br>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;" style="color: red; font-weight: bold;">Loco Checking</label><br><br>
+                <div class="container">
+                    <label for="YES" class="radio-inline">YES
+                        <input type="radio" id="yes" name="lococheck" value="YES">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="NO" class="radio-inline">NO
+                        <input type="radio" id="on" name="lococheck" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="speedy" style="color: red; font-weight: bold;">Speed At One Yellow</label>
+                <select name="speedy" id="speedy">
+                    <option value="select">-------Select Speed-------</option>
+                    <option value="BELOW30">BELOW 30</option>
+                    <option value="30 - 40">30 - 40</option>
+                    <option value="40 - 50">40 - 50</option>
+                    <option value="40 - 50">ABOVE 50</option>
+                </select>
+            </div>
+            <br>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">ALP Hand On RS</label><br><br>
+                <div class="container">
+                    <label for="YES" class="radio-inline">YES
+                        <input type="radio" id="yes" name="handrs" value="YES">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="NO" class="radio-inline">NO
+                        <input type="radio" id="on" name="handrs" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="whistling" style="color: red; font-weight: bold;">Luggage Packing</label>
+                <select name="luggage" id="luggage">
+                    <option value="select">-------Select Luggage Packing-------</option>
+                    <option value="NO">NO</option>
+                    <option value="ALP Luggage Packing">ALP Luggage Packing</option>
+                    <option value="LP Luggage Packing">LP Luggage Packing</option>
+                    <option value="YES">YES</option>
+                </select>
+            </div>
+            <br>
+    
+            
+            <div class="form-outer">
+                <label for="sd" style="color: red; font-weight: bold;">Safety Drive Counselled</label>
+                <input type="text" id="sd" name="sd" placeholder="Safety Drive No-"><br>
+                <a href="https://drive.google.com/file/d/19WjqAVG3hMHnXs4J8-FCNQH5bKtycrej/view?usp=sharing">***Safety Drive-33/2024***</a>
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="gi" style="color: red; font-weight: bold;">GI Counselled</label>
+                <input type="text" id="gi" name="gi" placeholder="GI No-"><br>
+                <a href="https://drive.google.com/file/d/1Re-BTD2q0Uy7XHmen531q52wsoV_p2vs/view?usp=sharing">***GI-31/2024***</a>
+    
+            </div>
+            <br>
+            <div class="form-outer">
+                <label for="sd" style="color: red; font-weight: bold;">Case Study Counselled</label>
+                <input type="text" id="cs" name="cs" placeholder="Case Study No-"><br>
+                <a href="https://drive.google.com/file/d/1aW5IUZ3iZU9KMz5cKA_f50sTgh6tNcY9/view?usp=sharing">***Case Study-19/2024***</a>
+    
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Due Date</label>
+                <input type="date" name="lpduedate" id="lpduedate" readonly>
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">COACHING/GOODS</label><br><br>
+                <div class="container">
+                    <label for="COACHING" class="radio-inline">COACHING
+                    <input type="radio" id="coach" name="coachgd" value="COACHING">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="GOODS" class="radio-inline">GOODS
+                    <input type="radio" id="goods" name="coachgd" value="GOODS">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">LOADED/EMPTY</label><br><br>
+                <div class="container">
+                    <label for="loaded" class="radio-inline">LOADED
+                    <input type="radio" id="load" name="loademp" value="LOADED">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="empty" class="radio-inline">EMPTY
+                    <input type="radio" id="empty" name="loademp" value="EMPTY">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">DAY/NIGHT</label><br><br>
+                    <div class="container">
+                        <label for="day" class="radio-inline">DAY
+                            <input type="radio" id="day" name="dynt" value="DAY">
+                        </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <label for="night" class="radio-inline">NIGHT
+                            <input type="radio" id="night" name="dynt" value="NIGHT">
+                        </label><br><br>
+                    </div>   
+            </div>
+            
+            <!-- Irregularity Observed -->
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">Irregularity Observed</label><br><br>
+                <div class="container">
+                    <label for="irregularityYes" class="radio-inline">YES
+                        <input type="radio" id="irregularityYes" name="irregularity" value="YES">
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="irregularityNo" class="radio-inline">NO
+                        <input type="radio" id="irregularityNo" name="irregularity" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
+            <h2>Ambush Check In Lobby</h2>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Speed Gun</label>
+                <input type="number" name="speedgun" id="speedgun" >
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">No Of Random BA Test</label>
+                <input type="number" name="ba" id="ba">
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Vulnerable Signal/Lay Out</label>
+                <input type="number" name="vsiglayout" id="vsiglayout">
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Yard Layout</label>
+                <input type="number" name="ylayout" id="ylayout">
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">C/O Acknowledge</label><br><br>
+                <div class="container">
+                    <label for="irregularityYes" class="radio-inline">YES
+                        <input type="radio" id="coyes" name="coack" value="YES">
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="irregularityNo" class="radio-inline">NO
+                        <input type="radio" id="cono" name="coack" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">Late Sign ON/OFF</label><br><br>
+                <div class="container">
+                    <label for="irregularityYes" class="radio-inline">YES
+                        <input type="radio" id="signonoffyes" name="signonoff" value="YES">
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="irregularityNo" class="radio-inline">NO
+                        <input type="radio" id="signonoffno" name="signonoff" value="NO">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Lobby RS Flap Valve</label>
+                <input type="text" name="rs" id="rs">
+            </div>
+            <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
+            <h2>Check In Yard</h2>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">Shunting</label><br><br>
+                <div class="container">
+                    <label for="irregularityYes" class="radio-inline">PROPER
+                        <input type="radio" id="shuntingy" name="shunting" value="PROPER">
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="irregularityNo" class="radio-inline">NOT PROPER
+                        <input type="radio" id="shuntingn" name="shunting" value="NOT PROPER">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;">Loco Stabling,T/S,Stn</label><br><br>
+                <div class="container">
+                    <label for="irregularityYes" class="radio-inline">PROPER
+                        <input type="radio" id="lstby" name="lstb" value="PROPER">
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="irregularityNo" class="radio-inline">NOT PROPER
+                        <input type="radio" id="lstbn" name="lstb" value="NOT PROPER">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">REMARK</label>
+                <input type="text" name="remark" id="remark">
+            </div>
+            <div class ="form-outer">
+                <input type="submit" id="sub" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const sheetID = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08'; // Your sheet ID
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Your API key
+        const dataRange = 'Sheet1!A2:H1000'; // Range for Inspection ID, CLI Name, LP Name, ALP Name, LP Type, LP Category, LP HQ, ALP HQ
+    
+        // Construct the URL for the Google Sheets API
+        const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${dataRange}?key=${apiKey}`;
+    
+        // Function to fetch data from Google Sheets
+        function fetchSheetData() {
+            fetch(sheetURL)
+                .then(response => response.json())
+                .then(data => {
+                    const rows = data.values;
+                    // Store the sheet data for later use
+                    window.sheetData = rows;
+                    populateNames(); // Populate LP and ALP names after data is fetched
+                })
+                .catch(error => console.error('Error fetching data from Google Sheets:', error));
+        }
+    
+        // Function to populate the LP and ALP names into the datalist
+        function populateNames() {
+            const lpNames = document.getElementById('lpnames');
+            const alpNames = document.getElementById('alpnames');
+            
+            // Clear existing options
+            lpNames.innerHTML = '';
+            alpNames.innerHTML = '';
+    
+            // Loop through the rows and add LP and ALP names to the datalists
+            window.sheetData.forEach(row => {
+                const lpOption = document.createElement('option');
+                lpOption.value = row[2]; // LP Name is in the 3rd column (C)
+                lpNames.appendChild(lpOption);
+    
+                const alpOption = document.createElement('option');
+                alpOption.value = row[6]; // ALP Name is in the 7th column (G)
+                alpNames.appendChild(alpOption);
+            });
+        }
+    
+        // Function to auto-fill CLI Name and today's date based on the entered Inspection ID
+        function autoFillDetails() {
+            const inspectionID = document.getElementById('inspectionid').value;
+            if (!inspectionID) return; // Exit if no Inspection ID is entered
+    
+            // Find the row that matches the Inspection ID
+            const matchingRow = window.sheetData?.find(row => row[0] == inspectionID); // Inspection ID is in the first column
+    
+            if (matchingRow) {
+                // Auto-fill CLI Name (second column in Google Sheet)
+                document.getElementById('cliname').value = matchingRow[1];
+    
+                // Set today's date in the Inspection Date field
+                const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                document.getElementById('inspectiondate').value = today;
+            } else {
+                //alert('Inspection ID not found!');
+            }
+        }
+    
+        // Event listener to auto-fill data when Inspection ID is entered
+        document.getElementById('inspectionid').addEventListener('input', autoFillDetails);
+    
+        // Event listener to auto-fill LP details when LP Name is selected
+        document.getElementById('lpname').addEventListener('input', function() {
+            const lpName = document.getElementById('lpname').value;
+            const matchingRow = window.sheetData?.find(row => row[2] === lpName); // LP Name is in the 3rd column
+    
+            if (matchingRow) {
+                // Auto-fill LP Type (from Column D)
+                document.getElementById('lptype').value = matchingRow[3]; // LP Type is in the 4th column (D)
+                
+                // Auto-fill LP Category (from Column E)
+                document.getElementById('lpcat').value = matchingRow[4]; // LP Category is in the 5th column (E)
+                
+                // Auto-fill LP HQ (from Column F)
+                document.getElementById('lphq').value = matchingRow[5]; // LP HQ is in the 6th column (F)
+    
+                // Automatically update the due date if LP Category and Inspection Date are both available
+                setDueDate();
+            }
+        });
+    
+        // Event listener to auto-fill ALP HQ when ALP Name is selected
+        document.getElementById('alpname').addEventListener('input', function() {
+            const alpName = document.getElementById('alpname').value;
+            const matchingRow = window.sheetData?.find(row => row[6] === alpName); // ALP Name is in the 7th column (G)
+    
+            if (matchingRow) {
+                // Auto-fill ALP HQ (from Column H)
+                document.getElementById('alphq').value = matchingRow[7]; // ALP HQ is in the 8th column (H)
+            }
+        });
+    
+        // Call to fetch sheet data when the page loads
+        window.onload = () => {
+            fetchSheetData();
+        };
+    
+        // Auto-check Coaching or Goods based on train number
+        document.getElementById('trainNumber').addEventListener('input', function() {
+            const trainNumber = document.getElementById('trainNumber').value;
+            const isNumeric = /^[0-9]+$/.test(trainNumber);
+            
+            if (isNumeric) {
+                document.getElementById('coach').checked = true;  // Auto-check COACHING
+                document.getElementById('goods').checked = false;
+            } else {
+                document.getElementById('goods').checked = true;  // Auto-check GOODS
+                document.getElementById('coach').checked = false;
+            }
+        });
+    
+        // Auto-check Loaded or Empty based on train load
+        document.getElementById('trainLoad').addEventListener('input', function() {
+            const trainLoad = parseFloat(document.getElementById('trainLoad').value);
+            
+            if (trainLoad > 1500) {
+                document.getElementById('load').checked = true;  // Auto-check LOADED
+                document.getElementById('empty').checked = false;
+            } else {
+                document.getElementById('empty').checked = true;  // Auto-check EMPTY
+                document.getElementById('load').checked = false;
+            }
+        });
+    
+        // Hide BMBS section if "Coaching" is selected
+        document.querySelectorAll('input[name="coachgd"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                const bmbsSection = document.getElementsByName('selectbmbs');
+                if (document.getElementById('coach').checked) {
+                    bmbsSection.style.display = 'none';  // Hide BMBS Less Than 50% section
+                } else {
+                    bmbsSection.style.display = 'block';  // Show BMBS Less Than 50% section
+                }
+            });
+        });
+    
+        // Auto-check Day or Night based on time input
+        document.querySelectorAll('input[type="time"]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                const startTime = document.getElementById('startTime').value;
+                const endTime = document.getElementById('endTime').value;
+                
+                const isNight = (time) => {
+                    const [hours] = time.split(':').map(n => parseInt(n, 10));
+                    return hours >= 22 || hours < 6;
+                };
+    
+                if (isNight(startTime) || isNight(endTime)) {
+                    document.getElementById('night').checked = true;  // Auto-check NIGHT
+                    document.getElementById('day').checked = false;
+                } else {
+                    document.getElementById('day').checked = true;  // Auto-check DAY
+                    document.getElementById('night').checked = false;
+                }
+            });
+        });
+    
+        // Function to calculate and set due date based on inspection date and LP category
+        function setDueDate() {
+            const inspectionDate = document.getElementById('inspectiondate').value;
+            const nominated = document.getElementById('nomi').checked;
+            const lpCategory = document.getElementById('lpcat').value;
+    
+            console.log('Inspection Date:', inspectionDate);  // Log inspection date
+            console.log('LP Category:', lpCategory);  // Log LP category
+            console.log('Is Nominated:', nominated);  // Log nominated status
+    
+            // Ensure the inspection date is valid
+            if (!inspectionDate) {
+                console.log('Inspection Date is empty. Cannot set due date.');
+                return;  // If inspection date is empty, do nothing
+            }
+    
+            if (!lpCategory) {
+                console.log('LP Category is not selected.');
+                return;  // If LP category is not selected, do nothing
+            }
+    
+            const date = new Date(inspectionDate);
+    
+            if (nominated) {
+                // Apply logic based on LP category
+                if (lpCategory === 'A') {
+                    console.log('LP Category A: Adding 2 months');
+                    date.setMonth(date.getMonth() + 2);  // Set due date 2 months after inspection date
+                } else if (lpCategory === 'B') {
+                    console.log('LP Category B: Adding 1 month');
+                    date.setMonth(date.getMonth() + 1);  // Set due date 1 month after inspection date
+                } else if (lpCategory === 'C') {
+                    console.log('LP Category C: Adding 15 days');
+                    date.setDate(date.getDate() + 15);  // Set due date 15 days after inspection date
+                }
+    
+                // Format date to YYYY-MM-DD
+                const dueDate = date.toISOString().split('T')[0];
+                console.log('Calculated Due Date:', dueDate);  // Log the due date
+    
+                document.getElementById('lpduedate').value = dueDate;  // Set the due date in the field
+            }
+        }
+    
+        // Event listeners for LP selection and LP category
+        document.querySelectorAll('input[name="selectlp"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                console.log('LP Selection Changed');
+                setDueDate();  // Update due date when LP is selected
+            });
+        });
+    
+        // Event listener for LP category selection change
+        document.getElementById('lpcat').addEventListener('input', function() {
+            console.log('LP Category Changed');
+            setDueDate();  // Update due date when LP category is changed
+        });
+    
+        // Event listener for inspection date change
+        document.getElementById('inspectiondate').addEventListener('change', function() {
+            console.log('Inspection Date Changed');
+            setDueDate();  // Update due date when inspection date is changed
+        });
+
+         // Add event listeners to the submit buttons
+         document.getElementById
+            //JS code to bring tab1 data
+             //let form = document.querySelector("form");
+            let form = document.querySelector('#inspectionForm');
+            form.addEventListener('submit',(e)=>{
+                e.preventDefault();
+                document.querySelector("#sub").value="Submitting.........";
+                let data = new FormData(form);
+                fetch('https://script.google.com/macros/s/AKfycbyhl2Zc9glZHqdk1InjHxmhLmj5kWS_0rIGTB6oQwQYZox991uuJ186uoMWgFqFQq6h/exec',{
+                    method: "POST",
+                    body:data
+                })
+                .then(res => res.text())
+                .then(data => {
+                    document.querySelector("#sub").value="Submit";
+                    form.reset();
+                    alert("Footplating Data Saved Successfully...");
+                });
+            //})
+            });
+    </script>
+    
+</body>
+</html>
