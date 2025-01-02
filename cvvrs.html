@@ -162,13 +162,13 @@
                 <label>End Time</label>
                 <input type="time" name="cvvrsendtime" id="cvvrsendtime" required>
             </div>
-            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP CMS ID</label>
+                <input type="text" name="cvvrslpcmsid" id="cvvrslpcmsid">
+            </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP Name</label>
-                <input type="text" name="cvvrslpname" id="cvvrslpname" list="cvvrslpnames" required>
-                <datalist id="cvvrslpnames">
-                    <!-- Loco Pilot names will be populated here -->
-                </datalist>
+                <input type="text" name="cvvrslpname" id="cvvrslpname" readonly>
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP Type</label>
@@ -183,12 +183,18 @@
                 <input type="text" name="cvvrslphq" id="cvvrslphq" readonly>
             </div>
             <div class="form-outer">
-                <label style="color: red; font-weight: bold;">ALP Name</label>
-                <input type="text" name="cvvrsalpname" id="cvvrsalpname" list="cvvrsalpnames">
-                <datalist id="cvvrsalpnames">
-                    <!-- Assistant Loco Pilot names will be populated here -->
-                </datalist>
+                <label style="color: red; font-weight: bold;">ALP CMS ID</label>
+                <input type="text" name="cvvrsalpcmsid" id="cvvrsalpcmsid">
             </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Name</label>
+                <input type="text" name="cvvrsalpname" id="cvvrsalpname" readonly>
+            </div><br>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Designation</label>
+                <input type="text" name="cvvrsalpdesg" id="cvvrsalpdesg" readonly>
+            </div>
+            
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP HQ</label>
                 <input type="text" name="cvvrsalphq" id="cvvrsalphq" readonly>
@@ -435,10 +441,10 @@
     <script>
         const sheetIDcvvrs = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
         const apiKeycvvrs = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
-        const dataRangecvvrs = 'Sheet1!A2:H1000'; 
-
+        const dataRangecvvrs = 'Sheet1!A2:K900'; 
+    
         const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetIDcvvrs}/values/${dataRangecvvrs}?key=${apiKeycvvrs}`;
-
+    
         // Fetch data from Google Sheets
         function fetchSheetDatacvvrs() {
             fetch(sheetURL)
@@ -450,114 +456,139 @@
                 })
                 .catch(error => console.error('Error fetching data from Google Sheets:', error));
         }
-
+    
         // Populate Loco Pilot and Assistant Loco Pilot names
         function populateNamescvvrs() {
             const lpNames = document.getElementById('cvvrslpnames');
             const alpNames = document.getElementById('cvvrsalpnames');
             lpNames.innerHTML = '';
             alpNames.innerHTML = '';
-
+    
             window.sheetData.forEach(row => {
                 const lpOption = document.createElement('option');
                 lpOption.value = row[2];  // Loco Pilot Name (column C)
                 lpNames.appendChild(lpOption);
-
+    
                 const alpOption = document.createElement('option');
                 alpOption.value = row[6]; // Assistant Loco Pilot Name (column G)
                 alpNames.appendChild(alpOption);
             });
         }
-
+    
+        // Auto-fill fields based on LP CMS ID
+        document.getElementById('cvvrslpcmsid').addEventListener('input', function() {
+            const lpcmsid = document.getElementById('cvvrslpcmsid').value;
+            if (!lpcmsid) return;
+    
+            const matchingRow = window.sheetData?.find(row => row[2] === lpcmsid); // Assumes LP CMS ID is in column I (index 8)
+    
+            if (matchingRow) {
+                document.getElementById('cvvrslpname').value = matchingRow[3]; // LP Name (column C)
+                document.getElementById('cvvrslptype').value = matchingRow[4]; // LP Type (column D)
+                document.getElementById('cvvrslpcat').value = matchingRow[5]; // LP Category (column E)
+                document.getElementById('cvvrslphq').value = matchingRow[6]; // LP HQ (column F)
+            } else {
+                clearLPFields();
+            }
+        });
+    
+        // Clear LP fields
+        function clearLPFields() {
+            document.getElementById('cvvrslpname').value = '';
+            document.getElementById('cvvrslptype').value = '';
+            document.getElementById('cvvrslpcat').value = '';
+            document.getElementById('cvvrslphq').value = '';
+        }
+    
+        // Auto-fill fields based on ALP CMS ID
+        document.getElementById('cvvrsalpcmsid').addEventListener('input', function() {
+            const alpcmsid = document.getElementById('cvvrsalpcmsid').value;
+            if (!alpcmsid) return;
+    
+            const matchingRow = window.sheetData?.find(row => row[7] === alpcmsid); // Assumes ALP CMS ID is in column J (index 9)
+    
+            if (matchingRow) {
+                document.getElementById('cvvrsalpname').value = matchingRow[8]; // ALP Name (column G)
+                document.getElementById('cvvrsalpdesg').value = matchingRow[9]; // ALP Designation (assuming it's in column K, index 10)
+                document.getElementById('cvvrsalphq').value = matchingRow[10]; // ALP HQ (column H)
+            } else {
+                clearALPFields();
+            }
+        });
+    
+        // Clear ALP fields
+        function clearALPFields() {
+            document.getElementById('cvvrsalpname').value = '';
+            document.getElementById('cvvrsalpdesg').value = '';
+            document.getElementById('cvvrsalphq').value = '';
+        }
+    
         // Auto-fill CLI Name and Inspection Date based on Inspection ID
+        document.getElementById('cvvrsinspectionid').addEventListener('input', autoFillDetailscvvrs);
+    
         function autoFillDetailscvvrs() {
             const inspectionID = document.getElementById('cvvrsinspectionid').value;
             if (!inspectionID) return;
-
+    
             const matchingRow = window.sheetData?.find(row => row[0] == inspectionID);
-
+    
             if (matchingRow) {
                 document.getElementById('cvvrscliname').value = matchingRow[1]; // CLI Name (column B)
-                // const today = new Date().toISOString().split('T')[0];
-                // document.getElementById('cvvrsinspectiondate').value = today;
-                 // Set today's date in the Inspection Date field
-                 const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-                document.getElementById('cvvrsinspectiondate').value = today;
-            } else {
-                //alert('Inspection ID not found!');
+                const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                document.getElementById('cvvrsinspectiondate').value = today; // Set today's date
             }
         }
-
-        document.getElementById('cvvrsinspectionid').addEventListener('input', autoFillDetailscvvrs);
-
-        // Event listener for LP Name to auto-fill LP Type, LP Category, and LP HQ
-        document.getElementById('cvvrslpname').addEventListener('input', function() {
-            const lpName = document.getElementById('cvvrslpname').value;
-            const matchingRow = window.sheetData?.find(row => row[2] === lpName); // Loco Pilot Name (column C)
-
-            if (matchingRow) {
-                document.getElementById('cvvrslptype').value = matchingRow[3]; // LP Type (column D)
-                document.getElementById('cvvrslpcat').value = matchingRow[4]; // LP Category (column E)
-                document.getElementById('cvvrslphq').value = matchingRow[5]; // LP HQ (column F)
-            }
-        });
-
-        // Event listener for ALP Name to auto-fill ALP HQ
-        document.getElementById('cvvrsalpname').addEventListener('input', function() {
-            const alpName = document.getElementById('cvvrsalpname').value;
-            const matchingRow = window.sheetData?.find(row => row[6] === alpName); // Assistant Loco Pilot Name (column G)
-
-            if (matchingRow) {
-                document.getElementById('cvvrsalphq').value = matchingRow[7]; // ALP HQ (column H)
-            }
-        });
-
-        // Logic to select radio buttons based on input values
+    
+        // Set radio buttons based on input values
         function setRadioButtons() {
-            // Train Number Logic
+            // Setting Train Number logic
             const trainNumber = document.getElementById('cvvrsTrainNumber').value;
-            if (/\d/.test(trainNumber)) {
-                document.getElementById('cvvrsco').checked = true; // COACHING
-            } else {
-                document.getElementById('cvvrsgd').checked = true; // GOODS
+            if (trainNumber) {
+                if (/\d/.test(trainNumber)) {
+                    document.getElementById('cvvrsco').checked = true; // Coaching
+                } else {
+                    document.getElementById('cvvrsgd').checked = true; // Goods
+                }
             }
-
-            // Train Load Logic
+    
+            // Setting Train Load logic
             const trainLoad = parseInt(document.getElementById('cvvrsTrainLoad').value);
-            if (trainLoad > 1500) {
-                document.getElementById('cvvrsld').checked = true; // LOADED
-            } else {
-                document.getElementById('cvvrsemp').checked = true; // EMPTY
+            if (!isNaN(trainLoad)) { // Ensure it's a valid number
+                if (trainLoad > 1500) {
+                    document.getElementById('cvvrsld').checked = true; // Loaded
+                } else {
+                    document.getElementById('cvvrsemp').checked = true; // Empty
+                }
             }
-
-            // Time Logic for Day/Night
+    
+            // Setting Day/Night logic
             const startTime = document.getElementById('cvvrsstarttime').value;
             const endTime = document.getElementById('cvvrsendtime').value;
-
+    
+            const isNight = (time) => 
+                (time >= "22:00" && time <= "23:59") || 
+                (time >= "00:00" && time <= "06:00");
+    
             if (
-                (startTime >= "22:00" && startTime <= "23:59") ||
-                (endTime >= "22:00" && endTime <= "23:59") ||
-                (startTime >= "00:00" && startTime <= "06:00") ||
-                (endTime >= "00:00" && endTime <= "06:00")
+                isNight(startTime) || isNight(endTime)
             ) {
-                document.getElementById('cvvrsn').checked = true; // NIGHT
+                document.getElementById('cvvrsn').checked = true; // Night
             } else {
-                document.getElementById('cvvrsd').checked = true; // DAY
+                document.getElementById('cvvrsd').checked = true; // Day
             }
         }
-
+    
         // Add event listeners for the inputs to trigger radio button selection
         document.getElementById('cvvrsTrainNumber').addEventListener('input', setRadioButtons);
         document.getElementById('cvvrsTrainLoad').addEventListener('input', setRadioButtons);
         document.getElementById('cvvrsstarttime').addEventListener('input', setRadioButtons);
         document.getElementById('cvvrsendtime').addEventListener('input', setRadioButtons);
-
+    
         // Initial load function
         window.onload = () => {
             fetchSheetDatacvvrs();
         };
-
-
+    
         const form = document.getElementById('tab2');
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -566,19 +597,19 @@
                 return;
             }
             document.querySelector("#sub2").value = "Submitting.........";
-
+    
             // Create a new FormData object
             let data = new FormData(form);
-
+    
             // Convert all form data values to uppercase
             data.forEach((value, key) => {
                 if (typeof value === 'string') {
                     data.set(key, value.toUpperCase());
                 }
             });
-
+    
             // Send the data to the server
-            fetch('https://script.google.com/macros/s/AKfycbzeP5kl9nv5lWzLi6R22OSCkmOr6Os8Zm5Z_E8mu1CEtfN7DioXiJpK9GtibUEA22ciSQ/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbxK6BEmwQdBqui_OASuRvplXr0g5005ZNPpZy9YZc78hSVWPByMwcAoDfMAc01OXSfi7w/exec', {
                 method: "POST",
                 body: data
             })
@@ -594,7 +625,7 @@
                 console.error(error);
             });
         });
-
+    
         // Fetch sheet data on page load
         fetchSheetDatacvvrs();
     </script>

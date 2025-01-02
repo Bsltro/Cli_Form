@@ -149,13 +149,13 @@
             </div> <br>  
             </div>
             <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP Name</label>
-                <input type="text" name="lpname" id="lpname" list="lpnames">
-                <datalist id="lpnames">
-                    <!-- Loco Pilot names will be populated here -->
-                </datalist>
+                <label style="color: red; font-weight: bold;">LP CMS ID</label>
+                <input type="text" name="lpcmsid" id="lpcmsid">
             </div>
-
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Name</label>
+                <input type="text" name="lpname" id="lpname" readonly>
+            </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP Type</label>
                 <input type="text" name="lptype" id="lptype" readonly>
@@ -170,13 +170,7 @@
                 <label style="color: red; font-weight: bold;">LP HQ</label>
                 <input type="text" name="lphq" id="lphq" readonly>
             </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">ALP Name</label>
-                <input type="text" name="alpname" id="alpname" list="alpnames">
-                <datalist id="alpnames">
-                    <!-- Assistant Loco Pilot names will be populated here -->
-                </datalist>
-            </div><br>
+            
             <div class="justify-content">
                 <label style="color: red; font-weight: bold;">Select ALP Nominated Or Other</label><br><br>
                 <div class="container">
@@ -188,7 +182,18 @@
                     </label>
                 </div>   
             </div>
-            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP CMS ID</label>
+                <input type="text" name="alpcmsid" id="alpcmsid">
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Name</label>
+                <input type="text" name="alpname" id="alpname" readonly>
+            </div><br>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Designation</label>
+                <input type="text" name="alpdesg" id="alpdesg" readonly>
+            </div>
             
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP HQ</label>
@@ -530,11 +535,11 @@
     <script>
         const sheetID = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08'; // Your sheet ID
         const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Your API key
-        const dataRange = 'Sheet1!A2:H1000'; // Range for Inspection ID, CLI Name, LP Name, ALP Name, LP Type, LP Category, LP HQ, ALP HQ
-    
+        const dataRange = 'Sheet1!A2:K860'; // Range for Inspection ID, CLI Name, LP Name, ALP Name, LP Type, LP Category, LP HQ, ALP HQ
+        
         // Construct the URL for the Google Sheets API
         const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${dataRange}?key=${apiKey}`;
-    
+        
         // Function to fetch data from Google Sheets
         function fetchSheetData() {
             fetch(sheetURL)
@@ -547,87 +552,107 @@
                 })
                 .catch(error => console.error('Error fetching data from Google Sheets:', error));
         }
-    
+        
         // Function to populate the LP and ALP names into the datalist
         function populateNames() {
             const lpNames = document.getElementById('lpnames');
             const alpNames = document.getElementById('alpnames');
-            
+        
             // Clear existing options
             lpNames.innerHTML = '';
             alpNames.innerHTML = '';
-    
+        
             // Loop through the rows and add LP and ALP names to the datalists
             window.sheetData.forEach(row => {
                 const lpOption = document.createElement('option');
                 lpOption.value = row[2]; // LP Name is in the 3rd column (C)
                 lpNames.appendChild(lpOption);
-    
+        
                 const alpOption = document.createElement('option');
                 alpOption.value = row[6]; // ALP Name is in the 7th column (G)
                 alpNames.appendChild(alpOption);
             });
         }
-    
+        
+        // Function to auto-fill details based on the entered LP CMS ID
+        function autoFillLPDetails() {
+            const lpcmsid = document.getElementById('lpcmsid').value;
+            if (!lpcmsid) return; // Exit if no LP CMS ID is entered
+        
+            // Find the row that matches the LP CMS ID
+            const matchingRow = window.sheetData?.find(row => row[2] === lpcmsid); // Presumed to be in column A
+        
+            if (matchingRow) {
+                document.getElementById('lpname').value = matchingRow[3]; // LP Name
+                document.getElementById('lptype').value = matchingRow[4]; // LP Type
+                document.getElementById('lpcat').value = matchingRow[5]; // LP Category
+                document.getElementById('lphq').value = matchingRow[6]; // LP HQ
+                
+                // Automatically update the due date if LP Category is available
+                setDueDate();
+            } else {
+                clearLPFields(); // Clear fields if no match
+            }
+        }
+        
+        // Function to auto-fill ALP details based on the entered ALP CMS ID
+        function autoFillALPDetails() {
+            const alpcmsid = document.getElementById('alpcmsid').value;
+            if (!alpcmsid) return; // Exit if no ALP CMS ID is entered
+        
+            // Find the row that matches the ALP CMS ID
+            const matchingRow = window.sheetData?.find(row => row[7] === alpcmsid); // Presumed to be in column A
+        
+            if (matchingRow) {
+                document.getElementById('alpname').value = matchingRow[8]; // ALP Name
+                document.getElementById('alpdesg').value = matchingRow[9]; // ALP Designation
+                document.getElementById('alphq').value = matchingRow[10]; // ALP HQ
+            } else {
+                clearALPFields(); // Clear fields if no match
+            }
+        }
+        
+        // Clear LP fields
+        function clearLPFields() {
+            document.getElementById('lpname').value = '';
+            document.getElementById('lptype').value = '';
+            document.getElementById('lpcat').value = '';
+            document.getElementById('lphq').value = '';
+        }
+        
+        // Clear ALP fields
+        function clearALPFields() {
+            document.getElementById('alpname').value = '';
+            document.getElementById('alpdesg').value = '';
+            document.getElementById('alphq').value = '';
+        }
+        
         // Function to auto-fill CLI Name and today's date based on the entered Inspection ID
         function autoFillDetails() {
             const inspectionID = document.getElementById('inspectionid').value;
             if (!inspectionID) return; // Exit if no Inspection ID is entered
-    
+        
             // Find the row that matches the Inspection ID
             const matchingRow = window.sheetData?.find(row => row[0] == inspectionID); // Inspection ID is in the first column
-    
+        
             if (matchingRow) {
                 // Auto-fill CLI Name (second column in Google Sheet)
                 document.getElementById('cliname').value = matchingRow[1];
-    
+        
                 // Set today's date in the Inspection Date field
                 const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
                 document.getElementById('inspectiondate').value = today;
             } else {
-                //alert('Inspection ID not found!');
+                // Optional: alert('Inspection ID not found!');
+                // Or clear relevant fields if needed
             }
         }
-    
-        // Event listener to auto-fill data when Inspection ID is entered
+        
+        // Event listeners to auto-fill data when relevant IDs are entered
+        document.getElementById('lpcmsid').addEventListener('input', autoFillLPDetails);
+        document.getElementById('alpcmsid').addEventListener('input', autoFillALPDetails);
         document.getElementById('inspectionid').addEventListener('input', autoFillDetails);
-    
-        // Event listener to auto-fill LP details when LP Name is selected
-        document.getElementById('lpname').addEventListener('input', function() {
-            const lpName = document.getElementById('lpname').value;
-            const matchingRow = window.sheetData?.find(row => row[2] === lpName); // LP Name is in the 3rd column
-    
-            if (matchingRow) {
-                // Auto-fill LP Type (from Column D)
-                document.getElementById('lptype').value = matchingRow[3]; // LP Type is in the 4th column (D)
-                
-                // Auto-fill LP Category (from Column E)
-                document.getElementById('lpcat').value = matchingRow[4]; // LP Category is in the 5th column (E)
-                
-                // Auto-fill LP HQ (from Column F)
-                document.getElementById('lphq').value = matchingRow[5]; // LP HQ is in the 6th column (F)
-    
-                // Automatically update the due date if LP Category and Inspection Date are both available
-                setDueDate();
-            }
-        });
-    
-        // Event listener to auto-fill ALP HQ when ALP Name is selected
-        document.getElementById('alpname').addEventListener('input', function() {
-            const alpName = document.getElementById('alpname').value;
-            const matchingRow = window.sheetData?.find(row => row[6] === alpName); // ALP Name is in the 7th column (G)
-    
-            if (matchingRow) {
-                // Auto-fill ALP HQ (from Column H)
-                document.getElementById('alphq').value = matchingRow[7]; // ALP HQ is in the 8th column (H)
-            }
-        });
-    
-        // Call to fetch sheet data when the page loads
-        window.onload = () => {
-            fetchSheetData();
-        };
-    
+        
         // Auto-check Coaching or Goods based on train number
         document.getElementById('trainNumber').addEventListener('input', function() {
             const trainNumber = document.getElementById('trainNumber').value;
@@ -641,7 +666,7 @@
                 document.getElementById('coach').checked = false;
             }
         });
-    
+        
         // Auto-check Loaded or Empty based on train load
         document.getElementById('trainLoad').addEventListener('input', function() {
             const trainLoad = parseFloat(document.getElementById('trainLoad').value);
@@ -654,63 +679,30 @@
                 document.getElementById('load').checked = false;
             }
         });
-    
-        // Hide BMBS section if "Coaching" is selected
-        document.querySelectorAll('input[name="coachgd"]').forEach(function(radio) {
-            radio.addEventListener('change', function() {
-                const bmbsSection = document.getElementsByName('selectbmbs');
-                if (document.getElementById('coach').checked) {
-                    bmbsSection.style.display = 'none';  // Hide BMBS Less Than 50% section
-                } else {
-                    bmbsSection.style.display = 'block';  // Show BMBS Less Than 50% section
-                }
-            });
-        });
-    
-        // Auto-check Day or Night based on time input
-        document.querySelectorAll('input[type="time"]').forEach(function(input) {
-            input.addEventListener('input', function() {
-                const startTime = document.getElementById('startTime').value;
-                const endTime = document.getElementById('endTime').value;
-                
-                const isNight = (time) => {
-                    const [hours] = time.split(':').map(n => parseInt(n, 10));
-                    return hours >= 22 || hours < 6;
-                };
-    
-                if (isNight(startTime) || isNight(endTime)) {
-                    document.getElementById('night').checked = true;  // Auto-check NIGHT
-                    document.getElementById('day').checked = false;
-                } else {
-                    document.getElementById('day').checked = true;  // Auto-check DAY
-                    document.getElementById('night').checked = false;
-                }
-            });
-        });
-    
+        
         // Function to calculate and set due date based on inspection date and LP category
         function setDueDate() {
             const inspectionDate = document.getElementById('inspectiondate').value;
             const nominated = document.getElementById('nomi').checked;
             const lpCategory = document.getElementById('lpcat').value;
-    
+        
             console.log('Inspection Date:', inspectionDate);  // Log inspection date
             console.log('LP Category:', lpCategory);  // Log LP category
             console.log('Is Nominated:', nominated);  // Log nominated status
-    
+        
             // Ensure the inspection date is valid
             if (!inspectionDate) {
                 console.log('Inspection Date is empty. Cannot set due date.');
                 return;  // If inspection date is empty, do nothing
             }
-    
+        
             if (!lpCategory) {
                 console.log('LP Category is not selected.');
                 return;  // If LP category is not selected, do nothing
             }
-    
+        
             const date = new Date(inspectionDate);
-    
+        
             if (nominated) {
                 // Apply logic based on LP category
                 if (lpCategory === 'A') {
@@ -723,15 +715,15 @@
                     console.log('LP Category C: Adding 15 days');
                     date.setDate(date.getDate() + 15);  // Set due date 15 days after inspection date
                 }
-    
+        
                 // Format date to YYYY-MM-DD
                 const dueDate = date.toISOString().split('T')[0];
                 console.log('Calculated Due Date:', dueDate);  // Log the due date
-    
+        
                 document.getElementById('lpduedate').value = dueDate;  // Set the due date in the field
             }
         }
-    
+        
         // Event listeners for LP selection and LP category
         document.querySelectorAll('input[name="selectlp"]').forEach(function(radio) {
             radio.addEventListener('change', function() {
@@ -739,41 +731,62 @@
                 setDueDate();  // Update due date when LP is selected
             });
         });
-    
+        
         // Event listener for LP category selection change
         document.getElementById('lpcat').addEventListener('input', function() {
             console.log('LP Category Changed');
             setDueDate();  // Update due date when LP category is changed
         });
-    
+        
         // Event listener for inspection date change
         document.getElementById('inspectiondate').addEventListener('change', function() {
             console.log('Inspection Date Changed');
             setDueDate();  // Update due date when inspection date is changed
         });
-
-         // Add event listeners to the submit buttons
-         document.getElementById
-            //JS code to bring tab1 data
-             //let form = document.querySelector("form");
-            let form = document.querySelector('#inspectionForm');
-            form.addEventListener('submit',(e)=>{
-                e.preventDefault();
-                document.querySelector("#sub").value="Submitting.........";
-                let data = new FormData(form);
-                fetch('https://script.google.com/macros/s/AKfycbyhl2Zc9glZHqdk1InjHxmhLmj5kWS_0rIGTB6oQwQYZox991uuJ186uoMWgFqFQq6h/exec',{
-                    method: "POST",
-                    body:data
-                })
-                .then(res => res.text())
-                .then(data => {
-                    document.querySelector("#sub").value="Submit";
-                    form.reset();
-                    alert("Footplating Data Saved Successfully...");
-                });
-            //})
+        
+        // Auto-check Day or Night based on time input
+        document.querySelectorAll('input[type="time"]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                const startTime = document.getElementById('startTime').value;
+                const endTime = document.getElementById('endTime').value;
+                
+                const isNight = (time) => {
+                    const [hours] = time.split(':').map(n => parseInt(n, 10));
+                    return hours >= 22 || hours < 6;
+                };
+        
+                if (isNight(startTime) || isNight(endTime)) {
+                    document.getElementById('night').checked = true;  // Auto-check NIGHT
+                    document.getElementById('day').checked = false;
+                } else {
+                    document.getElementById('day').checked = true;  // Auto-check DAY
+                    document.getElementById('night').checked = false;
+                }
             });
-    </script>
-    
+        });
+        
+        // Fetch sheet data when the page loads
+        window.onload = () => {
+            fetchSheetData();
+        };
+        
+        // Add event listeners to the form submission
+        let form = document.querySelector('#inspectionForm');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            document.querySelector("#sub").value = "Submitting.........";
+            let data = new FormData(form);
+            fetch('https://script.google.com/macros/s/AKfycbzejCf-TIA8KL1KlfoO67ac4ADcaSHv2BknTzpsICjviKRlI7vXDWnU8478J0DTj-IG/exec', {
+                method: "POST",
+                body: data
+            })
+            .then(res => res.text())
+            .then(data => {
+                document.querySelector("#sub").value = "Submit";
+                form.reset();
+                alert("Footplating Data Saved Successfully...");
+            });
+        });
+        </script>     
 </body>
 </html>

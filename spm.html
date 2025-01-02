@@ -181,11 +181,12 @@
 
         <!-- Auto-populate Loco Pilot info -->
         <div class="form-outer">
+            <label style="color: red; font-weight: bold;">LP CMS ID</label>
+            <input type="text" name="spmlpcmsid" id="spmlpcmsid">
+        </div>
+        <div class="form-outer">
             <label style="color: red; font-weight: bold;">LP Name</label>
-            <input type="text" name="spmlpname" id="spmlpname" list="spmlpnames" required>
-            <datalist id="spmlpnames">
-                <!-- Loco Pilot names will be populated here -->
-            </datalist>
+            <input type="text" name="spmlpname" id="spmlpname" readonly>
         </div>
         <div class="form-outer">
             <label style="color: red; font-weight: bold;">LP Type</label>
@@ -354,111 +355,79 @@
             .then(data => {
                 const rows = data.values;
                 window.sheetData = rows;
-                populateNamesspm();
+                // Optionally populate dropdowns if needed
             })
             .catch(error => console.error('Error fetching data from Google Sheets:', error));
     }
 
-    // Populate Loco Pilot and Assistant Loco Pilot names
-    function populateNamesspm() {
-        const lpNames = document.getElementById('spmlpnames');
-        //const alpNames = document.getElementById('spmalpnames');
-        lpNames.innerHTML = '';
-        //alpNames.innerHTML = '';
+    // Auto-fill fields based on LP CMS ID
+    document.getElementById('spmlpcmsid').addEventListener('input', function() {
+        const lpcmsid = this.value; // Get current value of LP CMS ID
+        if (!lpcmsid) {
+            clearLPFields(); // Clear fields if input is empty
+            return;
+        }
 
-        window.sheetData.forEach(row => {
-            const lpOption = document.createElement('option');
-            lpOption.value = row[2];  // Loco Pilot Name (column C)
-            lpNames.appendChild(lpOption);
-
-            // const alpOption = document.createElement('option');
-            // alpOption.value = row[6]; // Assistant Loco Pilot Name (column G)
-            // alpNames.appendChild(alpOption);
-        });
-    }
-
-    // Auto-fill CLI Name and Inspection Date based on Inspection ID
-    // function autoFillDetailsspm() {
-    //     const inspectionID = document.getElementById('spminspectionid').value;
-    //     if (!inspectionID) return;
-
-    //     const matchingRow = window.sheetData?.find(row => row[0] == inspectionID);
-
-    //     if (matchingRow) {
-    //         document.getElementById('spmcliname').value = matchingRow[1]; // CLI Name (column B)
-    //         // const today = new Date().toISOString().split('T')[0];
-    //         // document.getElementById('spminspectiondate').value = today;
-    //          // Set today's date in the Inspection Date field
-    //          const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-    //         document.getElementById('spminspectiondate').value = today;
-    //     } else {
-    //         alert('Inspection ID not found!');
-    //     }
-    // }
-    // Auto-fill CLI Name and Inspection Date based on Inspection ID
-// Auto-fill CLI Name and Inspection Date based on Inspection ID
-function autoFillDetailsspm() {
-    const inspectionID = document.getElementById('spminspectionid').value;
-    console.log("Inspection ID entered: ", inspectionID); // Log inspection ID to see if it's being captured
-
-    if (!inspectionID) return;
-
-    const matchingRow = window.sheetData?.find(row => row[0] == inspectionID);
-
-    if (matchingRow) {
-        console.log("Matching Row found:", matchingRow); // Log the matching row
-        document.getElementById('spmcliname').value = matchingRow[1]; // CLI Name (column B)
-    } else {
-        console.log("Inspection ID not found in sheet data.");
-        //alert('Inspection ID not found!');
-    }
-
-    // Set today's date in the Inspection Date field
-    const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-    console.log("Setting today's date: ", today); // Log today's date to verify it's correct
-    document.getElementById('spminspectiondate').value = today;
-}
-
-// Event listener for Inspection ID field
-document.getElementById('spminspectionid').addEventListener('input', autoFillDetailsspm);
-
-    document.getElementById('spminspectionid').addEventListener('input', autoFillDetailsspm);
-
-    // Event listener for LP Name to auto-fill LP Type, LP Category, and LP HQ
-    document.getElementById('spmlpname').addEventListener('input', function() {
-        const lpName = document.getElementById('spmlpname').value;
-        const matchingRow = window.sheetData?.find(row => row[2] === lpName); // Loco Pilot Name (column C)
+        const matchingRow = window.sheetData?.find(row => row[2] === lpcmsid); // Assuming CMS ID is in column A (index 0)
 
         if (matchingRow) {
-            document.getElementById('spmlptype').value = matchingRow[3]; // LP Type (column D)
-            document.getElementById('spmlpcat').value = matchingRow[4]; // LP Category (column E)
-            document.getElementById('spmlphq').value = matchingRow[5]; // LP HQ (column F)
+            document.getElementById('spmlpname').value = matchingRow[3]; // LP Name (column C)
+            document.getElementById('spmlptype').value = matchingRow[4]; // LP Type (column D)
+            document.getElementById('spmlpcat').value = matchingRow[5]; // LP Category (column E)
+            document.getElementById('spmlphq').value = matchingRow[6]; // LP HQ (column F)
+        } else {
+            clearLPFields(); // Clear fields if no matching CMS ID is found
         }
     });
 
+    // Clear LP fields
+    function clearLPFields() {
+        document.getElementById('spmlpname').value = '';
+        document.getElementById('spmlptype').value = '';
+        document.getElementById('spmlpcat').value = '';
+        document.getElementById('spmlphq').value = '';
+    }
 
-    // Logic to select radio buttons based on input values
-    function setRadioButtons() {
-        // Train Number Logic
-        const trainNumber = document.getElementById('spmTrainNumber').value;
-        if (/\d/.test(trainNumber)) {
-            document.getElementById('spmco').checked = true; // COACHING
-        } else {
-            document.getElementById('spmgd').checked = true; // GOODS
+    // Auto-fill CLI Name and Inspection Date based on Inspection ID
+    document.getElementById('spminspectionid').addEventListener('input', function() {
+        const inspectionID = this.value;
+        if (!inspectionID) {
+            document.getElementById('spmcliname').value = ''; // Clear CLI Name field if no input
+            document.getElementById('spminspectiondate').value = ''; // Clear date if no input
+            return;
         }
 
-        // Train Load Logic
-        const trainLoad = parseInt(document.getElementById('spmTrainLoad').value);
-        if (trainLoad > 1500) {
-            document.getElementById('spmld').checked = true; // LOADED
+        const matchingRow = window.sheetData?.find(row => row[0] == inspectionID); // Assuming Inspection ID is in column A (index 0)
+
+        if (matchingRow) {
+            document.getElementById('spmcliname').value = matchingRow[1]; // CLI Name (column B)
+            
+            // Set today's date in the Inspection Date field
+            const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            document.getElementById('spminspectiondate').value = today;
         } else {
-            document.getElementById('spmemp').checked = true; // EMPTY
+            // Optional: You might want to handle the scenario when the Inspection ID is not found
+            document.getElementById('spmcliname').value = ''; // Clear CLI Name if no match
+            const today = new Date().toISOString().split('T')[0]; // Set date even if not found
+            document.getElementById('spminspectiondate').value = today;
+        }
+    });
+
+    // Set radio buttons based on input values (keeping your original logic)
+    function setRadioButtons() {
+        const trainNumber = document.getElementById('spmTrainNumber').value;
+        document.getElementById('spmco').checked = /\d/.test(trainNumber); // COACHING
+        document.getElementById('spmgd').checked = !/\d/.test(trainNumber); // GOODS
+
+        const trainLoad = parseInt(document.getElementById('spmTrainLoad').value);
+        if (!isNaN(trainLoad)) {
+            document.getElementById('spmld').checked = trainLoad > 1500; // LOADED
+            document.getElementById('spmemp').checked = trainLoad <= 1500; // EMPTY
         }
 
         // Time Logic for Day/Night
         const startTime = document.getElementById('spmstarttime').value;
         const endTime = document.getElementById('spmendtime').value;
-
         if (
             (startTime >= "22:00" && startTime <= "23:59") ||
             (endTime >= "22:00" && endTime <= "23:59") ||
@@ -482,7 +451,6 @@ document.getElementById('spminspectionid').addEventListener('input', autoFillDet
         fetchSheetDataspm();
     };
 
-
     const form = document.getElementById('tab3');
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -503,7 +471,7 @@ document.getElementById('spminspectionid').addEventListener('input', autoFillDet
         });
 
         // Send the data to the server
-        fetch('https://script.google.com/macros/s/AKfycbwbTvNtacpzOpKmE0dJMsJiL7TJd5F9neJmeOOhy8gvathkj1bdlXTZyi5h5qko8rGB/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbyer2Tpc8PuddZSKZ1wGyflE2u7wJbhyuuhFao8DE1PiqQCHadpMOSPrdqL3E9PuUdC/exec', {
             method: "POST",
             body: data
         })
