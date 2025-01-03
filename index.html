@@ -31,7 +31,6 @@
             text-align: center;
             padding: 20px;
             margin: 0;
-            
             min-height: 100vh;
         }
 
@@ -91,7 +90,7 @@
         }
 
         /* Error Message Style */
-        #error {
+        #error, #cliError, #adminError {
             color: red;
             display: none;
             margin-top: 10px;
@@ -102,9 +101,20 @@
             display: inline-block;
             padding: 10px;
             cursor: pointer;
-            background-color: #f1f1f1;
             margin-right: 10px;
             border-radius: 4px;
+        }
+
+        .admin-tab {
+            background-color: #cce5ff; /* Light blue */
+        }
+
+        .password-tab {
+            background-color: #d4edda; /* Light green */
+        }
+
+        .cli-tab {
+            background-color: #fff3cd; /* Light yellow */
         }
 
         .tab:hover {
@@ -116,7 +126,6 @@
         }
 
         .active {
-            background-color: #ddd;
             display: block;
         }
 
@@ -137,13 +146,21 @@
 <body>
 
     <div class="container">
-        <marquee behavior="scroll" direction="left">WELCOME TO CENTRAL RAILWAY, BHUSAWAL DIVISION ,TRO BRANCH</marquee>
+        <marquee behavior="scroll" direction="left">WELCOME TO CENTRAL RAILWAY, BHUSAWAL DIVISION, TRO BRANCH</marquee>
         <h1>WELCOME</h1>
 
-        <!-- Tabs for CLI Login and Password Login -->
+        <!-- Tabs for Admin Login, CLI Login, and Password Login -->
         <div>
-            <div class="tab" onclick="showTab('passwordTab')">Password Login</div>
-            <div class="tab" onclick="showTab('cliTab')">CLI Login</div>
+            <div class="tab admin-tab" onclick="showTab('adminTab')">Admin Login</div>
+            <div class="tab password-tab" onclick="showTab('passwordTab')">Password Login</div>
+            <div class="tab cli-tab" onclick="showTab('cliTab')">CLI Login</div>
+        </div>
+
+        <!-- Admin Login Tab -->
+        <div id="adminTab" class="tab-content">
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+            <button onclick="checkAdmin()">Submit</button>
+            <p id="adminError">Incorrect password. Please try again.</p>
         </div>
 
         <!-- Password Login Tab -->
@@ -158,26 +175,14 @@
             <input type="text" id="cliUsername" placeholder="Enter username">
             <input type="password" id="cliPassword" placeholder="Enter password">
             <button onclick="checkCLI()">Login</button>
-            <p id="cliError" style="color: red; display: none;">Incorrect credentials. Please try again.</p>
+            <p id="cliError">Incorrect credentials. Please try again.</p>
         </div>
-
     </div>
 
     <script>
-        // Define the correct credentials for 50 CLI users
+        // Define the correct credentials for CLI users
         const cliUsers = {
-           
-//     'V K KORETI': 'password1',
-//     'K S RAJPUT': 'password2',
-//     'DEEPAK PAWAR': 'password3',
-//     // Add more users...
-// };
-
-       //'V K KORETI': 'password1',
-   // 'K S RAJPUT': 'password2',
-    //'DEEPAK PAWAR': 'password3',
-    // Add more users...
-             'A K PANDEY': 'BSL0012',
+            'A K PANDEY': 'BSL0012',
             'A M SURADKAR': 'BSL0054',
             'A T NEWARE': 'password6',
             'B S YADAV': 'BSL0047',
@@ -215,15 +220,6 @@
             'V M RAJPUT': 'password39',
             'N M SIVADAS': 'password40',
             'UMESH S KALE': 'BSL0108',
-        //     'admin42': 'password42',
-        //     'admin43': 'password43',
-        //     'admin44': 'password44',
-        //     'admin45': 'password45',
-        //     'admin46': 'password46',
-        //     'admin47': 'password47',
-        //     'admin48': 'password48',
-        //     'admin49': 'password49',
-        //     'admin50': 'password50'
         };
 
         // Show specific tab when clicked
@@ -234,11 +230,23 @@
             document.getElementById(tabId).classList.add('active');
         }
 
+        // Check Admin Login
+        function checkAdmin() {
+            const enteredAdminPassword = document.getElementById('adminPassword').value;
+            const adminErrorMessage = document.getElementById('adminError');
+            const correctAdminPassword = 'admintro'; // Admin password
+
+            if (enteredAdminPassword === correctAdminPassword) {
+                window.location.href = 'admindashboard.html'; // Redirect to admin dashboard
+            } else {
+                adminErrorMessage.style.display = 'block'; // Show error message
+            }
+        }
+
         // Check Password Login
         function checkPassword() {
             const enteredPassword = document.getElementById('password').value;
             const errorMessage = document.getElementById('error');
-
             const correctPassword = 'BHUSAWAL'; // Password for the password login
 
             if (enteredPassword === correctPassword) {
@@ -249,26 +257,20 @@
         }
 
         // Check CLI Login
-        // CLI Login Check
-function checkCLI() {
-    const enteredUsername = document.getElementById('cliUsername').value.trim();  // Trim spaces from the username input
-    const enteredPassword = document.getElementById('cliPassword').value.trim();  // Trim spaces from the password input
-    const cliErrorMessage = document.getElementById('cliError');
+        function checkCLI() {
+            const enteredUsername = document.getElementById('cliUsername').value.trim(); // Trim spaces from the username
+            const enteredPassword = document.getElementById('cliPassword').value.trim(); // Trim spaces from the password
+            const cliErrorMessage = document.getElementById('cliError');
 
-    // Log the entered credentials to debug
-    console.log("Entered Username: ", enteredUsername);
-    console.log("Entered Password: ", enteredPassword);
-
-    // Check if the entered username and password match what's in the cliUsers object
-    if (cliUsers[enteredUsername] && cliUsers[enteredUsername] === enteredPassword) {
-        // If credentials are correct, redirect to cliDashboard page with the username in the URL
-        window.location.href = 'cliDashboard.html?user=' + encodeURIComponent(enteredUsername); 
-    } else {
-        // If credentials are incorrect, show the error message
-        cliErrorMessage.style.display = 'block';  // Show error message
-    }
-}
-
+            // Check if the entered username and password match what's in the cliUsers object
+            if (cliUsers[enteredUsername] && cliUsers[enteredUsername] === enteredPassword) {
+                // If credentials are correct, redirect to cliDashboard page with the username in the URL
+                window.location.href = 'cliDashboard.html?user=' + encodeURIComponent(enteredUsername); 
+            } else {
+                // If credentials are incorrect, show the error message
+                cliErrorMessage.style.display = 'block'; // Show error message
+            }
+        }
     </script>
 
 </body>

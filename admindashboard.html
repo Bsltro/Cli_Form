@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Header Style */
+        h1 {
+            color: orange;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Tabs Style */
+        .tab {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+
+        .tab:hover {
+            background-color: #ddd;
+        }
+
+        .tab-content {
+            margin-top: 20px;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .tab {
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Admin Dashboard</h1>
+
+    <!-- Tabs for different tables -->
+    <div>
+        <div class="tab" onclick="redirectToPage('countMastertbl.html')">Count Master Table</div>
+        <div class="tab" onclick="redirectToPage('footplatetbl.html')">Footplate Table</div>
+        <div class="tab" onclick="redirectToPage('cvvrstbl.html')">CVVRS Table</div>
+        <div class="tab" onclick="redirectToPage('spmtbl.html')">SPM Table</div>
+        <div class="tab" onclick="redirectToPage('rrlbtbl.html')">RR/LB Table</div>
+        <div class="tab" onclick="redirectToPage('stablingtbl.html')">Stabling Table</div>
+    </div>
+
+    <div class="tab-content">
+        <p>Select a table from the tabs above to view details.</p>
+    </div>
+
+    <script>
+        // Function to redirect to the respective page
+        function redirectToPage(page) {
+            window.location.href = page; // Redirect to the specified page
+        }
+    </script>
+
+</body>
+</html>

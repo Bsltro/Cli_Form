@@ -5,7 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CLI Dashboard</title>
     <style>
-        /* Basic styling for table and buttons */
+        /* Basic styling for tabs */
+        .tabs {
+            display: flex;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .tab {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .tab.active {
+            background-color: #d3d3d3;
+        }
+
+        /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -22,340 +40,280 @@
             background-color: #f2f2f2;
         }
 
+        /* Filter and button styling */
         .filters {
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
-
-        .filters select, .filters button {
-            margin-right: 10px;
-            padding: 8px;
+        .filter-select {
+            padding: 5px;
+            margin: 5px;
+            width: 200px;
         }
-
-        .count {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .button-group {
-            margin-top: 10px;
+        .button-container {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Welcome, <span id="usernameDisplay"></span></h1>
+<div class="container">
+    <h1>Welcome, <span id="usernameDisplay"></span></h1>
 
-        <!-- Filter Section -->
-        <div class="filters">
-            <select id="lpFilter">
-                <option value="">Select LP</option>
-            </select>
-            <select id="lpTypeFilter">
-                <option value="">Select LP Type</option>
-            </select>
-            <select id="lpCatFilter">
-                <option value="">Select LP Cat</option>
-            </select>
-            <select id="coachingFilter">
-                <option value="">Select Coaching/Goods</option>
-            </select>
-            <select id="loadedFilter">
-                <option value="">Select Loaded/Empty</option>
-            </select>
-            <select id="dayNightFilter">
-                <option value="">Select Day/Night</option>
-            </select>
-            <select id="dueDateFilter">
-                <option value="">Select Due Date</option>
-            </select>
-            <button id="clearFilterBtn">Clear Filters</button>
-        </div>
-
-        <!-- Total Count Display -->
-        <div class="count">Total Records: <span id="totalCount">0</span></div>
-
-        <!-- Table to display user-specific data -->
-        <h3>User Data:</h3>
-        <table id="userDataTable">
-            <thead>
-                <tr>
-                    <th>Inspection Id</th>
-                    <th>Inspection Date</th>
-                    <th>CLI Name</th>
-                    <th>Select LP</th>
-                    <th>LP Name</th>
-                    <th>LP Type</th>
-                    <th>LP Cat</th> 
-                    <th>ALP Name</th>
-                    <th>ALP Type</th>
-                    <th>Train No</th>
-                    <th>Train Load</th>
-                    <th>Safety Drive</th>
-                    <th>GI Counselled</th>
-                    <th>Case Study</th>
-                    <th>LP Due Date</th>
-                    <th>Coaching/Goods</th>
-                    <th>Loaded/Empty</th>
-                    <th>Day/Night</th>
-                    <th>Irregularity</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data will be inserted here by JavaScript -->
-            </tbody>
-        </table>
-
-        <!-- Buttons for Print and Download -->
-        <div class="button-group">
-            <button id="printBtn">Print</button>
-            <button id="downloadBtn">Download CSV</button>
-        </div>
-
+    <!-- Tab navigation -->
+    <div class="tabs">
+        <div id="footplateTab" class="tab active">Footplate</div>
+        <div id="cvvrsTab" class="tab">CVVRS</div>
+        <div id="spmTab" class="tab">SPM</div>
+        <div id="rrTab" class="tab">RR</div>
+        <div id="lobbyTab" class="tab">Lobby</div>
+        <div id="stablingTab" class="tab">Stabling</div>
     </div>
 
-    <script>
-        // Helper function to format date to DD/MM/YYYY for display
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return ""; // Return empty string on invalid date
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
+    <!-- Table filters -->
+    <div id="filters" class="filters" style="display: none;"></div>
+
+    <!-- Row count display -->
+    <div id="rowCount">Rows: 0</div>
+
+    <!-- Table to display data -->
+    <h3>Data:</h3>
+    <table id="dataTable">
+        <thead>
+            <!-- Columns will be dynamically inserted here -->
+        </thead>
+        <tbody>
+            <!-- Data will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <!-- Action buttons -->
+    <div class="button-container">
+        <button id="clearFilters">Clear Filters</button>
+        <button id="printTable">Print Table</button>
+        <button id="downloadTable">Download CSV</button>
+    </div>
+</div>
+
+<script>
+    // Define Google Sheet URLs for each tab
+    const sheetURLs = {
+        footplate: {
+            sheetID: '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM',
+            range: 'Sheet1!A1:AM1000',
+            columns: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'L', 'M', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM']
+        },
+        cvvrs: {
+            sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
+            range: 'Sheet1!A1:AP1000',
+            columns: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'AK', 'AL', 'AM', 'AN', 'AP']
+        },
+        spm: {
+            sheetID: '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI',
+            range: 'Sheet1!A1:AD1000',
+            columns: ['A', 'B', 'C', 'D', 'F', 'H', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD']
+        },
+        rr: {
+            sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
+            range: 'Sheet1!A1:I1000',
+            columns: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+        },
+        lobby: {
+            sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
+            range: 'Sheet1!J1:R1000',
+            columns: ['J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R']
+        },
+        stabling: {
+            sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
+            range: 'Sheet1!S1:AA1000',
+            columns: ['S','T','U', 'V', 'W', 'X', 'Y', 'Z', 'AA']
         }
-    
-        // Function to parse the date string in MM/DD/YYYY format to a Date object
-        function parseDate(dueDate) {
-            const parts = dueDate.split('/');
-            return new Date(`${parts[2]}-${parts[0]}-${parts[1]}`); // Convert MM/DD/YYYY to YYYY-MM-DD for parsing
-        }
-    
-        // Get the username from the URL query parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get('user');
-        document.getElementById('usernameDisplay').textContent = username;
-    
-        // Google Sheets API URL
-        const sheetID = '1zm_ZzIfmm2KSU1cZzNDGY-KnMd5cQFToz3z22d5lJ68';  // Your Google Sheet ID
-        const range = 'Sheet1!A1:AM1000';  // Adjust range to include all columns
-        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';  // Your API Key
-        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=${apiKey}`;
-    
-        // Filtered data variables
-        let filteredData = [];
-    
-        // Fetch data from Google Sheets API
-        function fetchDataFromGoogleSheet() {
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.values) {
-                        // Extract data from the sheet
-                        const rows = data.values;
-                        const tableBody = document.getElementById('userDataTable').getElementsByTagName('tbody')[0];
-    
-                        // Clear the existing rows
-                        tableBody.innerHTML = '';
-    
-                        // Normalize the username from the URL (trim spaces, make lowercase)
-                        const normalizedUsername = username.trim().toLowerCase();
-                        
-                        // Filter data based on normalized username
-                        filteredData = rows.filter(row => {
-                            const rowUsername = row[2] ? row[2].trim().toLowerCase() : ''; // Using row[2] for CLI Name
-                            return rowUsername === normalizedUsername;
-                        });
-    
-                        // Log the filtered data for debugging purposes
-                        console.log("Filtered Data for user:", filteredData);
-    
-                        // Populate filters options
-                        populateFilters(filteredData);
-    
-                        // Render data
-                        renderTable(filteredData);
+    };
+
+    // Get the username from the URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('user');
+    document.getElementById('usernameDisplay').textContent = username;
+
+    // Store current tab's data and columns
+    let currentTab = 'footplate';
+    let currentData = [];
+    let filters = {};
+
+    // Function to fetch data from a given Google Sheet based on the tab and columns
+    function fetchDataFromGoogleSheet(sheetType, columnRange) {
+        const sheet = sheetURLs[sheetType];
+        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${columnRange}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`; // Replace with your actual API key
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.values) {
+                    const rows = data.values;
+                    const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+                    const tableHead = document.getElementById('dataTable').getElementsByTagName('thead')[0];
+
+                    // Clear previous table data
+                    tableBody.innerHTML = '';
+                    tableHead.innerHTML = '';
+
+                    // Get column headers from the first row
+                    const headers = rows[0]; // First row contains headers
+
+                    // Insert table headers dynamically
+                    let headerRow = tableHead.insertRow();
+                    headers.forEach(header => {
+                        let th = document.createElement('th');
+                        th.textContent = header;
+                        headerRow.appendChild(th);
+                    });
+
+                    // Filter the data by username (assuming username is in the third column, index 2)
+                    currentData = rows.filter(row => row[2] === username); // Filter by username
+
+                    // Create filters for each column (only for footplate tab)
+                    if (currentTab === 'footplate') {
+                        createFilters(headers, rows);
+                        document.getElementById('filters').style.display = 'block'; // Show filters
                     } else {
-                        alert('No data found.');
+                        document.getElementById('filters').style.display = 'none'; // Hide filters for other tabs
                     }
-                })
-                .catch(error => {
-                    console.error('Error fetching Google Sheet data:', error);
-                    alert('Error fetching data from Google Sheets.');
-                });
-        }
-    
-        // Render the table with the filtered data
-        function renderTable(data) {
-            const tableBody = document.getElementById('userDataTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';
-    
-            // Sort data by Due Date using the custom parse function
-            data.sort((a, b) => {
-                const dateA = parseDate(a[14]); // Adjust index if needed
-                const dateB = parseDate(b[14]);
-                return dateB - dateA; // Sort in descending order (Latest first)
-            });
-    
-            data.forEach((row) => {
-                let newRow = tableBody.insertRow();
-                row.forEach((cell, index) => {
-                    let newCell = newRow.insertCell();
-                    // Format the due date column here
-                    if (index === 14) { // LP Due Date index
-                        newCell.textContent = formatDate(cell); // Format due date
-                    } else {
-                        newCell.textContent = cell;
-                    }
-                });
-            });
-    
-            // Update the total count
-            document.getElementById('totalCount').textContent = data.length;
-        }
-    
-        // Populate the dropdown filters based on data
-        function populateFilters(data) {
-            const lpSet = new Set();
-            const lpTypeSet = new Set();
-            const lpCatSet = new Set();
-            const coachingSet = new Set();
-            const loadedSet = new Set();
-            const dayNightSet = new Set();
-            const dueDateSet = new Set();
-    
-            data.forEach(row => {
-                lpSet.add(row[3]); // Select LP
-                lpTypeSet.add(row[5]); // LP Type
-                lpCatSet.add(row[6]); // LP Cat
-                coachingSet.add(row[15]); // Coaching/Goods
-                loadedSet.add(row[16]); // Loaded/Empty
-                dayNightSet.add(row[17]); // Day/Night
-                dueDateSet.add(formatDate(row[14])); // Format LP Due Date while creating the set
-            });
-    
-            // Populate LP filter
-            const lpFilter = document.getElementById('lpFilter');
-            lpFilter.innerHTML = '<option value="">Select LP</option>';
-            lpSet.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                lpFilter.appendChild(option);
-            });
-    
-            // Populate LP Type filter
-            const lpTypeFilter = document.getElementById('lpTypeFilter');
-            lpTypeFilter.innerHTML = '<option value="">Select LP Type</option>';
-            lpTypeSet.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                lpTypeFilter.appendChild(option);
-            });
-    
-            // Populate LP Cat filter
-            const lpCatFilter = document.getElementById('lpCatFilter');
-            lpCatFilter.innerHTML = '<option value="">Select LP Cat</option>';
-            lpCatSet.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                lpCatFilter.appendChild(option);
-            });
-    
-            // Populate Coaching/Goods filter
-            const coachingFilter = document.getElementById('coachingFilter');
-            coachingFilter.innerHTML = '<option value="">Select Coaching/Goods</option>';
-            coachingSet.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                coachingFilter.appendChild(option);
-            });
-    
-            // Populate Loaded/Empty filter
-            const loadedFilter = document.getElementById('loadedFilter');
-            loadedFilter.innerHTML = '<option value="">Select Loaded/Empty</option>';
-            loadedSet.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                loadedFilter.appendChild(option);
-            });
-    
-            // Populate Day/Night filter
-            const dayNightFilter = document.getElementById('dayNightFilter');
-            dayNightFilter.innerHTML = '<option value="">Select Day/Night</option>';
-            dayNightSet.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                dayNightFilter.appendChild(option);
-            });
-    
-            // Populate Due Date filter
-            const dueDateFilter = document.getElementById('dueDateFilter');
-            dueDateFilter.innerHTML = '<option value="">Select Due Date</option>';
-            dueDateSet.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                dueDateFilter.appendChild(option);
-            });
-        }
-    
-        // Initialize fetching Google Sheet data
-        fetchDataFromGoogleSheet();
-    </script>
-    <script>
-        // ... [Other functions remain unchanged]
-    
-        // Render the table with the filtered data
-        function renderTable(data) {
-            const tableBody = document.getElementById('userDataTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';
-    
-            // Sort data by Due Date using the custom parse function
-            data.sort((a, b) => {
-                const dateA = parseDate(a[14]); // Adjust index if needed
-                const dateB = parseDate(b[14]);
-                return dateB - dateA; // Sort in descending order (Latest first)
-            });
-    
-            const today = new Date();
-            data.forEach((row) => {
-                let newRow = tableBody.insertRow();
-    
-                // Parse the due date for current row
-                const dueDate = parseDate(row[14]); // Ensure this index matches your due date column in the sheet
-                const timeDiff = dueDate - today; // Get the difference in milliseconds
-                const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert milliseconds to days
-    
-                // Check if 3 days or less are remaining
-                if (dayDiff >= 0 && dayDiff <= 3) {
-                    newRow.style.backgroundColor = "red"; // Highlight the row in red
+
+                    // Apply filters and update the table
+                    applyFilters();
+                } else {
+                    alert('No data found.');
                 }
-    
-                row.forEach((cell, index) => {
-                    let newCell = newRow.insertCell();
-                    // Format the due date column here
-                    if (index === 14) { // LP Due Date index
-                        newCell.textContent = formatDate(cell); // Format due date
-                    } else {
-                        newCell.textContent = cell;
-                    }
-                });
+            })
+            .catch(error => {
+                console.error('Error fetching Google Sheet data:', error);
+                alert('Error fetching data from Google Sheets.');
             });
-    
-            // Update the total count
-            document.getElementById('totalCount').textContent = data.length;
+    }
+
+    // Function to apply filters to the data
+    function applyFilters() {
+        const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ''; // Clear previous rows
+
+        // Filter data based on the selected filters
+        const filteredData = currentData.filter(row => {
+            return Object.keys(filters).every((key) => {
+                const filterValue = filters[key]?.toLowerCase() || '';
+                const cellValue = row[key]?.toString().toLowerCase() || '';
+                return cellValue.includes(filterValue);
+            });
+        });
+
+        // Insert rows of filtered data
+        filteredData.forEach(row => {
+            let newRow = tableBody.insertRow();
+            row.forEach(cell => {
+                let newCell = newRow.insertCell();
+                newCell.textContent = cell || ''; // Ensure empty cells are handled
+            });
+        });
+
+        // Update the row count
+        updateRowCount(filteredData.length);
+    }
+
+    // Function to update the row count display
+    function updateRowCount(filteredRowCount) {
+        document.getElementById('rowCount').textContent = `Rows: ${filteredRowCount}`;
+    }
+
+    // Function to create filters for each column
+    function createFilters(columns, rows) {
+        const filterContainer = document.getElementById('filters');
+        filterContainer.innerHTML = ''; // Clear previous filters
+
+        columns.forEach((col, index) => {
+            const filterSelect = document.createElement('select');
+            filterSelect.classList.add('filter-select');
+            const selectOption = document.createElement('option');
+            selectOption.text = `Select ${col}`;
+            filterSelect.appendChild(selectOption);
+
+            // Get unique values from the column
+            const uniqueValues = [...new Set(rows.map(row => row[index]))];
+            uniqueValues.forEach(value => {
+                const option = document.createElement('option');
+                option.text = value;
+                filterSelect.appendChild(option);
+            });
+
+            filterSelect.addEventListener('change', (e) => {
+                filters[index] = e.target.value;
+                applyFilters(); // Reapply filters on selection change
+            });
+
+            filterContainer.appendChild(filterSelect);
+        });
+    }
+
+    // Function to switch tabs
+    function switchTab(tabId) {
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+
+        // Add active class to the clicked tab
+        const tabElement = document.getElementById(tabId);
+        if (tabElement) {
+            tabElement.classList.add('active');
+            currentTab = tabId.replace('Tab', '').toLowerCase(); // Adjust to match keys in sheetURLs
+
+            // Fetch data for the selected tab
+            fetchDataFromGoogleSheet(currentTab, sheetURLs[currentTab].range);
+        } else {
+            console.error(`Tab with ID ${tabId} not found.`);
         }
-    
-        // ... [Remaining functions remain unchanged]
-    
-        // Initialize fetching Google Sheet data
-        fetchDataFromGoogleSheet();
-    </script>
+    }
+
+    // Event listeners for tab clicks
+    document.getElementById('footplateTab').addEventListener('click', () => switchTab('footplateTab'));
+    document.getElementById('cvvrsTab').addEventListener('click', () => switchTab('cvvrsTab'));
+    document.getElementById('spmTab').addEventListener('click', () => switchTab('spmTab'));
+    document.getElementById('rrTab').addEventListener('click', () => switchTab('rrTab'));
+    document.getElementById('lobbyTab').addEventListener('click', () => switchTab('lobbyTab'));
+    document.getElementById('stablingTab').addEventListener('click', () => switchTab('stablingTab'));
+
+    // Clear Filters functionality
+    document.getElementById('clearFilters').addEventListener('click', () => {
+        filters = {}; // Reset filters
+        applyFilters(); // Reapply without any filters
+    });
+
+    // Print Table functionality
+    document.getElementById('printTable').addEventListener('click', () => {
+        window.print(); // This will print the current page, including the table
+    });
+
+    // Download CSV functionality
+    document.getElementById('downloadTable').addEventListener('click', () => {
+        let csv = [];
+        const rows = document.querySelectorAll('table tr');
+        
+        rows.forEach(row => {
+            const cols = row.querySelectorAll('th, td');
+            const csvRow = [];
+            cols.forEach(col => {
+                csvRow.push(col.textContent);
+            });
+            csv.push(csvRow.join(','));
+        });
+
+        const csvContent = csv.join("\n");
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'data.csv';
+        link.click();
+    });
+
+    // Initial fetch for footplate tab data
+    fetchDataFromGoogleSheet(currentTab, sheetURLs[currentTab].range);
+</script>
+
 </body>
 </html>
