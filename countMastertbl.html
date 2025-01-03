@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Sheets Data Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .tabs {
+      margin: 20px 0;
+    }
+    .tabs button {
+      padding: 10px;
+      margin-right: 5px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .tabs button.active {
+      background-color: #45a049;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .column-checkboxes {
+      margin: 10px 0;
+    }
+    .column-checkboxes label {
+      margin-right: 10px;
+    }
+    .btn-container {
+      margin-top: 20px;
+    }
+    .btn-container button {
+      padding: 10px;
+      margin-right: 10px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>MASTER COUNT TABLE</h1>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button id="tab1" class="tab-button active" onclick="switchTab(0)">Footplate count</button>
+  <button id="tab2" class="tab-button" onclick="switchTab(1)">CVVRS count</button>
+  <button id="tab3" class="tab-button" onclick="switchTab(2)">SPM count</button>
+  <button id="tab4" class="tab-button" onclick="switchTab(3)">RR/Lobby count</button>
+  <button id="tab5" class="tab-button" onclick="switchTab(4)">Loco Stabling count</button>
+</div>
+
+<!-- Column Checkbox -->
+<div id="column-checkboxes" class="column-checkboxes"></div>
+
+<!-- Data Table -->
+<table id="sheet-data">
+  <thead>
+    <tr>
+      <th>Loading...</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<!-- Buttons -->
+<div class="btn-container">
+  <button onclick="printTable()">Print</button>
+  <button onclick="downloadCSV()">Download CSV</button>
+</div>
+
+<script>
+  // Google Sheets API configuration
+  const sheetId = '1C6cXq3L-0cQY6YOv1fnQ1pCptqqy1TWxqNTBYVF636s';
+  const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+  const range = 'Sheet1!A1:BL1000';  // Adjust the range if needed
+  const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+  let data = [];
+  let currentTab = 0; // Default tab (Footplate count)
+
+  // Tab-specific columns
+  const tabColumns = [
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS'],
+    ['A', 'AT', 'AU', 'AV', 'AW', 'AX'],
+    ['A', 'AY', 'AZ', 'BA', 'BB', 'BC'],
+    ['A', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI'],
+    ['A', 'BJ', 'BK', 'BL']
+  ];
+
+  // Fetch the Google Sheets data
+  fetch(apiUrl)
+    .then(response => response.json())  // Parse the response as JSON
+    .then(responseData => {
+      data = responseData.values;
+      loadTabData(currentTab);  // Load the first tab (Footplate count)
+    })
+    .catch(error => {
+      console.error('Error fetching data from Google Sheets API:', error);
+    });
+
+  // Load data for the current tab
+  function loadTabData(tabIndex) {
+    const columnsToDisplay = tabColumns[tabIndex];
+    const rows = data.slice(1); // Skip the first row (header)
+
+    const table = document.getElementById('sheet-data');
+    const tbody = table.querySelector('tbody');
+    tbody.innerHTML = '';  // Clear existing rows
+
+    const headers = data[0]; // First row is header
+    const headerRow = document.createElement('tr');
+    const checkboxesDiv = document.getElementById('column-checkboxes');
+    checkboxesDiv.innerHTML = '';  // Clear existing checkboxes
+
+    columnsToDisplay.forEach((col, index) => {
+      const th = document.createElement('th');
+      th.innerText = headers[parseColumnLetterToIndex(col)] || `Column ${col}`;
+      headerRow.appendChild(th);
+
+      // Add a checkbox to toggle column visibility
+      const checkboxLabel = document.createElement('label');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = true;
+      checkbox.dataset.columnIndex = index;
+      checkboxLabel.appendChild(checkbox);
+      checkboxLabel.appendChild(document.createTextNode(` ${headers[parseColumnLetterToIndex(col)]}`));
+      checkboxesDiv.appendChild(checkboxLabel);
+    });
+
+    table.querySelector('thead').innerHTML = '';  // Clear existing header
+    table.querySelector('thead').appendChild(headerRow);
+
+    // Add rows
+    rows.forEach(row => {
+      const tr = document.createElement('tr');
+      columnsToDisplay.forEach((col, colIndex) => {
+        const td = document.createElement('td');
+        const colIndexParsed = parseColumnLetterToIndex(col);
+        td.innerText = row[colIndexParsed] || '';  // If cell is empty, show blank
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+
+    // Attach event listeners to checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', toggleColumnVisibility);
+    });
+  }
+
+  // Switch between tabs
+  function switchTab(tabIndex) {
+    currentTab = tabIndex;
+    loadTabData(tabIndex);
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.classList.remove('active');
+    });
+    document.getElementById(`tab${tabIndex + 1}`).classList.add('active');
+  }
+
+  // Convert column letter (e.g. "A") to column index (e.g. 0)
+  function parseColumnLetterToIndex(col) {
+    const column = col.toUpperCase();
+    let index = 0;
+    for (let i = 0; i < column.length; i++) {
+      index = index * 26 + column.charCodeAt(i) - 64;
+    }
+    return index - 1;
+  }
+
+  // Toggle column visibility
+  function toggleColumnVisibility(event) {
+    const columnIndex = event.target.dataset.columnIndex;
+    const isChecked = event.target.checked;
+    const cells = document.querySelectorAll(`#sheet-data tr td:nth-child(${parseInt(columnIndex) + 1})`);
+    const headerCells = document.querySelectorAll(`#sheet-data thead th:nth-child(${parseInt(columnIndex) + 1})`);
+
+    // Hide or show columns based on checkbox state
+    cells.forEach(cell => {
+      cell.style.display = isChecked ? '' : 'none';
+    });
+    headerCells.forEach(cell => {
+      cell.style.display = isChecked ? '' : 'none';
+    });
+  }
+
+  // Print the table
+  function printTable() {
+    window.print();
+  }
+
+  // Download the table data as a CSV file
+  function downloadCSV() {
+    const columnsToDisplay = tabColumns[currentTab];
+    const rows = data.slice(1); // Skip the first row (header)
+
+    const csvRows = [];
+    const headers = data[0].slice(0, columnsToDisplay.length); // Limit headers to selected columns
+    csvRows.push(headers.join(','));
+
+    rows.forEach(row => {
+      const rowData = columnsToDisplay.map(col => row[parseColumnLetterToIndex(col)] || '');
+      csvRows.push(rowData.join(','));
+    });
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'google_sheet_data.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>

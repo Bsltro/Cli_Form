@@ -431,6 +431,11 @@
                 <input type="text" name="cvvrsremark" id="cvvrsremark">
             </div>
             <br>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">RFERENCE NO</label>
+                <input type="text" name="cvvrsrefno" id="cvvrsrefno">
+            </div>
+            <br>
             <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
             <div class="form-outer">
                 <input type="submit" id="sub2" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
@@ -609,7 +614,7 @@
             });
     
             // Send the data to the server
-            fetch('https://script.google.com/macros/s/AKfycbxK6BEmwQdBqui_OASuRvplXr0g5005ZNPpZy9YZc78hSVWPByMwcAoDfMAc01OXSfi7w/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbzOI-0U8zpYQF13i9DJoW77eD_-uaJzQfOqQyl9pBIMzhI0CPSASJxIBlZBLoUYJDqD9Q/exec', {
                 method: "POST",
                 body: data
             })
@@ -628,5 +633,13 @@
     
         // Fetch sheet data on page load
         fetchSheetDatacvvrs();
+         // Function to generate a 2 or 3 digit random reference number
+     function generateReferenceNumber() {
+            var referenceNumber = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
+            document.getElementById('cvvrsrefno').value = referenceNumber; // Set the input value to the generated number
+        }
+
+        // Generate the reference number when the page loads
+        window.onload = generateReferenceNumber;
     </script>
 </html>

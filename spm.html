@@ -334,6 +334,10 @@
             <label style="color: red; font-weight: bold;">REMARK</label>
             <input type="text" name="spmremark" id="spmremark">
         </div>
+        <div class="form-outer">
+            <label style="color: red; font-weight: bold;">REFERENCE NO</label>
+            <input type="text" name="spmrefno" id="spmrefno">
+        </div>
         <!-- Submit Button -->
         <div class="form-outer">
             <input type="submit" id="sub3">
@@ -471,7 +475,7 @@
         });
 
         // Send the data to the server
-        fetch('https://script.google.com/macros/s/AKfycbyer2Tpc8PuddZSKZ1wGyflE2u7wJbhyuuhFao8DE1PiqQCHadpMOSPrdqL3E9PuUdC/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbwjWmOfKYDjgzIETFzeDqsYDspLzlZV4WQIBv2oeH6mYVVywwMqLq_ZKWc-pWGr_uFU/exec', {
             method: "POST",
             body: data
         })
@@ -490,6 +494,14 @@
 
     // Fetch sheet data on page load
     fetchSheetDataspm();
+     // Function to generate a 2 or 3 digit random reference number
+     function generateReferenceNumber() {
+            var referenceNumber = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
+            document.getElementById('spmrefno').value = referenceNumber; // Set the input value to the generated number
+        }
+
+        // Generate the reference number when the page loads
+        window.onload = generateReferenceNumber;
 </script>
 </body>
 </html>
