@@ -90,7 +90,7 @@
         }
 
         /* Error Message Style */
-        #error, #cliError, #adminError {
+        #error, #cliError, #adminError, #tlcError {
             color: red;
             display: none;
             margin-top: 10px;
@@ -115,6 +115,10 @@
 
         .cli-tab {
             background-color: #fff3cd; /* Light yellow */
+        }
+
+        .tlc-tab {
+            background-color: #e2e3e5; /* Light grey */
         }
 
         .tab:hover {
@@ -149,11 +153,12 @@
         <marquee behavior="scroll" direction="left">WELCOME TO CENTRAL RAILWAY, BHUSAWAL DIVISION, TRO BRANCH</marquee>
         <h1>WELCOME</h1>
 
-        <!-- Tabs for Admin Login, CLI Login, and Password Login -->
+        <!-- Tabs for Admin Login, CLI Login, Password Login, and TLC Login -->
         <div>
             <div class="tab admin-tab" onclick="showTab('adminTab')">Admin Login</div>
             <div class="tab password-tab" onclick="showTab('passwordTab')">Password Login</div>
             <div class="tab cli-tab" onclick="showTab('cliTab')">CLI Login</div>
+            <div class="tab tlc-tab" onclick="showTab('tlcTab')">TLC Login</div>
         </div>
 
         <!-- Admin Login Tab -->
@@ -176,6 +181,13 @@
             <input type="password" id="cliPassword" placeholder="Enter password">
             <button onclick="checkCLI()">Login</button>
             <p id="cliError">Incorrect credentials. Please try again.</p>
+        </div>
+
+        <!-- TLC Login Tab -->
+        <div id="tlcTab" class="tab-content">
+            <input type="password" id="tlcPassword" placeholder="Enter TLC password">
+            <button onclick="checkTLC()">Login</button>
+            <p id="tlcError">Incorrect password. Please try again.</p>
         </div>
     </div>
 
@@ -269,6 +281,19 @@
             } else {
                 // If credentials are incorrect, show the error message
                 cliErrorMessage.style.display = 'block'; // Show error message
+            }
+        }
+
+        // Check TLC Login
+        function checkTLC() {
+            const enteredTlcPassword = document.getElementById('tlcPassword').value;
+            const tlcErrorMessage = document.getElementById('tlcError');
+            const correctTlcPassword = 'bsltlc'; // Password for TLC login
+
+            if (enteredTlcPassword === correctTlcPassword) {
+                window.location.href = 'tlcdashboard.html'; // Redirect to TLC dashboard
+            } else {
+                tlcErrorMessage.style.display = 'block'; // Show error message
             }
         }
     </script>
