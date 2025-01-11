@@ -123,7 +123,7 @@
         <h2>Footplate Inspection Form</h2>
         <form id="inspectionForm">
             <div class="form-outer">
-                <label style="color: red; font-weight: bold;">Inspection ID</label>
+                <label style="color: red; font-weight: bold;">CMS ID<b style="color: blue;">**Enter last digits of CLI CMS ID Only,ex if CLI CMS ID is BSL0048 enter only 48,ex if CLI CMS ID is BSL0106 enter only 106**</b></p></label>
                 <input type="number" name="inspectionid" id="inspectionid" required>
             </div>
 
@@ -388,7 +388,7 @@
             <div class="form-outer">
                 <label for="sd" style="color: red; font-weight: bold;">Safety Drive Counselled</label>
                 <input type="text" id="sd" name="sd" placeholder="Safety Drive No-"><br>
-                <a href="https://drive.google.com/file/d/19WjqAVG3hMHnXs4J8-FCNQH5bKtycrej/view?usp=sharing">***Safety Drive-33/2024***</a>
+                <a href="https://drive.google.com/file/d/17jAucfvwWeI6b1yny6FkXO0ZdCSswTRp/view?usp=sharing">***Safety Drive-34/2024***</a>
             </div>
             <br>
             <div class="form-outer">
@@ -441,19 +441,7 @@
                         </label><br><br>
                     </div>   
             </div>
-            
-            <!-- Irregularity Observed -->
-            <div class="justify-content">
-                <label style="color: red; font-weight: bold;">Irregularity Observed</label><br><br>
-                <div class="container">
-                    <label for="irregularityYes" class="radio-inline">YES
-                        <input type="radio" id="irregularityYes" name="irregularity" value="YES">
-                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <label for="irregularityNo" class="radio-inline">NO
-                        <input type="radio" id="irregularityNo" name="irregularity" value="NO">
-                    </label><br><br>
-                </div>   
-            </div>
+           
             <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
             <h2>Ambush Check In Lobby</h2>
             <div class="form-outer">
@@ -776,7 +764,7 @@
             e.preventDefault();
             document.querySelector("#sub").value = "Submitting.........";
             let data = new FormData(form);
-            fetch('https://script.google.com/macros/s/AKfycbzejCf-TIA8KL1KlfoO67ac4ADcaSHv2BknTzpsICjviKRlI7vXDWnU8478J0DTj-IG/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbyjcseHkTnCK73uLwT6t5ejtQzxNY4wz_j7yzzBwTMR6sqL3CLzQTK-Bh-tlUTb-x4c/exec', {
                 method: "POST",
                 body: data
             })

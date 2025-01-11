@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Data from Google Sheet</h1>
+
+    <!-- Date Picker -->
+    <label for="datePicker">Select Date:</label>
+    <input type="date" id="datePicker" />
+
+    <table id="dataTable">
+        <thead>
+            <!-- Dynamic headers will be inserted here -->
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <div class="button-container">
+        <button onclick="printTable()">Print</button>
+        <button onclick="downloadCSV()">Download CSV</button>
+    </div>
+
+    <script>
+        // Replace with your Google Sheets API endpoint
+        const sheetId = '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM';
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+        const sheetName = 'Sheet1'; // Change this if necessary
+
+        // Columns we want to display (B, C, O, F, H, S, T, U, V, AN, AP, BA)
+        const relevantColumns = [1, 2, 14, 5, 7, 18, 19, 20, 21, 39, 41, 52];
+
+        // Default to current date
+        let selectedDate = new Date().toISOString().split('T')[0]; // Format as yyyy-mm-dd
+
+        // Initialize the date picker with the current date
+        document.getElementById('datePicker').value = selectedDate;
+
+        // Fetch data when the page loads or the date is changed
+        document.getElementById('datePicker').addEventListener('change', (e) => {
+            selectedDate = e.target.value;
+            fetchData();
+        });
+
+        async function fetchData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const rows = data.values;
+
+            if (!rows || rows.length < 2) {
+                alert('No data found!');
+                return;
+            }
+
+            const headers = rows[0]; // First row contains the headers
+            const filteredRows = rows.slice(1).filter(row => formatDate(row[1]) === selectedDate); // Column B is index 1
+
+            // Populate the table with dynamic headers
+            populateHeaders(headers);
+
+            // Populate the table with filtered rows
+            if (filteredRows.length > 0) {
+                populateTable(filteredRows);
+            } else {
+                alert(`No data found for ${selectedDate}`);
+            }
+        }
+
+        // Function to format date from Google Sheets (yyyy-mm-dd)
+        function formatDate(dateString) {
+            // Assuming dateString is in 'yyyy-mm-dd' format
+            return dateString ? dateString.trim() : '';
+        }
+
+        // Function to dynamically populate the table headers
+        function populateHeaders(headers) {
+            const tableHead = document.querySelector("#dataTable thead");
+            tableHead.innerHTML = ''; // Clear previous headers
+            const tr = document.createElement("tr");
+
+            relevantColumns.forEach(colIndex => {
+                const th = document.createElement("th");
+                th.textContent = headers[colIndex]; // Set header text based on relevant columns
+                tr.appendChild(th);
+            });
+
+            tableHead.appendChild(tr);
+        }
+
+        // Function to populate table rows
+        function populateTable(rows) {
+            const tableBody = document.querySelector("#dataTable tbody");
+            tableBody.innerHTML = ''; // Clear previous data
+            rows.forEach(row => {
+                const tr = document.createElement("tr");
+                relevantColumns.forEach(colIndex => {
+                    const td = document.createElement("td");
+                    td.textContent = row[colIndex] || ''; // Handle missing data
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Print table
+        function printTable() {
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print Table</title></head><body>');
+            printWindow.document.write(document.getElementById('dataTable').outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Download table data as CSV
+        function downloadCSV() {
+            const table = document.getElementById('dataTable');
+            let csv = [];
+            for (let row of table.rows) {
+                const rowData = [];
+                for (let cell of row.cells) {
+                    rowData.push(cell.innerText);
+                }
+                csv.push(rowData.join(','));
+            }
+
+            const csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(csvData);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'google_sheet_data.csv';
+            a.click();
+        }
+
+        // Fetch data when the page loads
+        fetchData();
+    </script>
+</body>
+</html>

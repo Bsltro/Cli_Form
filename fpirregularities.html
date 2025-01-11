@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irregularities</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #loading {
+            font-size: 18px;
+            color: #555;
+        }
+        .highlight {
+            background-color: red !important;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Footplate Irregularities Data</h1>
+    <div id="loading">Loading data...</div>
+    <table id="results">
+        <thead>
+            <tr>
+                <!-- Column headers will be dynamically inserted here -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Filtered rows will appear here -->
+        </tbody>
+    </table>
+
+    <script>
+        const sheetID = '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM';
+        const range = 'Sheet1'; // Assuming data is in Sheet1, adjust if needed
+
+        function fetchSheetData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const rows = data.values;
+                    const headers = rows[0]; // Assuming first row contains headers
+                    const filteredRows = rows.slice(1).filter(row => {
+                        // Check the original conditions
+                        const condition1 = row[22] === 'POOR' || row[23] === 'POOR' || row[24] === 'NO' || 
+                                           row[25] === 'NO' || row[26] === 'NO' || row[27] === 'POOR' || 
+                                           row[28] === 'POOR' || (['LPON', 'ALPON', 'ON'].includes(row[29])) || 
+                                           row[30] === 'POOR' || row[31] === 'NO' || row[33] === 'NO' || 
+                                           ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(row[34]);
+
+                        // New conditions based on Column AN and AG
+                        const condition2 = (row[39] === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) || 
+                                           (row[39] === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32]));
+
+                        // Only include rows that meet either the original condition or the new condition
+                        return condition1 || condition2;
+                    });
+
+                    displayHeaders(headers);
+                    displayFilteredRows(filteredRows);
+                })
+                .catch(error => {
+                    console.error('Error fetching sheet data:', error);
+                    document.getElementById('loading').innerText = 'Failed to load data.';
+                });
+        }
+
+        function displayHeaders(headers) {
+            const tableHead = document.querySelector('#results thead tr');
+            tableHead.innerHTML = ''; // Clear any existing headers
+
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header || ''; // Handle empty headers
+                tableHead.appendChild(th);
+            });
+        }
+
+        function displayFilteredRows(filteredRows) {
+            const tableBody = document.querySelector('#results tbody');
+            tableBody.innerHTML = ''; // Clear any existing rows
+
+            filteredRows.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach((cell, index) => {
+                    const td = document.createElement('td');
+                    td.textContent = cell || ''; // Handle empty cells
+
+                    // Check for conditions to highlight the cell in red
+                    if (index === 22 && cell === 'POOR' ||   // Column W
+                        index === 23 && cell === 'POOR' ||   // Column X
+                        index === 24 && cell === 'NO' ||     // Column Y
+                        index === 25 && cell === 'NO' ||     // Column Z
+                        index === 26 && cell === 'NO' ||     // Column AA
+                        index === 27 && cell === 'POOR' ||   // Column AB
+                        index === 28 && cell === 'POOR' ||   // Column AC
+                        (index === 29 && ['LPON', 'ALPON', 'ON'].includes(cell)) || // Column AD
+                        index === 30 && cell === 'POOR' ||   // Column AE
+                        index === 31 && cell === 'NO' ||     // Column AF
+                        index === 33 && cell === 'NO' ||     // Column AH
+                        (index === 34 && ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(cell)) || // Column AI
+                        (index === 39 && cell === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) || // Column AN & AG
+                        (index === 39 && cell === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32]))) {
+                            td.classList.add('highlight');
+                    }
+
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Fetch data when the page is loaded
+        window.onload = fetchSheetData;
+    </script>
+
+</body>
+</html>

@@ -3,120 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sheets Data</title>
+    <title>TLC DASHBOARD</title>
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
+        /* Style for the entire page */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 50vh; /* Full viewport height */
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+
+        /* Marquee for the heading */
+        marquee {
+            font-size: 50px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        /* Style for the tabs container */
+        .tabs {
+            display: flex;
+            cursor: pointer;
+            /* justify-content: center; Horizontally center the tabs */
+            margin-top: 1px;
+        }
+
+        /* Style for each individual tab */
+        .tab {
+            padding: 30px 60px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            margin-right: 5px;
             text-align: center;
+            transition: background-color 0.3s;
         }
-        th {
-            background-color: #f2f2f2;
+
+        /* Different colors for each tab */
+        .tab:nth-child(1) {
+            background-color: #ffcc00; /* Yellow */
+        }
+
+        .tab:nth-child(2) {
+            background-color: #4CAF50; /* Green */
+        }
+
+        .tab:nth-child(3) {
+            background-color: #2196F3; /* Blue */
+        }
+
+        .tab:nth-child(4) {
+            background-color: #FF5733; /* Red */
+        }
+
+        .tab:nth-child(5) {
+            background-color: #FFC0CB; /* Pink */
+        }
+
+        /* Style when tab is hovered */
+        .tab:hover {
+            background-color: #ddd;
+        }
+
+        /* Style for active tab */
+        .active {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
-<h1>Data Table For TLC</h1>
-<table id="dataTable">
-    <thead>
-        <tr id="headerRow"></tr>
-        <tr id="sumRow"></tr>
-    </thead>
-    <tbody id="dataRows"></tbody>
-</table>
+<!-- Marquee Heading -->
+<marquee>Welcome to TLC Dashboard</marquee>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        const sheetId = '1Yj8Nh_0BXJ0Q9p7CQFdv4QDKdOmXJ_-vM2mGnuhraWA'; // Replace with your actual Google Sheet ID
-        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Replace with your actual API Key
-        const range = 'Sheet1!A1:AX'; // Get all columns in the specified range
 
-        $.ajax({
-            url: `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`,
-            method: 'GET',
-            success: function(response) {
-                const values = response.values;
-
-                if (!values || values.length === 0) {
-                    console.error('No data found.');
-                    return;
-                }
-
-                // Specify the indices of columns we want (including AR and AS)
-                const desiredIndices = [
-    1,  // B
-    3,  // D
-    5,  // F
-    7,  // H
-    9,  // J
-    11, // L
-    13, // N
-    15, // P
-    17, // R
-    19, // T
-    21, // V
-    23, // X
-    27, // AB
-    29, // AD
-    31, // AF
-    33, // AH
-    35, // AJ
-    37, // AL
-    39, // AN
-    41, // AP
-    43, // AR
-    44, // AS
-    46, // AU
-    47, // AV
-    49  // AX
-];
-
-                // Headers handling
-                const headers = values[0].filter((_, index) => desiredIndices.includes(index));
-                $('#headerRow').html('');
-                $('#sumRow').html('');
-
-                headers.forEach(header => {
-                    $('#headerRow').append(`<th>${header}</th>`);
-                });
-
-                // Initialize sums for each column
-                const sums = Array(headers.length).fill(0);
-                const isDateColumn = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true]; // Change based on which columns are date columns
-
-                // Populate table data and calculate sums
-                for (let i = 1; i < values.length; i++) { // Start from 1 to skip headers
-                    const row = values[i].filter((_, index) => desiredIndices.includes(index));
-                    $('#dataRows').append('<tr>');
-                    row.forEach((cell, index) => {
-                        $('#dataRows tr:last').append(`<td>${cell}</td>`);
-                        
-                        // Check if the cell value can be parsed as a number
-                        const numericValue = parseFloat(cell);
-                        if (!isNaN(numericValue) && !isDateColumn[desiredIndices[index]]) {
-                            sums[index] += numericValue; // Only sum if it's a number and not a date column
-                        }
-                    });
-                    $('#dataRows').append('</tr>');
-                }
-
-                // Display sums
-                sums.forEach((sum, index) => {
-                    $('#sumRow').append(`<th>${sum}</th>`);
-                });
-            },
-            error: function(error) {
-                console.error('There was an error retrieving the data: ', error);
-            }
-        });
-    });
-</script>
+    <div class="tabs">
+        <!-- Tab 1 for Daily CLI Monitoring Report -->
+        <div class="tab" onclick="window.location.href='tlcclimonitoringreport.html'">Daily CLI Monitoring Report</div>
+        
+        <!-- Tab 2 for Daily Ambush check/ Irregularity Report -->
+        <div class="tab" onclick="window.location.href='tlccounttbl.html'">Daily Ambush check/ Irregularity Report</div>
+    </div>
 
 </body>
 </html>

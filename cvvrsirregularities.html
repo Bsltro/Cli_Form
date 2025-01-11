@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irregularities</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #loading {
+            font-size: 18px;
+            color: #555;
+        }
+        .highlight {
+            background-color: red !important;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CVVRS Irregularities Data</h1>
+    <div id="loading">Loading data...</div>
+    <table id="results">
+        <thead>
+            <tr>
+                <!-- Column headers will be dynamically inserted here -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Filtered rows will appear here -->
+        </tbody>
+    </table>
+
+    <script>
+        const sheetID = '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk'; // Replace with your sheet ID
+        const range = 'Sheet1!A1:AP'; // Adjust the range if necessary, here we are fetching columns A to Z
+
+        // Fetch data from Google Sheets API
+        function fetchSheetData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`; // Your API Key
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const rows = data.values;
+                    const headers = rows[0]; // Assuming first row contains headers
+                    const filteredRows = rows.slice(1).filter(row => {
+                        // Check the conditions for columns R, S, U, V, W, X (0-based index)
+                        return row[20] === 'NO' || row[21] === 'NO' || row[22] === 'NO' || 
+                               row[23] === 'NO' || row[24] === 'NO' || row[25] === 'NO' ||
+                               row[26] === 'NO' || row[27] === 'NO' || row[28] === 'NO' ||
+                               row[29] === 'NO' || row[30] === 'NO' || row[31] === 'NO' ||
+                               row[32] === 'NO' || row[33] === 'NO' || row[34] === 'NO' || row[35] ==='YES';
+                    });
+
+                    displayHeaders(headers);
+                    displayFilteredRows(filteredRows);
+                })
+                .catch(error => {
+                    console.error('Error fetching sheet data:', error);
+                    document.getElementById('loading').innerText = 'Failed to load data.';
+                });
+        }
+
+        // Display column headers
+        function displayHeaders(headers) {
+            const tableHead = document.querySelector('#results thead tr');
+            tableHead.innerHTML = ''; // Clear any existing headers
+
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header || ''; // Handle empty headers
+                tableHead.appendChild(th);
+            });
+        }
+
+        // Display filtered rows in the table
+        function displayFilteredRows(filteredRows) {
+            const tableBody = document.querySelector('#results tbody');
+            tableBody.innerHTML = ''; // Clear any existing rows
+
+            filteredRows.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach((cell, index) => {
+                    const td = document.createElement('td');
+                    td.textContent = cell || ''; // Handle empty cells
+
+                    // Highlight cells based on the conditions
+                    if ((index === 20 && cell === 'NO') ||  // Column R (index 17)
+                        (index === 21 && cell === 'NO') ||  // Column S (index 18)
+                        (index === 22 && cell === 'NO') ||  // Column U (index 20)
+                        (index === 23 && cell === 'NO') || // Column V (index 21)
+                        (index === 24 && cell === 'NO') || // Column W (index 22)
+                        (index === 25 && cell === 'NO') ||  // Column S (index 18)
+                        (index === 26 && cell === 'NO') ||  // Column U (index 20)
+                        (index === 27 && cell === 'NO') ||
+                        (index === 28 && cell === 'NO') ||  // Column S (index 18)
+                        (index === 29 && cell === 'NO') ||  // Column U (index 20)
+                        (index === 30 && cell === 'NO') ||
+                        (index === 31 && cell === 'NO') ||  // Column S (index 18)
+                        (index === 32 && cell === 'NO') ||  // Column U (index 20)
+                        (index === 33 && cell === 'NO') ||
+                        (index === 34 && cell === 'NO') ||  // Column S (index 18)
+                        (index === 35 && cell === 'YES')   // Column U (index 20)
+                        ) { // Column X (index 23)
+                        td.classList.add('highlight');
+                    }
+
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            // Hide the loading message once data is loaded
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Fetch data when the page is loaded
+        window.onload = fetchSheetData;
+    </script>
+
+</body>
+</html>

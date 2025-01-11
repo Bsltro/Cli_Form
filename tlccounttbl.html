@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLC Data</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #filter-container {
+            margin-bottom: 20px;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        /* Hide the sum row when printing */
+        @media print {
+            table {
+                border: 2px solid black;
+            }
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<h1>Data Table For TLC</h1>
+
+<!-- Date Filter Dropdown -->
+<div id="filter-container">
+    <label for="dateFilter">Select Date: </label>
+    <select id="dateFilter">
+        <option value="">Select a date</option>
+    </select>
+</div>
+
+<table id="dataTable">
+    <thead>
+        <tr id="headerRow"></tr>
+    </thead>
+    <tbody id="dataRows"></tbody>
+</table>
+
+<div class="button-container">
+    <button id="printBtn">Print Table</button>
+    <button id="downloadBtn">Download CSV</button>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        const sheetId = '1Yj8Nh_0BXJ0Q9p7CQFdv4QDKdOmXJ_-vM2mGnuhraWA'; // Replace with your actual Google Sheet ID
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Replace with your actual API Key
+        const range = 'Sheet1!A1:AZ'; // Get all columns in the specified range
+
+        $.ajax({
+            url: `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`,
+            method: 'GET',
+            success: function(response) {
+                const values = response.values;
+
+                if (!values || values.length === 0) {
+                    console.error('No data found.');
+                    return;
+                }
+
+                // Specify the indices of columns we want (including AR and AS)
+                const desiredIndices = [
+                    1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 44, 46, 47, 49, 51
+                ];
+
+                // Headers handling
+                const headers = values[0].filter((_, index) => desiredIndices.includes(index));
+                $('#headerRow').html('');
+
+                headers.forEach(header => {
+                    $('#headerRow').append(`<th>${header}</th>`);
+                });
+
+                // Initialize all rows
+                const allRows = [];
+                const isDateColumn = [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]; // Assuming only column 0 is a date column
+                let uniqueDates = new Set();
+
+                // Function to format date in DD/MM/YY
+                function formatDate(date) {
+                    const d = new Date(date);
+                    if (!isNaN(d.getTime())) {
+                        const day = ("0" + d.getDate()).slice(-2); // Ensure two digits for day
+                        const month = ("0" + (d.getMonth() + 1)).slice(-2); // Ensure two digits for month
+                        const year = d.getFullYear().toString().slice(-2); // Get last two digits of the year
+                        return `${day}/${month}/${year}`;
+                    }
+                    return date; // Return original date if it's invalid
+                }
+
+                // Populate table data and store rows for later processing
+                for (let i = 1; i < values.length; i++) { // Start from 1 to skip headers
+                    const row = values[i].filter((_, index) => desiredIndices.includes(index));
+                    allRows.push(row);
+                    $('#dataRows').append('<tr>');
+                    row.forEach((cell, index) => {
+                        if (index === 0 && cell) {
+                            const formattedDate = formatDate(cell); // Format the date in DD/MM/YY
+                            $('#dataRows tr:last').append(`<td>${formattedDate}</td>`); // Insert formatted date
+                        } else {
+                            $('#dataRows tr:last').append(`<td>${cell}</td>`);
+                        }
+
+                        // Collect unique dates from Column A (index 0)
+                        if (index === 0 && cell) {  // Date is in Column A (index 0)
+                            uniqueDates.add(formatDate(cell)); // Add formatted date to the set
+                        }
+                    });
+                    $('#dataRows').append('</tr>');
+                }
+
+                // Populate Date Filter Dropdown with unique dates from Column A
+                uniqueDates.forEach(date => {
+                    $('#dateFilter').append(`<option value="${date}">${date}</option>`);
+                });
+
+                // Function to update the table based on selected date
+                function updateTable(selectedDate) {
+                    $('#dataRows').html(''); // Clear existing rows
+                    let filteredRows = [];
+
+                    // Compare formatted date from the data to the selected date
+                    allRows.forEach(row => {
+                        const dateCell = row[0]; // Column A (index 0)
+                        const formattedDateCell = formatDate(dateCell); // Format the date for comparison
+                        if (!selectedDate || (dateCell && formattedDateCell === selectedDate)) {
+                            filteredRows.push(row);
+                        }
+                    });
+
+                    // Rebuild rows with filtered data
+                    filteredRows.forEach(row => {
+                        $('#dataRows').append('<tr>');
+                        row.forEach(cell => {
+                            $('#dataRows tr:last').append(`<td>${cell}</td>`);
+                        });
+                        $('#dataRows').append('</tr>');
+                    });
+                }
+
+                // Initial load with all data
+                updateTable('');
+
+                // Handle date filter change
+                $('#dateFilter').on('change', function() {
+                    const selectedDate = $(this).val();
+                    updateTable(selectedDate);
+                });
+
+                // Print Table Function
+                $('#printBtn').on('click', function() {
+                    const printWindow = window.open('', '', 'height=600,width=800');
+                    printWindow.document.write('<html><head><title>Print Table</title><style>table { border-collapse: collapse; width: 100%; border: 2px solid black; } th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }</style></head><body>');
+                    printWindow.document.write('<table>' + $('#dataTable').html() + '</table>');
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
+                    printWindow.print();
+                });
+
+                // Download CSV Function
+                $('#downloadBtn').on('click', function() {
+                    let csvContent = "data:text/csv;charset=utf-8,";
+                    const headersText = headers.join(',');
+                    csvContent += headersText + "\n";
+
+                    allRows.forEach(row => {
+                        const rowText = row.join(',');
+                        csvContent += rowText + "\n";
+                    });
+
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement('a');
+                    link.setAttribute('href', encodedUri);
+                    link.setAttribute('download', 'table_data.csv');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+            },
+            error: function(error) {
+                console.error('There was an error retrieving the data: ', error);
+                alert('Error: Unable to retrieve data from Google Sheets. Please check the console for details.');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
