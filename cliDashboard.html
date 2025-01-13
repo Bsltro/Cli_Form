@@ -11,6 +11,7 @@
             cursor: pointer;
             margin-top: 20px;
             font-weight: bold;
+            flex-wrap: wrap; /* Allows tabs to stack on smaller screens */
         }
         .tab {
             padding: 10px 20px;
@@ -43,14 +44,26 @@
         /* Filter and button styling */
         .filters {
             margin-top: 20px;
+            display: flex;
+            flex-direction: column; /* Stack filters vertically */
+        }
+        .filter-label {
+            margin-top: 10px; /* Spacing before each label */
         }
         .filter-select {
             padding: 5px;
-            margin: 5px;
-            width: 200px;
+            margin: 5px 0 10px 0; /* Margin for spacing around selects */
+            width: 100%; /* Full width for responsive design */
+            box-sizing: border-box; /* Include padding in width calculations */
         }
         .button-container {
             margin-top: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .tabs {
+                flex-direction: column; /* Stack tabs vertically on smaller screens */
+            }
         }
     </style>
 </head>
@@ -67,11 +80,13 @@
         <div id="rrTab" class="tab">RR</div>
         <div id="lobbyTab" class="tab">Lobby</div>
         <div id="stablingTab" class="tab">Stabling</div>
-        <div id="nominatedTab" class="tab">Nominated</div> <!-- New Nominated tab -->
+        <div id="nominatedTab" class="tab">Nominated</div>
     </div>
 
     <!-- Table filters -->
-    <div id="filters" class="filters" style="display: none;"></div>
+    <div id="filters" class="filters" style="display: none;">
+        <!-- Filters for the footplate tab will be dynamically inserted here -->
+    </div>
 
     <!-- Row count display -->
     <div id="rowCount">Rows: 0</div>
@@ -100,38 +115,31 @@
     const sheetURLs = {
         footplate: {
             sheetID: '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM',
-            range: 'Sheet1!A1:AM1000',
-            columns: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'L', 'M', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM']
+            range: 'Sheet1!A1:AQ1000',
         },
         cvvrs: {
             sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
             range: 'Sheet1!A1:AP1000',
-            columns: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'AK', 'AL', 'AM', 'AN', 'AP']
         },
         spm: {
             sheetID: '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI',
             range: 'Sheet1!A1:AD1000',
-            columns: ['A', 'B', 'C', 'D', 'F', 'H', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD']
         },
         rr: {
             sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
             range: 'Sheet1!A1:I1000',
-            columns: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
         },
         lobby: {
             sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
             range: 'Sheet1!J1:R1000',
-            columns: ['J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R']
         },
         stabling: {
             sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
             range: 'Sheet1!S1:AA1000',
-            columns: ['S','T','U', 'V', 'W', 'X', 'Y', 'Z', 'AA']
         },
-        nominated: { // New Nominated tab
+        nominated: {
             sheetID: '1MFtqC6Gq17KN6-afXXH1I8oIT3JfJ1qRiOh0dOj-S58',
             range: 'Sheet1!A1:Z1000',
-            columns: ['A', 'B', 'C', 'D', 'E', 'F']
         }
     };
 
@@ -140,128 +148,156 @@
     const username = urlParams.get('user');
     document.getElementById('usernameDisplay').textContent = username;
 
-    // Store current tab's data and columns
-    let currentTab = 'footplate';
+    let currentTab = 'footplate'; // Default tab is footplate
     let currentData = [];
-    let filters = {};
 
-    // Function to fetch data from a given Google Sheet based on the tab and columns
-    function fetchDataFromGoogleSheet(sheetType, columnRange) {
-    const sheet = sheetURLs[sheetType];
-    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${columnRange}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`; 
+    // Function to fetch data from a given Google Sheet based on the tab
+    function fetchDataFromGoogleSheet(sheetType) {
+        const sheet = sheetURLs[sheetType];
+        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${sheet.range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`; // Replace YOUR_GOOGLE_API_KEY with your API key
 
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Fetched Data:", data);  // Log the fetched data
-            
-            if (data.values) {
-                const rows = data.values;
-                const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-                const tableHead = document.getElementById('dataTable').getElementsByTagName('thead')[0];
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.values) {
+                    const rows = data.values;
+                    const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+                    const tableHead = document.getElementById('dataTable').getElementsByTagName('thead')[0];
 
-                // Clear previous table data
-                tableBody.innerHTML = '';
-                tableHead.innerHTML = '';
+                    // Clear previous table data
+                    tableBody.innerHTML = '';
+                    tableHead.innerHTML = '';
 
-                // Get column headers from the first row
-                const headers = rows[0]; // First row contains headers
+                    // Get column headers from the first row
+                    const headers = rows[0];
 
-                // Insert table headers dynamically
-                let headerRow = tableHead.insertRow();
-                headers.forEach(header => {
-                    let th = document.createElement('th');
-                    th.textContent = header;
-                    headerRow.appendChild(th);
-                });
+                    // Insert table headers dynamically
+                    let headerRow = tableHead.insertRow();
+                    headers.forEach(header => {
+                        let th = document.createElement('th');
+                        th.textContent = header;
+                        headerRow.appendChild(th);
+                    });
 
-                // Filter the data by username (assuming username is in column A for nominated tab)
-                if (sheetType === 'nominated') {
-                    currentData = rows.filter(row => row[0] === username); // Filter by username (in column A)
+                    // Filter data by username for nominated tab
+                    if (sheetType === 'nominated') {
+                        currentData = rows.filter(row => row[0] === username); // Assuming username is in the first column for "Nominated"
+                    } else {
+                        currentData = rows.filter(row => row[2] === username); // Assuming username is in the third column for other sheets
+                    }
+
+                    // Add rows to the table
+                    currentData.forEach(row => {
+                        let newRow = tableBody.insertRow();
+                        row.forEach((cell, index) => {
+                            let newCell = newRow.insertCell();
+                            newCell.textContent = cell || ''; // Handle empty cells
+                        });
+
+                        // Highlight rows based on the value in the last column
+                        const lastColumnValue = parseFloat(row[headers.length - 1]);
+                        if (!isNaN(lastColumnValue)) {
+                            if (lastColumnValue >= 6 && lastColumnValue <= 10) {
+                                newRow.style.backgroundColor = 'yellow';
+                            } else if (lastColumnValue >= 3 && lastColumnValue < 6) {
+                                newRow.style.backgroundColor = 'orange';
+                            } else if (lastColumnValue < 3) {
+                                newRow.style.backgroundColor = 'red';
+                            }
+                        }
+                    });
+
+                    // Update row count
+                    document.getElementById('rowCount').textContent = `Rows: ${currentData.length}`;
+                    
+                    // Restore filters for the Footplate tab
+                    if (currentTab === 'footplate') {
+                        restoreFootplateFilters(headers, rows);
+                    }
                 } else {
-                    currentData = rows.filter(row => row[2] === username); // Filter by username for other tabs
+                    alert('No data found.');
                 }
-
-                // Create filters for each column (only for footplate tab)
-                if (currentTab === 'footplate') {
-                    createFilters(headers, rows);
-                    document.getElementById('filters').style.display = 'block'; // Show filters
-                } else {
-                    document.getElementById('filters').style.display = 'none'; // Hide filters for other tabs
-                }
-
-                // Apply filters and update the table
-                applyFilters();
-            } else {
-                alert('No data found.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching Google Sheet data:', error);
-            alert('Error fetching data from Google Sheets.');
-        });
-}
-
-
-    // Function to apply filters to the data
-    function applyFilters() {
-        const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = ''; // Clear previous rows
-
-        // Filter data based on the selected filters
-        const filteredData = currentData.filter(row => {
-            return Object.keys(filters).every((key) => {
-                const filterValue = filters[key]?.toLowerCase() || '';
-                const cellValue = row[key]?.toString().toLowerCase() || '';
-                return cellValue.includes(filterValue);
+            })
+            .catch(error => {
+                console.error('Error fetching Google Sheet data:', error);
+                alert('Error fetching data from Google Sheets.');
             });
-        });
-
-        // Insert rows of filtered data
-        filteredData.forEach(row => {
-            let newRow = tableBody.insertRow();
-            row.forEach(cell => {
-                let newCell = newRow.insertCell();
-                newCell.textContent = cell || ''; // Ensure empty cells are handled
-            });
-        });
-
-        // Update the row count
-        updateRowCount(filteredData.length);
     }
 
-    // Function to update the row count display
-    function updateRowCount(filteredRowCount) {
-        document.getElementById('rowCount').textContent = `Rows: ${filteredRowCount}`;
-    }
-
-    // Function to create filters for each column
-    function createFilters(columns, rows) {
+    // Function to restore filters for the Footplate tab
+    function restoreFootplateFilters(headers, rows) {
         const filterContainer = document.getElementById('filters');
         filterContainer.innerHTML = ''; // Clear previous filters
 
-        columns.forEach((col, index) => {
+        // These columns correspond to D, E, F, G, H, J, L, AN, AO, AP
+        const filterColumns = [3, 4, 5, 6, 7, 9, 11, 39, 40, 41]; // 0-indexed
+
+        filterColumns.forEach(colIndex => {
+            const filterLabel = document.createElement('label');
+            filterLabel.classList.add('filter-label'); // Style for label
+            filterLabel.textContent = `Filter by ${headers[colIndex]}:`;
+
             const filterSelect = document.createElement('select');
             filterSelect.classList.add('filter-select');
-            const selectOption = document.createElement('option');
-            selectOption.text = `Select ${col}`;
-            filterSelect.appendChild(selectOption);
+            filterSelect.id = `filter_${headers[colIndex]}`;
 
-            // Get unique values from the column
-            const uniqueValues = [...new Set(rows.map(row => row[index]))];
+            // First option as a placeholder
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select';
+            filterSelect.appendChild(defaultOption);
+            
+            // Get unique values from the column to populate the filter options
+            const uniqueValues = Array.from(new Set(rows.slice(1).map(row => row[colIndex]))); // Skip header row
+
             uniqueValues.forEach(value => {
                 const option = document.createElement('option');
-                option.text = value;
+                option.value = value;
+                option.textContent = value || 'N/A'; // Ensure there is a visible label
                 filterSelect.appendChild(option);
             });
 
+            // Add an event listener to filter the table data when changed
             filterSelect.addEventListener('change', (e) => {
-                filters[index] = e.target.value;
-                applyFilters(); // Reapply filters on selection change
+                const selectedValue = e.target.value;
+                currentData = rows.filter(row => row[colIndex] === selectedValue);
+                renderTable(currentData, headers);
             });
 
+            filterContainer.appendChild(filterLabel);
             filterContainer.appendChild(filterSelect);
         });
+
+        filterContainer.style.display = 'block'; // Show filters
+    }
+
+    // Function to render the table with current data
+    function renderTable(data, headers) {
+        const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ''; // Clear previous rows
+
+        data.forEach(row => {
+            let newRow = tableBody.insertRow();
+            row.forEach(cell => {
+                let newCell = newRow.insertCell();
+                newCell.textContent = cell || ''; // Handle empty cells
+            });
+
+            // Highlight rows based on the value in the last column
+            const lastColumnValue = parseFloat(row[headers.length - 1]);
+            if (!isNaN(lastColumnValue)) {
+                if (lastColumnValue >= 6 && lastColumnValue <= 10) {
+                    newRow.style.backgroundColor = 'yellow';
+                } else if (lastColumnValue >= 3 && lastColumnValue < 6) {
+                    newRow.style.backgroundColor = 'orange';
+                } else if (lastColumnValue < 3) {
+                    newRow.style.backgroundColor = 'red';
+                }
+            }
+        });
+
+        // Update row count
+        document.getElementById('rowCount').textContent = `Rows: ${data.length}`;
     }
 
     // Function to switch tabs
@@ -272,14 +308,16 @@
 
         // Add active class to the clicked tab
         const tabElement = document.getElementById(tabId);
-        if (tabElement) {
-            tabElement.classList.add('active');
-            currentTab = tabId.replace('Tab', '').toLowerCase(); // Adjust to match keys in sheetURLs
+        tabElement.classList.add('active');
+        currentTab = tabId.replace('Tab', '').toLowerCase(); // Adjust to match keys in sheetURLs
 
-            // Fetch data for the selected tab
-            fetchDataFromGoogleSheet(currentTab, sheetURLs[currentTab].range);
+        // Show filters and fetch data for Footplate tab
+        const filtersDiv = document.getElementById('filters');
+        if (currentTab === 'footplate') {
+            fetchDataFromGoogleSheet(currentTab);
         } else {
-            console.error(`Tab with ID ${tabId} not found.`);
+            filtersDiv.style.display = 'none';
+            fetchDataFromGoogleSheet(currentTab); // Fetch data for the selected tab
         }
     }
 
@@ -290,43 +328,10 @@
     document.getElementById('rrTab').addEventListener('click', () => switchTab('rrTab'));
     document.getElementById('lobbyTab').addEventListener('click', () => switchTab('lobbyTab'));
     document.getElementById('stablingTab').addEventListener('click', () => switchTab('stablingTab'));
-    document.getElementById('nominatedTab').addEventListener('click', () => switchTab('nominatedTab')); // Nominated tab event listener
+    document.getElementById('nominatedTab').addEventListener('click', () => switchTab('nominatedTab'));
 
-    // Clear Filters functionality
-    document.getElementById('clearFilters').addEventListener('click', () => {
-        filters = {}; // Reset filters
-        applyFilters(); // Reapply without any filters
-    });
-
-    // Print Table functionality
-    document.getElementById('printTable').addEventListener('click', () => {
-        window.print(); // This will print the current page, including the table
-    });
-
-    // Download CSV functionality
-    document.getElementById('downloadTable').addEventListener('click', () => {
-        let csv = [];
-        const rows = document.querySelectorAll('table tr');
-        
-        rows.forEach(row => {
-            const cols = row.querySelectorAll('th, td');
-            const csvRow = [];
-            cols.forEach(col => {
-                csvRow.push(col.textContent);
-            });
-            csv.push(csvRow.join(','));
-        });
-
-        const csvContent = csv.join("\n");
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'data.csv';
-        link.click();
-    });
-
-    // Initial fetch for footplate tab data
-    fetchDataFromGoogleSheet(currentTab, sheetURLs[currentTab].range);
+    // Initial load - fetch data for Footplate tab by default
+    fetchDataFromGoogleSheet('footplate');
 </script>
 
 </body>
