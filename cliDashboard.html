@@ -260,8 +260,18 @@
             // Add an event listener to filter the table data when changed
             filterSelect.addEventListener('change', (e) => {
                 const selectedValue = e.target.value;
-                currentData = rows.filter(row => row[colIndex] === selectedValue);
-                renderTable(currentData, headers);
+
+                // Filter the data by both the selected filter value and the username
+                let filteredData = rows.filter(row => row[colIndex] === selectedValue);
+
+                // Ensure username filtering
+                if (currentTab === 'nominated') {
+                    filteredData = filteredData.filter(row => row[0] === username); // Username is assumed to be in the first column
+                } else {
+                    filteredData = filteredData.filter(row => row[2] === username); // Username is assumed to be in the third column
+                }
+
+                renderTable(filteredData, headers);
             });
 
             filterContainer.appendChild(filterLabel);
@@ -276,7 +286,16 @@
         const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = ''; // Clear previous rows
 
-        data.forEach(row => {
+        // Ensure the data is filtered by username
+        let filteredData = data.filter(row => {
+            if (currentTab === 'nominated') {
+                return row[0] === username; // Username is assumed to be in the first column
+            } else {
+                return row[2] === username; // Username is assumed to be in the third column
+            }
+        });
+
+        filteredData.forEach(row => {
             let newRow = tableBody.insertRow();
             row.forEach(cell => {
                 let newCell = newRow.insertCell();
@@ -297,7 +316,7 @@
         });
 
         // Update row count
-        document.getElementById('rowCount').textContent = `Rows: ${data.length}`;
+        document.getElementById('rowCount').textContent = `Rows: ${filteredData.length}`;
     }
 
     // Function to switch tabs

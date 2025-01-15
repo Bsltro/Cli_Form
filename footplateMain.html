@@ -757,24 +757,35 @@
         window.onload = () => {
             fetchSheetData();
         };
-        
         // Add event listeners to the form submission
-        let form = document.querySelector('#inspectionForm');
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            document.querySelector("#sub").value = "Submitting.........";
-            let data = new FormData(form);
-            fetch('https://script.google.com/macros/s/AKfycbyjcseHkTnCK73uLwT6t5ejtQzxNY4wz_j7yzzBwTMR6sqL3CLzQTK-Bh-tlUTb-x4c/exec', {
-                method: "POST",
-                body: data
-            })
-            .then(res => res.text())
-            .then(data => {
-                document.querySelector("#sub").value = "Submit";
-                form.reset();
-                alert("Footplating Data Saved Successfully...");
-            });
-        });
+let form = document.querySelector('#inspectionForm');
+form.addEventListener('submit', (e) => {
+    e.preventDefault();  // Prevent the form from submitting immediately
+
+    // Convert all input data to uppercase
+    const inputs = form.querySelectorAll('input[type="text"], input[type="number"], textarea, select');
+    inputs.forEach(input => {
+        if (input.value) {
+            input.value = input.value.toUpperCase();
+        }
+    });
+
+    document.querySelector("#sub").value = "Submitting.........";
+    
+    // Create FormData object and submit the form data
+    let data = new FormData(form);
+    fetch('https://script.google.com/macros/s/AKfycbyjcseHkTnCK73uLwT6t5ejtQzxNY4wz_j7yzzBwTMR6sqL3CLzQTK-Bh-tlUTb-x4c/exec', {
+        method: "POST",
+        body: data
+    })
+    .then(res => res.text())
+    .then(data => {
+        document.querySelector("#sub").value = "Submit";
+        form.reset();
+        alert("Footplating Data Saved Successfully...");
+    });
+});
+
         </script>     
 </body>
 </html>
