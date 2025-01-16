@@ -28,12 +28,31 @@
         .highlight {
             background-color: red !important;
         }
+        #red-cell-count {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .column-header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .column-header {
+            text-align: center;
+        }
+        .red-cell-count {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
 
     <h1>Footplate Irregularities Data</h1>
     <div id="loading">Loading data...</div>
+    <div id="red-cell-count">TOTAL RED CELLS: 0</div> <!-- Changed label to indicate total red cells -->
     <table id="results">
         <thead>
             <tr>
@@ -63,6 +82,7 @@
                                            row[25] === 'NO' || row[26] === 'NO' || row[27] === 'POOR' || 
                                            row[28] === 'POOR' || (['LPON', 'ALPON', 'ON'].includes(row[29])) || 
                                            row[30] === 'POOR' || row[31] === 'NO' || row[33] === 'NO' || 
+                                           row[47] === 'NO' || row[48] === 'YES' || row[50] === 'NOT PROPER' || row[51] ==='NOT PROPER' ||
                                            ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(row[34]);
 
                         // New conditions based on Column AN and AG
@@ -86,9 +106,28 @@
             const tableHead = document.querySelector('#results thead tr');
             tableHead.innerHTML = ''; // Clear any existing headers
 
-            headers.forEach(header => {
+            // Create header cells with count containers
+            headers.forEach((header, index) => {
                 const th = document.createElement('th');
-                th.textContent = header || ''; // Handle empty headers
+
+                // Create a container to hold both the header and the red cell count
+                const columnHeaderContainer = document.createElement('div');
+                columnHeaderContainer.classList.add('column-header-container');
+
+                // Create the header text
+                const headerDiv = document.createElement('div');
+                headerDiv.textContent = header || ''; // Handle empty headers
+                headerDiv.classList.add('column-header');
+                columnHeaderContainer.appendChild(headerDiv);
+
+                // Create the red cell count placeholder
+                const redCellCountDiv = document.createElement('div');
+                redCellCountDiv.id = `red-cell-count-column-${index}`;
+                redCellCountDiv.classList.add('red-cell-count');
+                redCellCountDiv.textContent = 'Red cells: 0'; // Placeholder for red cell count
+                columnHeaderContainer.appendChild(redCellCountDiv);
+
+                th.appendChild(columnHeaderContainer);
                 tableHead.appendChild(th);
             });
         }
@@ -96,6 +135,8 @@
         function displayFilteredRows(filteredRows) {
             const tableBody = document.querySelector('#results tbody');
             tableBody.innerHTML = ''; // Clear any existing rows
+            const redCellCounts = new Array(filteredRows[0].length).fill(0); // Initialize red cell count array
+            let totalRedCells = 0; // Initialize the total red cell count
 
             filteredRows.forEach(row => {
                 const tr = document.createElement('tr');
@@ -103,7 +144,7 @@
                     const td = document.createElement('td');
                     td.textContent = cell || ''; // Handle empty cells
 
-                    // Check for conditions to highlight the cell in red
+                    // Check for conditions to highlight the cell in red and count them
                     if (index === 22 && cell === 'POOR' ||   // Column W
                         index === 23 && cell === 'POOR' ||   // Column X
                         index === 24 && cell === 'NO' ||     // Column Y
@@ -115,16 +156,31 @@
                         index === 30 && cell === 'POOR' ||   // Column AE
                         index === 31 && cell === 'NO' ||     // Column AF
                         index === 33 && cell === 'NO' ||     // Column AH
+                        index === 47 && cell === 'NO' ||   // Column AE
+                        index === 48 && cell === 'YES' ||     // Column AF
+                        index === 50 && cell === 'NOT PROPER' ||
+                        index === 51 && cell === 'NOT PROPER' ||
                         (index === 34 && ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(cell)) || // Column AI
                         (index === 39 && cell === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) || // Column AN & AG
                         (index === 39 && cell === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32]))) {
                             td.classList.add('highlight');
+                            redCellCounts[index]++; // Increment count for this column
+                            totalRedCells++; // Increment the total red cells
                     }
 
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
             });
+
+            // Update the red cell count for each column
+            redCellCounts.forEach((count, index) => {
+                const countElement = document.getElementById(`red-cell-count-column-${index}`);
+                countElement.textContent = `Red cells: ${count}`;
+            });
+
+            // Update the total red cells count at the top
+            document.getElementById('red-cell-count').textContent = `TOTAL IRREGULARITIES: ${totalRedCells}`;
 
             document.getElementById('loading').style.display = 'none';
         }
