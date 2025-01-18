@@ -50,7 +50,8 @@
         .filter-label {
             margin-top: 10px; /* Spacing before each label */
         }
-        .filter-select {
+        .filter-select,
+        .filter-date {
             padding: 5px;
             margin: 5px 0 10px 0; /* Margin for spacing around selects */
             width: 100%; /* Full width for responsive design */
@@ -232,6 +233,42 @@
         // These columns correspond to D, E, F, G, H, J, L, AN, AO, AP
         const filterColumns = [3, 4, 5, 6, 7, 9, 11, 39, 40, 41]; // 0-indexed
 
+        // Add date filters
+        const fromDateLabel = document.createElement('label');
+        fromDateLabel.classList.add('filter-label');
+        fromDateLabel.textContent = "From Date:";
+        const fromDateInput = document.createElement('input');
+        fromDateInput.type = 'date';
+        fromDateInput.classList.add('filter-date');
+        filterContainer.appendChild(fromDateLabel);
+        filterContainer.appendChild(fromDateInput);
+
+        const toDateLabel = document.createElement('label');
+        toDateLabel.classList.add('filter-label');
+        toDateLabel.textContent = "To Date:";
+        const toDateInput = document.createElement('input');
+        toDateInput.type = 'date';
+        toDateInput.classList.add('filter-date');
+        filterContainer.appendChild(toDateLabel);
+        filterContainer.appendChild(toDateInput);
+
+        // Add change event listener to filter table data by date
+        const filterDateRange = () => {
+            const fromDate = new Date(fromDateInput.value);
+            const toDate = new Date(toDateInput.value);
+            const filteredData = rows.filter(row => {
+                const rowDate = new Date(row[1]); // Column B is 1
+                return (!isNaN(rowDate) && 
+                        (!fromDate || rowDate >= fromDate) && 
+                        (!toDate || rowDate <= toDate) &&
+                        (currentTab === 'nominated' ? row[0] === username : row[2] === username)); // Filter by username
+            });
+            renderFilteredData(filteredData, headers);
+        };
+
+        fromDateInput.addEventListener('change', filterDateRange);
+        toDateInput.addEventListener('change', filterDateRange);
+
         filterColumns.forEach(colIndex => {
             const filterLabel = document.createElement('label');
             filterLabel.classList.add('filter-label'); // Style for label
@@ -261,9 +298,9 @@
             filterSelect.addEventListener('change', (e) => {
                 const selectedValue = e.target.value;
 
-                // Filter the data by both the selected filter value and the username
+                // Filter the data by the selected filter value
                 let filteredData = rows.filter(row => row[colIndex] === selectedValue);
-
+                
                 // Ensure username filtering
                 if (currentTab === 'nominated') {
                     filteredData = filteredData.filter(row => row[0] === username); // Username is assumed to be in the first column
@@ -271,7 +308,7 @@
                     filteredData = filteredData.filter(row => row[2] === username); // Username is assumed to be in the third column
                 }
 
-                renderTable(filteredData, headers);
+                renderFilteredData(filteredData, headers);
             });
 
             filterContainer.appendChild(filterLabel);
@@ -281,21 +318,12 @@
         filterContainer.style.display = 'block'; // Show filters
     }
 
-    // Function to render the table with current data
-    function renderTable(data, headers) {
+    // Function to render filtered data with current data
+    function renderFilteredData(data, headers) {
         const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = ''; // Clear previous rows
 
-        // Ensure the data is filtered by username
-        let filteredData = data.filter(row => {
-            if (currentTab === 'nominated') {
-                return row[0] === username; // Username is assumed to be in the first column
-            } else {
-                return row[2] === username; // Username is assumed to be in the third column
-            }
-        });
-
-        filteredData.forEach(row => {
+        data.forEach(row => {
             let newRow = tableBody.insertRow();
             row.forEach(cell => {
                 let newCell = newRow.insertCell();
@@ -316,8 +344,56 @@
         });
 
         // Update row count
-        document.getElementById('rowCount').textContent = `Rows: ${filteredData.length}`;
+        document.getElementById('rowCount').textContent = `Rows: ${data.length}`;
     }
+
+    // Function to clear all filters
+    function clearAllFilters() {
+        const filterContainer = document.getElementById('filters');
+        const filters = filterContainer.getElementsByTagName('select');
+        
+        for (let filter of filters) {
+            filter.selectedIndex = 0; // Reset all filter selects to the default option
+        }
+
+        // Reset date inputs
+        const dateInputs = filterContainer.getElementsByTagName('input');
+        for (let dateInput of dateInputs) {
+            dateInput.value = '';
+        }
+
+        // Reload the original data without any filters
+        renderFilteredData(currentData, currentData[0]);
+    }
+
+    // Function to download CSV
+    function downloadCSV() {
+        const csvData = currentData.map(row => row.join(",")).join("\n");
+        const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'data.csv');
+        document.body.appendChild(link); // Append the link to the body
+        link.click(); // Simulate click to download
+        document.body.removeChild(link); // Remove the link from the body
+    }
+
+    // Function to print the current table
+    function printTable() {
+        const printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>Print Table</title>');
+        printWindow.document.write('</head><body >');
+        printWindow.document.write(document.getElementById('dataTable').outerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    // Event listeners for action buttons
+    document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
+    document.getElementById('printTable').addEventListener('click', printTable);
+    document.getElementById('downloadTable').addEventListener('click', downloadCSV);
 
     // Function to switch tabs
     function switchTab(tabId) {
