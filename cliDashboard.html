@@ -75,20 +75,22 @@
 
     <!-- Tab navigation -->
     <div class="tabs">
-        <div id="footplateTab" class="tab active">Footplate</div>
+        <div id="footplateTab" class="tab active">Footplate</div><br>
         <div id="cvvrsTab" class="tab">CVVRS</div>
         <div id="spmTab" class="tab">SPM</div>
         <div id="rrTab" class="tab">RR</div>
         <div id="lobbyTab" class="tab">Lobby</div>
         <div id="stablingTab" class="tab">Stabling</div>
         <div id="nominatedTab" class="tab">Nominated</div>
+        <!-- <div id="nominatedTab" class="tab">TA</div>
+        <div id="nominatedTab" class="tab">FORT NIGHT</div> -->
     </div>
 
     <!-- Table filters -->
     <div id="filters" class="filters" style="display: none;">
         <!-- Filters for the footplate tab will be dynamically inserted here -->
     </div>
-
+    <div id="columnCheckboxes"></div>
     <!-- Row count display -->
     <div id="rowCount">Rows: 0</div>
 
@@ -214,6 +216,7 @@
                     // Restore filters for the Footplate tab
                     if (currentTab === 'footplate') {
                         restoreFootplateFilters(headers, rows);
+                        createColumnCheckboxes(headers);
                     }
                 } else {
                     alert('No data found.');
@@ -223,6 +226,49 @@
                 console.error('Error fetching Google Sheet data:', error);
                 alert('Error fetching data from Google Sheets.');
             });
+    }
+
+    // --- New Constants for Checkboxes ---
+    const checkboxContainer = document.getElementById('columnCheckboxes');
+
+    // Function to create checkboxes for the Footplate tab columns
+    function createColumnCheckboxes(headers) {
+        checkboxContainer.innerHTML = ''; // Clear existing checkboxes
+        
+        headers.forEach((header, index) => {
+            const label = document.createElement('label');
+            label.textContent = header;
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = true; // Default: all columns are checked
+            checkbox.setAttribute('data-index', index); // Store the column index
+            
+            // Add event listener to handle visibility changes
+            checkbox.addEventListener('change', toggleColumnVisibility);
+            
+            label.appendChild(checkbox);
+            checkboxContainer.appendChild(label);
+        });
+    }
+
+    // Function to toggle column visibility based on checkbox status
+    function toggleColumnVisibility() {
+        const checkboxes = checkboxContainer.getElementsByTagName('input');
+        const table = document.getElementById('dataTable');
+        const rows = table.rows;
+
+        for (let i = 0; i < checkboxes.length; i++) {
+            const isChecked = checkboxes[i].checked;
+
+            // Show or hide the column based on checkbox status
+            for (let row of rows) {
+                const cell = row.cells[i];
+                if (cell) {
+                    cell.style.display = isChecked ? '' : 'none';
+                }
+            }
+        }
     }
 
     // Function to restore filters for the Footplate tab
@@ -366,9 +412,15 @@
         renderFilteredData(currentData, currentData[0]);
     }
 
-    // Function to download CSV
+    // Function to download CSV with respect to visible columns
     function downloadCSV() {
-        const csvData = currentData.map(row => row.join(",")).join("\n");
+        const csvData = currentData.map(row => {
+            return Array.from(row).reduce((acc, cell, index) => {
+                const columnCheckbox = checkboxContainer.querySelector(`input[data-index='${index}']`);
+                return columnCheckbox.checked ? `${acc},${cell}` : acc;
+            }, '').slice(1); // remove the leading comma
+        }).join("\n");
+
         const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
@@ -379,12 +431,27 @@
         document.body.removeChild(link); // Remove the link from the body
     }
 
-    // Function to print the current table
+    // Function to print the current table with respect to visible columns
     function printTable() {
         const printWindow = window.open('', '', 'height=600,width=800');
         printWindow.document.write('<html><head><title>Print Table</title>');
         printWindow.document.write('</head><body >');
-        printWindow.document.write(document.getElementById('dataTable').outerHTML);
+        
+        // Create a printable version of the table with only visible columns
+        const tableClone = document.getElementById('dataTable').cloneNode(true);
+        const rows = tableClone.rows;
+        
+        for (let i = 0; i < rows.length; i++) {
+            const cells = rows[i].cells;
+            for (let j = cells.length - 1; j >= 0; j--) {
+                const columnCheckbox = checkboxContainer.querySelector(`input[data-index='${j}']`);
+                if (columnCheckbox && !columnCheckbox.checked) {
+                    rows[i].deleteCell(j); // Remove hidden cells
+                }
+            }
+        }
+
+        printWindow.document.write(tableClone.outerHTML);
         printWindow.document.write('</body></html>');
         printWindow.document.close();
         printWindow.print();
@@ -412,6 +479,8 @@
             fetchDataFromGoogleSheet(currentTab);
         } else {
             filtersDiv.style.display = 'none';
+            // Clear checkbox container when switching to other tabs
+            checkboxContainer.innerHTML = '';
             fetchDataFromGoogleSheet(currentTab); // Fetch data for the selected tab
         }
     }
@@ -428,6 +497,5 @@
     // Initial load - fetch data for Footplate tab by default
     fetchDataFromGoogleSheet('footplate');
 </script>
-
 </body>
 </html>
