@@ -60,7 +60,7 @@
     $(document).ready(function() {
         const sheetId = '1Yj8Nh_0BXJ0Q9p7CQFdv4QDKdOmXJ_-vM2mGnuhraWA'; // Replace with your actual Google Sheet ID
         const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Replace with your actual API Key
-        const range = 'Sheet1!A1:AZ'; // Get all columns in the specified range
+        const range = 'Sheet1!A1:CF1000'; // Ensure this range includes column CE (index 83)
 
         $.ajax({
             url: `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`,
@@ -73,22 +73,25 @@
                     return;
                 }
 
-                // Specify the indices of columns we want (including AR and AS)
+                // Specify the indices of columns we want (including Column CE, which is index 83)
                 const desiredIndices = [
-                    1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 44, 46, 47, 49, 51
+                    1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 37, 39, 41, 43, 82 // Column CE added here
                 ];
+
+                // Check if column 83 exists in the data response
+                console.log("API response columns:", values[0]); // First row (headers) to verify if column 83 exists
 
                 // Headers handling
                 const headers = values[0].filter((_, index) => desiredIndices.includes(index));
                 $('#headerRow').html('');
 
+                // Append headers to the table
                 headers.forEach(header => {
                     $('#headerRow').append(`<th>${header}</th>`);
                 });
 
                 // Initialize all rows
                 const allRows = [];
-                const isDateColumn = [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]; // Assuming only column 0 is a date column
                 let uniqueDates = new Set();
 
                 // Function to format date in DD/MM/YY
@@ -111,9 +114,9 @@
                     row.forEach((cell, index) => {
                         if (index === 0 && cell) {
                             const formattedDate = formatDate(cell); // Format the date in DD/MM/YY
-                            $('#dataRows tr:last').append(`<td>${formattedDate}</td>`); // Insert formatted date
+                            $('#dataRows tr:last').append(`<td>${formattedDate}</td>`); // Insert formatted date for column 0
                         } else {
-                            $('#dataRows tr:last').append(`<td>${cell}</td>`);
+                            $('#dataRows tr:last').append(`<td>${cell}</td>`); // Insert other data for all columns
                         }
 
                         // Collect unique dates from Column A (index 0)
@@ -147,7 +150,7 @@
                     filteredRows.forEach(row => {
                         $('#dataRows').append('<tr>');
                         row.forEach(cell => {
-                            $('#dataRows tr:last').append(`<td>${cell}</td>`);
+                            $('#dataRows tr:last').append(`<td>${cell}</td>`); // Insert row data
                         });
                         $('#dataRows').append('</tr>');
                     });
@@ -199,6 +202,7 @@
         });
     });
 </script>
+
 
 </body>
 </html>
