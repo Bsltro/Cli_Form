@@ -1,59 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAIN PAGE</title>
     <style>
-        /* Styling the table for better presentation */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        /* General Body Styles */
+        /* Reset default margin/padding for the body */
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
             margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ffcccc, #cce7ff); /* Gradient background */
+            color: #333; /* Default text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            text-align: center;
+            background-image: "images.jfif";
+            background-repeat: no-repeat;
         }
 
         /* Container Style */
         .container {
-            max-width: 100%;
+            max-width: 500px;
             width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-            border-radius: 8px;
-            margin: 0 auto;
-            max-width: 400px;
-            background-image: url('images.jfif'); /* Your image URL */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            padding: 40px;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Subtle shadow */
         }
 
         /* Header Style */
         h1 {
-            color: orange;
-            font-size: 24px;
+            color: #ff6600; /* Orange color for the title */
+            font-size: 28px;
             margin-bottom: 20px;
             font-weight: bold;
             text-transform: uppercase;
@@ -62,51 +45,18 @@
         /* Marquee Element for scrolling text */
         marquee {
             font-size: 1.5em;
-            color: orange;
+            color: #ff6600;
             padding: 10px 0;
         }
 
-        /* Input Field Styles */
-        input[type="text"], input[type="password"] {
-            padding: 12px;
-            font-size: 18px;
-            width: 100%;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            border: 2px solid #ccc;
-            box-sizing: border-box;
-        }
-
-        /* Button Style */
-        button {
-            padding: 12px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            background-color: orange;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #ff6600;
-        }
-
-        /* Error Message Style */
-        #error, #cliError, #adminError, #tlcError {
-            color: red;
-            display: none;
-            margin-top: 10px;
-        }
-
-        /* Tabs Style */
+        /* Styling for the tabs */
         .tab {
             display: inline-block;
-            padding: 10px;
+            padding: 10px 15px;
+            margin: 5px;
             cursor: pointer;
-            margin-right: 10px;
-            border-radius: 4px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
         }
 
         .admin-tab {
@@ -129,6 +79,48 @@
             background-color: #ddd;
         }
 
+        /* Input Field Styles */
+        input[type="text"], input[type="password"] {
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 2px solid #ccc;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #ff6600; /* Change border on focus */
+            outline: none; /* Remove outline */
+        }
+
+        /* Button Style */
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #ff6600;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            width: 100%;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #e65c00;
+            transform: translateY(-1px);
+        }
+
+        /* Error Message Style */
+        #error, #cliError, #adminError, #tlcError {
+            color: red;
+            display: none;
+            margin-top: 10px;
+        }
+
         .tab-content {
             display: none;
         }
@@ -140,27 +132,30 @@
         /* Responsive Layout */
         @media (max-width: 600px) {
             h1 {
-                font-size: 20px;
+                font-size: 22px;
                 margin-bottom: 10px;
             }
 
-            input[type="text"], input[type="password"], button {
+            input[type="text"], 
+            input[type="password"], 
+            button {
                 font-size: 16px;
                 padding: 10px;
             }
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
         <marquee behavior="scroll" direction="left">WELCOME TO CENTRAL RAILWAY, BHUSAWAL DIVISION, TRO BRANCH</marquee>
         <h1>WELCOME</h1>
-        <!-- <marquee scrollamount="10" direction="left">Wishing you all a very Happy Republic Day! Let's honor the spirit of our nation and remember the sacrifices of our heroes. Jai Hind!</marquee> -->
+
         <!-- Tabs for Admin Login, CLI Login, Password Login, and TLC Login -->
         <div>
             <div class="tab admin-tab" onclick="showTab('adminTab')">Admin Login</div>
-            <div class="tab password-tab" onclick="showTab('passwordTab')">Password Login</div><br><br>
+            <div class="tab password-tab" onclick="showTab('passwordTab')">Password Login</div><br>
             <div class="tab cli-tab" onclick="showTab('cliTab')">CLI Login</div>
             <div class="tab tlc-tab" onclick="showTab('tlcTab')">TLC Login</div>
         </div><br>
@@ -236,6 +231,7 @@
             'V M RAJPUT': 'password39',
             'N M SIVADAS': 'password40',
             'UMESH S KALE': 'BSL0108',
+            'P K AGRAWAL': 'BSL0109',
         };
 
         // Show specific tab when clicked
@@ -303,4 +299,5 @@
     </script>
 
 </body>
+
 </html>

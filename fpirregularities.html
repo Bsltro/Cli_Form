@@ -46,13 +46,31 @@
             font-size: 14px;
             color: #555;
         }
+        .filters {
+            margin-bottom: 20px;
+        }
+        .filters label, .filters input {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
 
     <h1>Footplate Irregularities Data</h1>
+    
+    <!-- Filters for date range -->
+    <div class="filters">
+        <label for="from-date">From:</label>
+        <input type="date" id="from-date">
+        
+        <label for="to-date">To:</label>
+        <input type="date" id="to-date">
+        
+        <button onclick="applyDateFilter()">Apply Date Filter</button>
+    </div>
+
     <div id="loading">Loading data...</div>
-    <div id="red-cell-count">TOTAL RED CELLS: 0</div> <!-- Changed label to indicate total red cells -->
+    <div id="red-cell-count">TOTAL RED CELLS: 0</div> 
     <table id="results">
         <thead>
             <tr>
@@ -66,7 +84,8 @@
 
     <script>
         const sheetID = '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM';
-        const range = 'Sheet1'; // Assuming data is in Sheet1, adjust if needed
+        const range = 'Sheet1!A1:AV1000'; // Assuming data is in Sheet1, adjust if needed
+        let allRows = []; // Store the fetched rows to apply the date filter later
 
         function fetchSheetData() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`;
@@ -74,25 +93,9 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    const rows = data.values;
-                    const headers = rows[0]; // Assuming first row contains headers
-                    const filteredRows = rows.slice(1).filter(row => {
-                        // Check the original conditions
-                        const condition1 = row[22] === 'POOR' || row[23] === 'POOR' || row[24] === 'NO' || 
-                                           row[25] === 'NO' || row[26] === 'NO' || row[27] === 'POOR' || 
-                                           row[28] === 'POOR' || (['LPON', 'ALPON', 'ON'].includes(row[29])) || 
-                                           row[30] === 'POOR' || row[31] === 'NO' || row[33] === 'NO' || 
-                                           row[47] === 'NO' || row[48] === 'YES' || row[50] === 'NOT PROPER' || row[51] ==='NOT PROPER' ||
-                                           ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(row[34]);
-
-                        // New conditions based on Column AN and AG
-                        const condition2 = (row[39] === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) || 
-                                           (row[39] === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32]));
-
-                        // Only include rows that meet either the original condition or the new condition
-                        return condition1 || condition2;
-                    });
-
+                    allRows = data.values; // Store the entire data set
+                    const headers = allRows[0]; // Assuming first row contains headers
+                    const filteredRows = applyFilters(allRows.slice(1)); // Filter rows based on conditions
                     displayHeaders(headers);
                     displayFilteredRows(filteredRows);
                 })
@@ -102,29 +105,64 @@
                 });
         }
 
+        function applyFilters(rows) {
+    const fromDate = document.getElementById('from-date').value;
+    const toDate = document.getElementById('to-date').value;
+    
+    const fromDateObj = fromDate ? new Date(fromDate + 'T00:00:00') : null; 
+    const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
+
+    console.log("Filtering from:", fromDateObj);
+    console.log("Filtering to:", toDateObj);
+
+    return rows.filter(row => {
+        const rowDateString = row[1]; 
+        const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
+
+        console.log("Row date:", rowDateObj);
+
+        // Check if the date falls within the selected range (if any)
+        let isDateInRange = true;
+        if (fromDateObj && rowDateObj < fromDateObj) {
+            isDateInRange = false;
+            console.log("Row date is before fromDate");
+        }
+        if (toDateObj && rowDateObj > toDateObj) {
+            isDateInRange = false;
+            console.log("Row date is after toDate");
+        }
+
+        const condition1 = row[22] === 'POOR' || row[23] === 'POOR' || row[24] === 'NO' || 
+                                           row[25] === 'NO' || row[26] === 'NO' || row[27] === 'POOR' || 
+                                           row[28] === 'POOR' || (['LPON', 'ALPON', 'ON'].includes(row[29])) || 
+                                           row[30] === 'POOR' || row[31] === 'NO' || row[33] === 'NO' || 
+                                            row[46] === 'NOT PROPER' || row[47] ==='NOT PROPER' ||
+                                           ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(row[34]);
+        const condition2 = (row[36] === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) || 
+        (row[36] === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32])) || row[43] === 'NO' ||row[44] === 'YES';
+
+        return isDateInRange && (condition1 || condition2);
+    });
+}
         function displayHeaders(headers) {
             const tableHead = document.querySelector('#results thead tr');
             tableHead.innerHTML = ''; // Clear any existing headers
 
-            // Create header cells with count containers
             headers.forEach((header, index) => {
                 const th = document.createElement('th');
 
-                // Create a container to hold both the header and the red cell count
                 const columnHeaderContainer = document.createElement('div');
                 columnHeaderContainer.classList.add('column-header-container');
 
-                // Create the header text
                 const headerDiv = document.createElement('div');
-                headerDiv.textContent = header || ''; // Handle empty headers
+                headerDiv.textContent = header || '';
                 headerDiv.classList.add('column-header');
                 columnHeaderContainer.appendChild(headerDiv);
 
-                // Create the red cell count placeholder
                 const redCellCountDiv = document.createElement('div');
                 redCellCountDiv.id = `red-cell-count-column-${index}`;
                 redCellCountDiv.classList.add('red-cell-count');
-                redCellCountDiv.textContent = 'Red cells: 0'; // Placeholder for red cell count
+                redCellCountDiv.textContent = 'Red cells: 0';
                 columnHeaderContainer.appendChild(redCellCountDiv);
 
                 th.appendChild(columnHeaderContainer);
@@ -134,17 +172,16 @@
 
         function displayFilteredRows(filteredRows) {
             const tableBody = document.querySelector('#results tbody');
-            tableBody.innerHTML = ''; // Clear any existing rows
-            const redCellCounts = new Array(filteredRows[0].length).fill(0); // Initialize red cell count array
-            let totalRedCells = 0; // Initialize the total red cell count
+            tableBody.innerHTML = '';
+            const redCellCounts = new Array(filteredRows[0].length).fill(0);
+            let totalRedCells = 0;
 
             filteredRows.forEach(row => {
                 const tr = document.createElement('tr');
                 row.forEach((cell, index) => {
                     const td = document.createElement('td');
-                    td.textContent = cell || ''; // Handle empty cells
+                    td.textContent = cell || '';
 
-                    // Check for conditions to highlight the cell in red and count them
                     if (index === 22 && cell === 'POOR' ||   // Column W
                         index === 23 && cell === 'POOR' ||   // Column X
                         index === 24 && cell === 'NO' ||     // Column Y
@@ -156,16 +193,16 @@
                         index === 30 && cell === 'POOR' ||   // Column AE
                         index === 31 && cell === 'NO' ||     // Column AF
                         index === 33 && cell === 'NO' ||     // Column AH
-                        index === 47 && cell === 'NO' ||   // Column AE
-                        index === 48 && cell === 'YES' ||     // Column AF
-                        index === 50 && cell === 'NOT PROPER' ||
-                        index === 51 && cell === 'NOT PROPER' ||
-                        (index === 34 && ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(cell)) || // Column AI
-                        (index === 39 && cell === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) || // Column AN & AG
-                        (index === 39 && cell === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32]))) {
+                        index === 43 && cell === 'NO' ||   // Column AE
+                        index === 44 && cell === 'YES' ||     // Column AF
+                        index === 46 && cell === 'NOT PROPER' ||
+                        index === 47 && cell === 'NOT PROPER' ||
+                        (index === 34 && ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(cell)) ||
+                        (index === 36 && cell === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) ||
+                        (index === 36 && cell === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32]))) {
                             td.classList.add('highlight');
-                            redCellCounts[index]++; // Increment count for this column
-                            totalRedCells++; // Increment the total red cells
+                            redCellCounts[index]++;
+                            totalRedCells++;
                     }
 
                     tr.appendChild(td);
@@ -173,16 +210,21 @@
                 tableBody.appendChild(tr);
             });
 
-            // Update the red cell count for each column
             redCellCounts.forEach((count, index) => {
                 const countElement = document.getElementById(`red-cell-count-column-${index}`);
                 countElement.textContent = `Red cells: ${count}`;
             });
 
-            // Update the total red cells count at the top
             document.getElementById('red-cell-count').textContent = `TOTAL IRREGULARITIES: ${totalRedCells}`;
-
             document.getElementById('loading').style.display = 'none';
+        }
+
+        // Apply date filter on button click
+        function applyDateFilter() {
+            const filteredRows = applyFilters(allRows.slice(1)); // Apply filters based on date
+            const headers = allRows[0]; // Get headers from stored data
+            displayHeaders(headers);
+            displayFilteredRows(filteredRows);
         }
 
         // Fetch data when the page is loaded
