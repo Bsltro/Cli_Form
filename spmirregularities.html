@@ -60,8 +60,8 @@
                     const headers = rows[0]; // Assuming first row contains headers
                     const filteredRows = rows.slice(1).filter(row => {
                         // Check the conditions for columns R, S, U, V, W, X (0-based index)
-                        return row[17] === 'NO' || row[18] === 'NO' || row[20] === 'NO' || 
-                               row[21] === 'YES' || row[22] === 'YES' || row[23] === 'YES';
+                        return row[15] === 'NO' || row[16] === 'NO' || row[18] === 'NO' || 
+                               row[19] === 'YES' || row[20] === 'NO' || row[21] === 'YES';
                     });
 
                     displayHeaders(headers);

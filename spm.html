@@ -148,18 +148,12 @@
             <label>From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
             <input type="text" name="spmfromstation" id="spmfromstation" oninput="upperCase()" class="uppercase" required>
         </div>
-        <div class="form-outer">
-            <label>Start Time</label>
-            <input type="time" name="spmstarttime" id="spmstarttime" required>
-        </div>
+       
         <div class="form-outer">
             <label>To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
             <input type="text" name="spmtostation" id="spmtostation" oninput="upperCase()" class="uppercase" required>
         </div>
-        <div class="form-outer">
-            <label>End Time</label>
-            <input type="time" name="spmendtime" id="spmendtime" required>
-        </div>
+       
 
         <!-- Select whether BMBS% Less Than 50% -->
         <div class="justify-content">
@@ -262,7 +256,7 @@
             </div>   
         </div>
         <div class="justify-content">
-            <label style="color: red; font-weight: bold;">Not Run With Constant Speed</label><br><br>
+            <label style="color: red; font-weight: bold;">Run With Constant Speed</label><br><br>
             <div class="container">
                 <label for="YES">YES
                     <input type="radio" id="yes" name="spmconstsp" value="YES">
@@ -308,28 +302,7 @@
                 </label><br><br>
             </div>
         </div>
-        <div class="justify-content">
-            <label style="color: red; font-weight: bold;">DAY/NIGHT</label><br><br>
-            <div class="container">
-                <label for="DAY" class="radio-inline">DAY
-                    <input type="radio" id="spmd" name="spmdn" value="DAY">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <label for="NIGHT" class="radio-inline">NIGHT
-                    <input type="radio" id="spmn" name="spmdn" value="NIGHT">
-                </label><br><br>
-            </div>
-        </div>
-        <div class="justify-content">
-            <label style="color: red; font-weight: bold;">IRREGULARITY OBSERVED</label><br><br>
-            <div class="container">
-                <label for="yes" class="radio-inline">YES
-                    <input type="radio" id="spmyes" name="spmirr" value="YES">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <label for="other" class="radio-inline">NO
-                    <input type="radio" id="spmno" name="spmirr" value="NO" checked>
-                </label><br><br>
-            </div>
-        </div>
+       
         <div class="form-outer">
             <label style="color: red; font-weight: bold;">REMARK</label>
             <input type="text" name="spmremark" id="spmremark">
@@ -430,25 +403,25 @@
         }
 
         // Time Logic for Day/Night
-        const startTime = document.getElementById('spmstarttime').value;
-        const endTime = document.getElementById('spmendtime').value;
-        if (
-            (startTime >= "22:00" && startTime <= "23:59") ||
-            (endTime >= "22:00" && endTime <= "23:59") ||
-            (startTime >= "00:00" && startTime <= "06:00") ||
-            (endTime >= "00:00" && endTime <= "06:00")
-        ) {
-            document.getElementById('spmn').checked = true; // NIGHT
-        } else {
-            document.getElementById('spmd').checked = true; // DAY
-        }
-    }
+    //     const startTime = document.getElementById('spmstarttime').value;
+    //     const endTime = document.getElementById('spmendtime').value;
+    //     if (
+    //         (startTime >= "22:00" && startTime <= "23:59") ||
+    //         (endTime >= "22:00" && endTime <= "23:59") ||
+    //         (startTime >= "00:00" && startTime <= "06:00") ||
+    //         (endTime >= "00:00" && endTime <= "06:00")
+    //     ) {
+    //         document.getElementById('spmn').checked = true; // NIGHT
+    //     } else {
+    //         document.getElementById('spmd').checked = true; // DAY
+    //     }
+     }
 
     // Add event listeners for the inputs to trigger radio button selection
     document.getElementById('spmTrainNumber').addEventListener('input', setRadioButtons);
     document.getElementById('spmTrainLoad').addEventListener('input', setRadioButtons);
-    document.getElementById('spmstarttime').addEventListener('input', setRadioButtons);
-    document.getElementById('spmendtime').addEventListener('input', setRadioButtons);
+    //document.getElementById('spmstarttime').addEventListener('input', setRadioButtons);
+    //document.getElementById('spmendtime').addEventListener('input', setRadioButtons);
 
     // Initial load function
     window.onload = () => {
@@ -475,7 +448,7 @@
         });
 
         // Send the data to the server
-        fetch('https://script.google.com/macros/s/AKfycbwjWmOfKYDjgzIETFzeDqsYDspLzlZV4WQIBv2oeH6mYVVywwMqLq_ZKWc-pWGr_uFU/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbwpgTCrDmA0jGlgL2Kty6ioBWS-eeDwq-FnpsotECuvjlZcnQv7-VrYQDCzrzQY1wZl/exec', {
             method: "POST",
             body: data
         })
