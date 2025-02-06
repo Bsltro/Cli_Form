@@ -240,8 +240,16 @@
                 <label for="endTime" style="color: red; font-weight: bold;">End Time (HH:MM):</label>
                 <input type="time" id="endTime" name="endTime" required>
             </div><br>
-            
             <div class="form-outer">
+                <label for="signalcallinglp" style="color: red; font-weight: bold;">Signal Calling By LP</label>
+                <select name="sigcalllp" id="sigcalllp" onchange="if (this.value === 'POOR') { alert('You have selected POOR option, it will be considered as irregularity.'); }">
+                    <option value="select">-------Select Signal Calling By Loco Pilot-------</option>
+                    <option value="GOOD">GOOD(WITH HAND GESTURE)</option>
+                    <option value="AVERAGE">AVERAGE(WITHOUT HAND GESTURE)</option>
+                    <option value="POOR">POOR(NOT CALLING)</option>
+                </select>
+            </div>
+            <!-- <div class="form-outer">
                 <label for="signalcallinglp" style="color: red; font-weight: bold;">Signal Caling By LP</label>
                 <select name="sigcalllp" id="sigcalllp">
                     <option value="select">-------Select Signal Calling By Loco Pilot-------</option>
@@ -249,7 +257,7 @@
                     <option value="AVERAGE">AVERAGE(WITHOUT HAND GESTURE)</option>
                     <option value="POOR">POOR(NOT CALLING)</option>
                 </select>
-            </div>
+            </div> -->
             <br>
             <div class="form-outer">
                 <label for="signalcallingalp" style="color: red; font-weight: bold;">Signal Caling By ALP</label>
@@ -503,11 +511,12 @@
                    <label for="sd2" class="radio-inline">02/2025
                         <input type="checkbox" id="sd2" name="sd2" value="02/2025">
                     </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                   <!-- <label for="sd3" class="radio-inline">03/2025
+                   <label for="sd3" class="radio-inline">03/2025
                            <input type="checkbox" id="sd3" name="sd3" value="03/2025">
-                    </label><br>  --><br><br>
+                    </label><br> <br><br>
                     <a href="https://drive.google.com/file/d/1910pGUE-32eLllF8T6aec7aI1vrGM5ns/view?usp=sharing">***Click Here For Safety Drive-01/2025***</a><br><br>
-                    <a href="https://drive.google.com/file/d/1Waujj07R4BWt7YY7nc9DlHS_GQ2cjDgW/view?usp=sharing">***Click Here For Safety Drive-02/2025***</a>
+                    <a href="https://drive.google.com/file/d/1Waujj07R4BWt7YY7nc9DlHS_GQ2cjDgW/view?usp=sharing">***Click Here For Safety Drive-02/2025***</a><br><br>
+                    <a href="https://drive.google.com/file/d/16AMjxCOmUUQ7vg4kM0Djt1grsll8P2Hp/view?usp=sharing">***Click Here For Safety Drive-03/2025***</a>
                 </div> <br>  
                 </div>
                 <div class="justify-content">
@@ -801,7 +810,7 @@ form.addEventListener('submit', (e) => {
     
     // Create FormData object and submit the form data
     let data = new FormData(form);
-    fetch('https://script.google.com/macros/s/AKfycbyQN1j1D0WwCHMvmskt8irY8J8EiYsliI-BlGwhsKckwJpL0QvXl2HTsNcBJUp_HJ28/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbwfrNnNrGW1vkb-ZHtsXVI9sS1qUC8OrFzTGjRaOCDTLEe4piH7yDN9As1yq3X3nia_/exec', {
         method: "POST",
         body: data
     })
