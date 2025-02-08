@@ -261,7 +261,7 @@
             <br>
             <div class="form-outer">
                 <label for="signalcallingalp" style="color: red; font-weight: bold;">Signal Caling By ALP</label>
-                <select name="sigcallalp" id="sigcallalp">
+                <select name="sigcallalp" id="sigcallalp" onchange="if (this.value === 'POOR') { alert('You have selected POOR option, it will be considered as irregularity.'); }" >
                     <option value="select">-------Select Signal Calling By Assistant Loco Pilot-------</option>
                     <option value="GOOD">GOOD(WITH HAND GESTURE)</option>
                     <option value="AVERAGE">AVERAGE(WITHOUT HAND GESTURE)</option>
@@ -276,7 +276,7 @@
                         <input type="radio" id="yes" name="sigexchange" value="YES">
                     </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     <label for="NO" class="radio-inline">NO
-                        <input type="radio" id="no" name="sigexchange" value="NO">
+                        <input type="radio" id="no" name="sigexchange" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }" >
                     </label><br><br>
                 </div>   
             </div>
@@ -288,7 +288,7 @@
                         <input type="radio" id="yes" name="bftbpt" value="YES">
                     </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     <label for="NO" class="radio-inline">NO
-                        <input type="radio" id="no" name="bftbpt" value="NO">
+                        <input type="radio" id="no" name="bftbpt" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                     </label><br><br>
                 </div>   
             </div>
@@ -299,14 +299,14 @@
                         <input type="radio" id="yes" name="observeco" value="YES">
                     </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     <label for="NO" class="radio-inline">NO
-                        <input type="radio" id="no" name="observeco" value="NO">
+                        <input type="radio" id="no" name="observeco" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                     </label><br><br>
                 </div>   
             </div>
             <br>
             <div class="form-outer">
                 <label for="knowledge" style="color: red; font-weight: bold;">Knowledge-->Loco Pilot</label>
-                <select name="knowledgelp" id="knowledgelp">
+                <select name="knowledgelp" id="knowledgelp" onchange="if (this.value === 'POOR') { alert('You have selected POOR option, it will be considered as irregularity.'); }">
                     <option value="select">-------Select Knowledge Of Loco Pilot-------</option>
                     <option value="GOOD">GOOD</option>
                     <option value="AVERAGE">AVERAGE</option>
@@ -316,7 +316,7 @@
             <br>
             <div class="form-outer">
                 <label for="knowledge" style="color: red; font-weight: bold;">Knowledge-->Assistant Loco Pilot</label>
-                <select name="knowledgealp" id="knowledgealp">
+                <select name="knowledgealp" id="knowledgealp"  onchange="if (this.value === 'POOR') { alert('You have selected POOR option, it will be considered as irregularity.'); }">
                     <option value="select">-------Select Knowledge Of Assistant Loco Pilot-------</option>
                     <option value="GOOD">GOOD</option>
                     <option value="AVERAGE">AVERAGE</option>
@@ -326,7 +326,7 @@
             <br>
             <div class="form-outer">
                 <label for="knowledge" style="color: red; font-weight: bold;">Mobile</label>
-                <select name="mobile" id="mobile">
+                <select name="mobile" id="mobile" onchange="handleSelectionChange(this)">
                     <option value="select">-------Select Mobile Condition Of Crew-------</option>
                     <option value="OFF">OFF(Both)</option>
                     <option value="LPON">LP ON And ALP OFF</option>
@@ -334,10 +334,24 @@
                     <option value="ON">ON(Both)</option>
                 </select>
             </div>
+            
+            <script>
+                function handleSelectionChange(selectElement) {
+                    var value = selectElement.value;
+                    if (value === 'LPON') {
+                        alert('You have selected LPON option, it will be considered as irregularity.');
+                    } else if (value === 'ALPON') {
+                        alert('You have selected ALPON option, it will be considered as irregularity.');
+                    } else if (value === 'ON') {
+                        alert('You have selected ON option, it will be considered as irregularity.');
+                    }
+                }
+            </script>
+            
             <br>
             <div class="form-outer">
                 <label for="whistling" style="color: red; font-weight: bold;">Whisteling By ALP</label>
-                <select name="whistling" id="whistling">
+                <select name="whistling" id="whistling" onchange="if (this.value === 'POOR') { alert('You have selected POOR option, it will be considered as irregularity.'); }">
                     <option value="select">-------Select Whisteling By Assistant Loco Pilot-------</option>
                     <option value="GOOD">GOOD</option>
                     <option value="AVERAGE">AVERAGE</option>
@@ -352,14 +366,14 @@
                         <input type="radio" id="yes" name="lococheck" value="YES">
                     </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     <label for="NO" class="radio-inline">NO
-                        <input type="radio" id="on" name="lococheck" value="NO">
+                        <input type="radio" id="on" name="lococheck" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                     </label><br><br>
                 </div>   
             </div>
             <br>
             <div class="form-outer">
                 <label for="speedy" style="color: red; font-weight: bold;">Speed At One Yellow</label>
-                <select name="speedy" id="speedy">
+                <select name="speedy" id="speedy" onchange="checkIrregularity(this)">
                     <option value="select">-------Select Speed-------</option>
                     <option value="BELOW30">BELOW 30</option>
                     <option value="30 - 40">30 - 40</option>
@@ -368,6 +382,26 @@
                 </select>
             </div>
             <br>
+            <script>
+    // Function to check the conditions and alert if irregularity occurs
+    function checkIrregularity() {
+        var coachChecked = document.getElementById('coach').checked;
+        var goodsChecked = document.getElementById('goods').checked;
+        var speedSelected = document.getElementById('speedy').value;
+
+        // Check for irregularities
+        if ((goodsChecked && (speedSelected === '30 - 40' || speedSelected === '40 - 50' || speedSelected === 'ABOVE50')) ||
+            (coachChecked && (speedSelected === '40 - 50' || speedSelected === 'ABOVE50'))) {
+            alert("This will be considered as an irregularity.");
+        }
+    }
+
+    // Event listeners for the radio buttons and the speed dropdown
+    document.getElementById('coach').addEventListener('change', checkIrregularity);
+    document.getElementById('goods').addEventListener('change', checkIrregularity);
+    document.getElementById('speedy').addEventListener('change', checkIrregularity);
+</script>
+            
             <div class="justify-content">
                 <label style="color: red; font-weight: bold;">ALP Hand On RS</label><br><br>
                 <div class="container">
@@ -375,23 +409,34 @@
                         <input type="radio" id="yes" name="handrs" value="YES">
                     </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     <label for="NO" class="radio-inline">NO
-                        <input type="radio" id="on" name="handrs" value="NO">
+                        <input type="radio" id="on" name="handrs" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                     </label><br><br>
                 </div>   
             </div>
             <br>
-            <div class="form-outer">
-                <label for="whistling" style="color: red; font-weight: bold;">Luggage Packing</label>
-                <select name="luggage" id="luggage">
-                    <option value="select">-------Select Luggage Packing-------</option>
-                    <option value="NO">NO</option>
-                    <option value="ALP LUGGAGE PACKING">ALP LUGGAGE PACKING</option>
-                    <option value="LP LUGGAGE PACKING">LP LUGGAGE PACKING</option>
-                    <option value="YES">YES BOTH LUGGAGE PACKING</option>
-                </select>
-            </div>
-            <br>
-           
+           <div class="form-outer">
+    <label for="luggage" style="color: red; font-weight: bold;">Luggage Packing</label>
+    <select name="luggage" id="luggage" onchange="handleSelectionChangeLuggage(this)">
+        <option value="select">-------Select Luggage Packing-------</option>
+        <option value="NO">NO</option>
+        <option value="ALP LUGGAGE PACKING">ALP LUGGAGE PACKING</option>
+        <option value="LP LUGGAGE PACKING">LP LUGGAGE PACKING</option>
+        <option value="YES">YES BOTH LUGGAGE PACKING</option>
+    </select>
+</div>
+<br>
+<script>
+    function handleSelectionChangeLuggage(selectElement) {
+        var value = selectElement.value;
+        if (value === 'ALP LUGGAGE PACKING') {
+            alert('You have selected ALP LUGGAGE PACKING option, it will be considered as irregularity.');
+        } else if (value === 'LP LUGGAGE PACKING') {
+            alert('You have selected LP LUGGAGE PACKING option, it will be considered as irregularity.');
+        } else if (value === 'YES') {
+            alert('You have selected YES option, it will be considered as irregularity.');
+        }
+    }
+</script>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP Due Date</label>
                 <input type="date" name="lpduedate" id="lpduedate" readonly>
@@ -455,7 +500,7 @@
                         <input type="radio" id="coyes" name="coack" value="YES">
                     </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <label for="irregularityNo" class="radio-inline">NO
-                        <input type="radio" id="cono" name="coack" value="NO">
+                        <input type="radio" id="cono" name="coack" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                     </label><br><br>
                 </div>   
             </div>
@@ -463,7 +508,7 @@
                 <label style="color: red; font-weight: bold;">Late Sign ON/OFF</label><br><br>
                 <div class="container">
                     <label for="irregularityYes" class="radio-inline">YES
-                        <input type="radio" id="signonoff" name="signonoff" value="YES">
+                        <input type="radio" id="signonoff" name="signonoff" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
                     </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <label for="irregularityNo" class="radio-inline">NO
                         <input type="radio" id="signonoff" name="signonoff" value="NO">
@@ -483,7 +528,7 @@
                         <input type="radio" id="shuntingy" name="shunting" value="PROPER">
                     </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <label for="irregularityNo" class="radio-inline">NOT PROPER
-                        <input type="radio" id="shuntingn" name="shunting" value="NOT PROPER">
+                        <input type="radio" id="shuntingn" name="shunting" value="NOT PROPER" onchange="if (this.value === 'NOT PROPER') { alert('You have selected NOT PROPER option, it will be considered as irregularity.'); }">
                     </label><br><br>
                 </div>   
             </div>
@@ -494,7 +539,7 @@
                         <input type="radio" id="lstby" name="lstb" value="PROPER">
                     </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <label for="irregularityNo" class="radio-inline">NOT PROPER
-                        <input type="radio" id="lstbn" name="lstb" value="NOT PROPER">
+                        <input type="radio" id="lstbn" name="lstb" value="NOT PROPER" onchange="if (this.value === 'NOT PROPER') { alert('You have selected NOT PROPER option, it will be considered as irregularity.'); }">
                     </label><br><br>
                 </div>   
             </div>

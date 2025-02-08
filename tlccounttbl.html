@@ -3,206 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TLC Data</title>
+    <title>TLC CLI MONITORING DATA</title>
     <style>
         table {
-            border-collapse: collapse;
             width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
         }
         th, td {
-            border: 1px solid #ddd;
             padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        #filter-container {
-            margin-bottom: 20px;
+            text-align: left;
         }
         .button-container {
             margin-top: 20px;
         }
-        /* Hide the sum row when printing */
-        @media print {
-            table {
-                border: 2px solid black;
-            }
-        }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
-<h1>Data Table For TLC</h1>
+    <h1>DAILY CLI PERFORMANCE AND AMBUSH CHECK </h1>
 
-<!-- Date Filter Dropdown -->
-<div id="filter-container">
-    <label for="dateFilter">Select Date: </label>
-    <select id="dateFilter">
-        <option value="">Select a date</option>
-    </select>
-</div>
+    <!-- Date Picker -->
+    <label for="datePicker">Select Date:</label>
+    <input type="date" id="datePicker" />
 
-<table id="dataTable">
-    <thead>
-        <tr id="headerRow"></tr>
-    </thead>
-    <tbody id="dataRows"></tbody>
-</table>
+    <table id="dataTable">
+        <thead>
+            <!-- Dynamic headers will be inserted here -->
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
 
-<div class="button-container">
-    <button id="printBtn">Print Table</button>
-    <button id="downloadBtn">Download CSV</button>
-</div>
+    <div class="button-container">
+        <button onclick="printTable()">Print</button>
+        <button onclick="downloadCSV()">Download CSV</button>
+    </div>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        const sheetId = '1Yj8Nh_0BXJ0Q9p7CQFdv4QDKdOmXJ_-vM2mGnuhraWA'; // Replace with your actual Google Sheet ID
-        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Replace with your actual API Key
-        const range = 'Sheet1!A1:CF1000'; // Ensure this range includes column CE (index 83)
-
-        $.ajax({
-            url: `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`,
-            method: 'GET',
-            success: function(response) {
-                const values = response.values;
-
-                if (!values || values.length === 0) {
-                    console.error('No data found.');
-                    return;
-                }
-
-                // Specify the indices of columns we want (including Column CE, which is index 83)
-                const desiredIndices = [
-                    1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 37, 39, 41, 43, 82 // Column CE added here
-                ];
-
-                // Check if column 83 exists in the data response
-                console.log("API response columns:", values[0]); // First row (headers) to verify if column 83 exists
-
-                // Headers handling
-                const headers = values[0].filter((_, index) => desiredIndices.includes(index));
-                $('#headerRow').html('');
-
-                // Append headers to the table
-                headers.forEach(header => {
-                    $('#headerRow').append(`<th>${header}</th>`);
-                });
-
-                // Initialize all rows
-                const allRows = [];
-                let uniqueDates = new Set();
-
-                // Function to format date in DD/MM/YY
-                function formatDate(date) {
-                    const d = new Date(date);
-                    if (!isNaN(d.getTime())) {
-                        const day = ("0" + d.getDate()).slice(-2); // Ensure two digits for day
-                        const month = ("0" + (d.getMonth() + 1)).slice(-2); // Ensure two digits for month
-                        const year = d.getFullYear().toString().slice(-2); // Get last two digits of the year
-                        return `${day}/${month}/${year}`;
-                    }
-                    return date; // Return original date if it's invalid
-                }
-
-                // Populate table data and store rows for later processing
-                for (let i = 1; i < values.length; i++) { // Start from 1 to skip headers
-                    const row = values[i].filter((_, index) => desiredIndices.includes(index));
-                    allRows.push(row);
-                    $('#dataRows').append('<tr>');
-                    row.forEach((cell, index) => {
-                        if (index === 0 && cell) {
-                            const formattedDate = formatDate(cell); // Format the date in DD/MM/YY
-                            $('#dataRows tr:last').append(`<td>${formattedDate}</td>`); // Insert formatted date for column 0
-                        } else {
-                            $('#dataRows tr:last').append(`<td>${cell}</td>`); // Insert other data for all columns
-                        }
-
-                        // Collect unique dates from Column A (index 0)
-                        if (index === 0 && cell) {  // Date is in Column A (index 0)
-                            uniqueDates.add(formatDate(cell)); // Add formatted date to the set
-                        }
-                    });
-                    $('#dataRows').append('</tr>');
-                }
-
-                // Populate Date Filter Dropdown with unique dates from Column A
-                uniqueDates.forEach(date => {
-                    $('#dateFilter').append(`<option value="${date}">${date}</option>`);
-                });
-
-                // Function to update the table based on selected date
-                function updateTable(selectedDate) {
-                    $('#dataRows').html(''); // Clear existing rows
-                    let filteredRows = [];
-
-                    // Compare formatted date from the data to the selected date
-                    allRows.forEach(row => {
-                        const dateCell = row[0]; // Column A (index 0)
-                        const formattedDateCell = formatDate(dateCell); // Format the date for comparison
-                        if (!selectedDate || (dateCell && formattedDateCell === selectedDate)) {
-                            filteredRows.push(row);
-                        }
-                    });
-
-                    // Rebuild rows with filtered data
-                    filteredRows.forEach(row => {
-                        $('#dataRows').append('<tr>');
-                        row.forEach(cell => {
-                            $('#dataRows tr:last').append(`<td>${cell}</td>`); // Insert row data
-                        });
-                        $('#dataRows').append('</tr>');
-                    });
-                }
-
-                // Initial load with all data
-                updateTable('');
-
-                // Handle date filter change
-                $('#dateFilter').on('change', function() {
-                    const selectedDate = $(this).val();
-                    updateTable(selectedDate);
-                });
-
-                // Print Table Function
-                $('#printBtn').on('click', function() {
-                    const printWindow = window.open('', '', 'height=600,width=800');
-                    printWindow.document.write('<html><head><title>Print Table</title><style>table { border-collapse: collapse; width: 100%; border: 2px solid black; } th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }</style></head><body>');
-                    printWindow.document.write('<table>' + $('#dataTable').html() + '</table>');
-                    printWindow.document.write('</body></html>');
-                    printWindow.document.close();
-                    printWindow.print();
-                });
-
-                // Download CSV Function
-                $('#downloadBtn').on('click', function() {
-                    let csvContent = "data:text/csv;charset=utf-8,";
-                    const headersText = headers.join(',');
-                    csvContent += headersText + "\n";
-
-                    allRows.forEach(row => {
-                        const rowText = row.join(',');
-                        csvContent += rowText + "\n";
-                    });
-
-                    const encodedUri = encodeURI(csvContent);
-                    const link = document.createElement('a');
-                    link.setAttribute('href', encodedUri);
-                    link.setAttribute('download', 'table_data.csv');
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                });
-            },
-            error: function(error) {
-                console.error('There was an error retrieving the data: ', error);
-                alert('Error: Unable to retrieve data from Google Sheets. Please check the console for details.');
-            }
+    <script>
+        // Replace with your Google Sheets API endpoint
+        const sheetId = '1Yj8Nh_0BXJ0Q9p7CQFdv4QDKdOmXJ_-vM2mGnuhraWA';
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+        const sheetName = 'Sheet1'; // Change this if necessary
+    
+        // Columns we want to display (B, C, O, F, H, S, T, U, V, AN, AP, BA)
+        const relevantColumns = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 83, 85, 86, 87, 88, 89, 90, 91, 93];
+    
+        // Default to current date
+        let selectedDate = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD for the date picker
+    
+        // Initialize the date picker with the current date
+        document.getElementById('datePicker').value = selectedDate;
+    
+        // Fetch data when the page loads or the date is changed
+        document.getElementById('datePicker').addEventListener('change', (e) => {
+            selectedDate = e.target.value;
+            fetchData();
         });
-    });
-</script>
-
-
+    
+        async function fetchData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const rows = data.values;
+    
+            if (!rows || rows.length < 2) {
+                alert('No data found!');
+                return;
+            }
+    
+            const headers = rows[0]; // First row contains the headers
+            const filteredRows = rows.slice(1).filter(row => {
+                const rowDate = formatDate(row[1]); // Column B is index 1
+                const pickerDate = formatDatePicker(selectedDate);
+                return rowDate === pickerDate;
+            });
+    
+            // Populate the table with dynamic headers
+            populateHeaders(headers);
+    
+            // Populate the table with filtered rows
+            if (filteredRows.length > 0) {
+                populateTable(filteredRows);
+            } else {
+                alert(`No data found for ${selectedDate}`);
+            }
+        }
+    
+        // Function to format date from Google Sheets (DD/MM/YY) to DD-MM-YYYY
+        function formatDate(dateString) {
+            // Assuming dateString is in 'DD/MM/YY' format
+            if (dateString && typeof dateString === 'string') {
+                const [day, month, year] = dateString.trim().split('/');
+                if (day && month && year) {
+                    // Format the date as DD-MM-YYYY for easy comparison
+                    return `${day.padStart(2, '0')}-${month.padStart(2, '0')}-20${year.length === 2 ? year : year.slice(-2)}`;
+                }
+            }
+            return '';
+        }
+    
+        // Function to format date from date picker (YYYY-MM-DD) to DD-MM-YYYY
+        function formatDatePicker(dateString) {
+            // Assuming dateString is in 'YYYY-MM-DD' format
+            if (dateString && typeof dateString === 'string') {
+                const [year, month, day] = dateString.split('-');
+                if (year && month && day) {
+                    // Format the date as DD-MM-YYYY for easy comparison
+                    return `${day.padStart(2, '0')}-${month.padStart(2, '0')}-${year}`;
+                }
+            }
+            return '';
+        }
+    
+        // Function to dynamically populate the table headers
+        function populateHeaders(headers) {
+            const tableHead = document.querySelector("#dataTable thead");
+            tableHead.innerHTML = ''; // Clear previous headers
+            const tr = document.createElement("tr");
+    
+            relevantColumns.forEach(colIndex => {
+                const th = document.createElement("th");
+                th.textContent = headers[colIndex]; // Set header text based on relevant columns
+                tr.appendChild(th);
+            });
+    
+            tableHead.appendChild(tr);
+        }
+    
+        // Function to populate table rows
+        function populateTable(rows) {
+            const tableBody = document.querySelector("#dataTable tbody");
+            tableBody.innerHTML = ''; // Clear previous data
+            rows.forEach(row => {
+                const tr = document.createElement("tr");
+                relevantColumns.forEach(colIndex => {
+                    const td = document.createElement("td");
+                    td.textContent = row[colIndex] || ''; // Handle missing data
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+    
+        // Print table
+        function printTable() {
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print Table</title></head><body>');
+            printWindow.document.write(document.getElementById('dataTable').outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+    
+        // Download table data as CSV
+        function downloadCSV() {
+            const table = document.getElementById('dataTable');
+            let csv = [];
+            for (let row of table.rows) {
+                const rowData = [];
+                for (let cell of row.cells) {
+                    rowData.push(cell.innerText);
+                }
+                csv.push(rowData.join(','));
+            }
+    
+            const csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(csvData);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'google_sheet_data.csv';
+            a.click();
+        }
+    
+        // Fetch data when the page loads
+        fetchData();
+    </script>
 </body>
 </html>
