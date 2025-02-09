@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Irregularities</title>
+    <title>SPM Irregularities</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,12 +28,49 @@
         .highlight {
             background-color: red !important;
         }
+        #red-cell-count {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .column-header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .column-header {
+            text-align: center;
+        }
+        .red-cell-count {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        .filters {
+            margin-bottom: 20px;
+        }
+        .filters label, .filters input {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>SPM Irregularities Data</h1>
+    <h1>SPM IRREGULARITIES DATA</h1>
+    
+    <!-- Filters for date range -->
+    <div class="filters">
+        <label for="from-date">From:</label>
+        <input type="date" id="from-date">
+        
+        <label for="to-date">To:</label>
+        <input type="date" id="to-date">
+        
+        <button onclick="applyDateFilter()">Apply Date Filter</button>
+    </div>
+
     <div id="loading">Loading data...</div>
+    <div id="red-cell-count">TOTAL RED CELLS: 0</div> 
     <table id="results">
         <thead>
             <tr>
@@ -48,22 +85,17 @@
     <script>
         const sheetID = '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI'; // Replace with your sheet ID
         const range = 'Sheet1!A1:AD'; // Adjust the range if necessary, here we are fetching columns A to Z
+        let allRows = []; // Store the fetched rows to apply the date filter later
 
-        // Fetch data from Google Sheets API
         function fetchSheetData() {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`; // Your API Key
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`;
 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    const rows = data.values;
-                    const headers = rows[0]; // Assuming first row contains headers
-                    const filteredRows = rows.slice(1).filter(row => {
-                        // Check the conditions for columns R, S, U, V, W, X (0-based index)
-                        return row[15] === 'NO' || row[16] === 'NO' || row[18] === 'NO' || 
-                               row[19] === 'YES' || row[20] === 'NO' || row[21] === 'YES';
-                    });
-
+                    allRows = data.values; // Store the entire data set
+                    const headers = allRows[0]; // Assuming first row contains headers
+                    const filteredRows = applyFilters(allRows.slice(1)); // Filter rows based on conditions
                     displayHeaders(headers);
                     displayFilteredRows(filteredRows);
                 })
@@ -73,37 +105,87 @@
                 });
         }
 
-        // Display column headers
+        function applyFilters(rows) {
+    const fromDate = document.getElementById('from-date').value;
+    const toDate = document.getElementById('to-date').value;
+    
+    const fromDateObj = fromDate ? new Date(fromDate + 'T00:00:00') : null; 
+    const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
+
+    console.log("Filtering from:", fromDateObj);
+    console.log("Filtering to:", toDateObj);
+
+    return rows.filter(row => {
+        const rowDateString = row[1]; 
+        const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
+
+        console.log("Row date:", rowDateObj);
+
+        // Check if the date falls within the selected range (if any)
+        let isDateInRange = true;
+        if (fromDateObj && rowDateObj < fromDateObj) {
+            isDateInRange = false;
+            console.log("Row date is before fromDate");
+        }
+        if (toDateObj && rowDateObj > toDateObj) {
+            isDateInRange = false;
+            console.log("Row date is after toDate");
+        }
+
+        const condition1 =  row[15] === 'NO' || row[16] === 'NO' || row[18] === 'NO' ;
+                               
+        const condition2 =  row[19] === 'YES' || row[20] === 'NO' || row[21] === 'YES';
+
+        return isDateInRange && (condition1 || condition2);
+    });
+}
         function displayHeaders(headers) {
             const tableHead = document.querySelector('#results thead tr');
             tableHead.innerHTML = ''; // Clear any existing headers
 
-            headers.forEach(header => {
+            headers.forEach((header, index) => {
                 const th = document.createElement('th');
-                th.textContent = header || ''; // Handle empty headers
+
+                const columnHeaderContainer = document.createElement('div');
+                columnHeaderContainer.classList.add('column-header-container');
+
+                const headerDiv = document.createElement('div');
+                headerDiv.textContent = header || '';
+                headerDiv.classList.add('column-header');
+                columnHeaderContainer.appendChild(headerDiv);
+
+                const redCellCountDiv = document.createElement('div');
+                redCellCountDiv.id = `red-cell-count-column-${index}`;
+                redCellCountDiv.classList.add('red-cell-count');
+                redCellCountDiv.textContent = 'Red cells: 0';
+                columnHeaderContainer.appendChild(redCellCountDiv);
+
+                th.appendChild(columnHeaderContainer);
                 tableHead.appendChild(th);
             });
         }
 
-        // Display filtered rows in the table
         function displayFilteredRows(filteredRows) {
             const tableBody = document.querySelector('#results tbody');
-            tableBody.innerHTML = ''; // Clear any existing rows
+            tableBody.innerHTML = '';
+            const redCellCounts = new Array(filteredRows[0].length).fill(0);
+            let totalRedCells = 0;
 
             filteredRows.forEach(row => {
                 const tr = document.createElement('tr');
                 row.forEach((cell, index) => {
                     const td = document.createElement('td');
-                    td.textContent = cell || ''; // Handle empty cells
+                    td.textContent = cell || '';
 
-                    // Highlight cells based on the conditions
-                    if ((index === 17 && cell === 'NO') ||  // Column R (index 17)
-                        (index === 18 && cell === 'NO') ||  // Column S (index 18)
-                        (index === 20 && cell === 'NO') ||  // Column U (index 20)
-                        (index === 21 && cell === 'YES') || // Column V (index 21)
-                        (index === 22 && cell === 'YES') || // Column W (index 22)
-                        (index === 23 && cell === 'YES')) { // Column X (index 23)
-                        td.classList.add('highlight');
+                    if (index === 15 && cell === 'NO' ||   // Column W
+                        index === 16 && cell === 'NO' ||   // Column X
+                        index === 18 && cell === 'NO' ||     // Column Y
+                        index === 19 && cell === 'YES' ||     // Column Z
+                        index === 20 && cell === 'NO' ||     // Column AA
+                        index === 21 && cell === 'YES' ) {
+                            td.classList.add('highlight');
+                            redCellCounts[index]++;
+                            totalRedCells++;
                     }
 
                     tr.appendChild(td);
@@ -111,8 +193,21 @@
                 tableBody.appendChild(tr);
             });
 
-            // Hide the loading message once data is loaded
+            redCellCounts.forEach((count, index) => {
+                const countElement = document.getElementById(`red-cell-count-column-${index}`);
+                countElement.textContent = `Red cells: ${count}`;
+            });
+
+            document.getElementById('red-cell-count').textContent = `TOTAL IRREGULARITIES: ${totalRedCells}`;
             document.getElementById('loading').style.display = 'none';
+        }
+
+        // Apply date filter on button click
+        function applyDateFilter() {
+            const filteredRows = applyFilters(allRows.slice(1)); // Apply filters based on date
+            const headers = allRows[0]; // Get headers from stored data
+            displayHeaders(headers);
+            displayFilteredRows(filteredRows);
         }
 
         // Fetch data when the page is loaded
