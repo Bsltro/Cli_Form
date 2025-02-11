@@ -50,7 +50,7 @@
         const sheetName = 'Sheet1'; // Change this if necessary
     
         // Columns we want to display (B, C, O, F, H, S, T, U, V, AN, AP, BA)
-        const relevantColumns = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 83, 85, 86, 87, 88, 89, 90, 91, 93];
+        const relevantColumns = [123, 43, 3,5, 7, 9, 11, 13, 15, 17, 19, 21, 23,25,91, 93, 97, 127,128, 82, 121, 122, 84, 85,86,87,120,124,125,94];
     
         // Default to current date
         let selectedDate = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD for the date picker
@@ -152,9 +152,29 @@
         // Print table
         function printTable() {
             const printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>Print Table</title></head><body>');
-            printWindow.document.write(document.getElementById('dataTable').outerHTML);
-            printWindow.document.write('</body></html>');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print Table</title>
+                        <style>
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            table, th, td {
+                                border: 1px solid black;
+                            }
+                            th, td {
+                                padding: 8px;
+                                text-align: left;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${document.getElementById('dataTable').outerHTML}
+                    </body>
+                </html>
+            `);
             printWindow.document.close();
             printWindow.print();
         }
