@@ -144,7 +144,7 @@
                     <input type="radio" id="nomi" name="selectlp" value="NOMINATED">
                 </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <label for="other" class="radio-inline">OTHER
-                    <input type="radio" id="other" name="selectlp" value="OTHER">
+                    <input type="radio" id="other" name="selectlp" value="OTHER" checked>
                 </label>
             </div> <br>  
             </div>
@@ -709,8 +709,8 @@
                 document.getElementById('cliname').value = matchingRow[1];
         
                 // Set today's date in the Inspection Date field
-                const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-                document.getElementById('inspectiondate').value = today;
+                // const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                // document.getElementById('inspectiondate').value = today;
             } else {
                 // Optional: alert('Inspection ID not found!');
                 // Or clear relevant fields if needed
