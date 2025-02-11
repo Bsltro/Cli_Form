@@ -390,8 +390,8 @@
         var speedSelected = document.getElementById('speedy').value;
 
         // Check for irregularities
-        if ((goodsChecked && (speedSelected === '30 - 40' || speedSelected === '40 - 50' || speedSelected === 'ABOVE50')) ||
-            (coachChecked && (speedSelected === '40 - 50' || speedSelected === 'ABOVE50'))) {
+        if ((goodsChecked && (speedSelected === '40 - 50' || speedSelected === 'ABOVE50')) ||
+            (coachChecked && (speedSelected === 'ABOVE50'))) {
             alert("This will be considered as an irregularity.");
         }
     }

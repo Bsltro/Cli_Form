@@ -138,8 +138,8 @@
                                            row[30] === 'POOR' || row[31] === 'NO' || row[33] === 'NO' || 
                                             row[46] === 'NOT PROPER' || row[47] ==='NOT PROPER' ||
                                            ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(row[34]);
-        const condition2 = (row[36] === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) || 
-        (row[36] === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32])) || row[43] === 'NO' ||row[44] === 'YES';
+        const condition2 = (row[36] === 'GOODS' && ['40 - 50', 'ABOVE50'].includes(row[32])) || 
+        (row[36] === 'COACHING' && ['ABOVE50'].includes(row[32])) || row[43] === 'NO' ||row[44] === 'YES';
 
         return isDateInRange && (condition1 || condition2);
     });
@@ -198,8 +198,8 @@
                         index === 46 && cell === 'NOT PROPER' ||
                         index === 47 && cell === 'NOT PROPER' ||
                         (index === 34 && ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(cell)) ||
-                        (index === 36 && cell === 'GOODS' && ['30 - 40', '40 - 50', 'ABOVE50'].includes(row[32])) ||
-                        (index === 36 && cell === 'COACHING' && ['40 - 50', 'ABOVE50'].includes(row[32]))) {
+                        (index === 36 && cell === 'GOODS' && ['40 - 50', 'ABOVE50'].includes(row[32])) ||
+                        (index === 36 && cell === 'COACHING' && ['ABOVE50'].includes(row[32]))) {
                             td.classList.add('highlight');
                             redCellCounts[index]++;
                             totalRedCells++;
