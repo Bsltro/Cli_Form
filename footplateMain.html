@@ -127,11 +127,32 @@
                 <input type="number" name="inspectionid" id="inspectionid" required>
             </div>
 
-            <div class="form-outer">
+            <!-- <div class="form-outer">
                 <label style="color: red; font-weight: bold;">Inspection Date</label>
                 <input type="date" name="inspectiondate" id="inspectiondate" required >
+            </div> -->
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">Inspection Date</label>
+                <input type="date" name="inspectiondate" id="inspectiondate" required min="" max=""> 
+                       
             </div>
-
+            
+            <script>
+                // Set today's date as the max value
+                let today = new Date();
+                let yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1); // Set to yesterday
+            
+                // Format date to yyyy-mm-dd
+                function formatDate(date) {
+                    return date.toISOString().split('T')[0];
+                }
+            
+                // Set the min and max attributes
+                document.getElementById('inspectiondate').min = formatDate(yesterday);
+                document.getElementById('inspectiondate').max = formatDate(today);
+            </script>
+            
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">CLI Name</label>
                 <input type="text" name="cliname" id="cliname" required readonly>
