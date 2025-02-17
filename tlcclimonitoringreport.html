@@ -126,11 +126,40 @@
         }
 
         // Print table
+        // function printTable() {
+        //     const printWindow = window.open('', '', 'height=600,width=800');
+        //     printWindow.document.write('<html><head><title>Print Table</title></head><body>');
+        //     printWindow.document.write(document.getElementById('dataTable').outerHTML);
+        //     printWindow.document.write('</body></html>');
+        //     printWindow.document.close();
+        //     printWindow.print();
+        // }
+
         function printTable() {
             const printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>Print Table</title></head><body>');
-            printWindow.document.write(document.getElementById('dataTable').outerHTML);
-            printWindow.document.write('</body></html>');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title style=bold>DAILY LI MONITORING REPORT</title>
+                        <style>
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            table, th, td {
+                                border: 1px solid black;
+                            }
+                            th, td {
+                                padding: 8px;
+                                text-align: center;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${document.getElementById('dataTable').outerHTML}
+                    </body>
+                </html>
+            `);
             printWindow.document.close();
             printWindow.print();
         }
