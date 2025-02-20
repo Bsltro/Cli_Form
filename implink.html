@@ -49,8 +49,9 @@
         let currentKm = 0;  // Current kilometer (initially 0)
         let currentSpeed = 0;  // Current speed in km/h
         let lastUpdateTime = Date.now(); // To track time intervals
-        let accelerationFactor = 0.1;  // Scale factor for acceleration to speed conversion
+        let lastAcceleration = { x: 0, y: 0, z: 0 }; // Store previous acceleration data
         const ACCELERATION_SENSITIVITY = 0.2; // Sensitivity threshold for acceleration to prevent noise
+        const TIME_INTERVAL = 1000; // Update interval in milliseconds (1 second)
 
         // Function to handle the "Add" button click
         function addSpeedZone() {
@@ -75,7 +76,7 @@
             listItem.textContent = `From Km: ${startKm + fromKm} to Km: ${startKm + toKm} - Speed Limit: ${speedLimit} km/h`;
             speedZoneList.appendChild(listItem);
             alert(`Speed zone added from km ${startKm + fromKm} to km ${startKm + toKm} with speed limit of ${speedLimit} km/h`);
-            
+
             document.getElementById('fromKm').value = '';
             document.getElementById('toKm').value = '';
             document.getElementById('speedLimit').value = '';
@@ -89,24 +90,22 @@
                 const y = acceleration.y || 0;
                 const z = acceleration.z || 0;
 
-                // Log the acceleration data for debugging
-                console.log("Device Motion Data:", acceleration);
-
-                // If the acceleration values are below the threshold, consider it zero motion
-                if (Math.abs(x) < ACCELERATION_SENSITIVITY && Math.abs(y) < ACCELERATION_SENSITIVITY && Math.abs(z) < ACCELERATION_SENSITIVITY) {
-                    return; // No significant movement detected
+                // Check if motion is significant
+                const totalAcceleration = Math.sqrt(x * x + y * y + z * z);
+                if (totalAcceleration < ACCELERATION_SENSITIVITY) {
+                    return; // Ignore minor movements
                 }
 
-                // Calculate the change in speed based on acceleration
-                const deltaTime = (Date.now() - lastUpdateTime) / 1000; // Time interval in seconds
-                const deltaAcceleration = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+                // Calculate speed based on acceleration
+                const deltaTime = (Date.now() - lastUpdateTime) / 1000; // Time in seconds
+                const deltaSpeed = Math.sqrt(x * x + y * y + z * z); // Calculate total acceleration
 
-                // Calculate speed change in km/h using acceleration data and time interval
-                currentSpeed += deltaAcceleration * accelerationFactor * deltaTime * 3600;  // km/h (scaled)
-                currentSpeed = Math.max(currentSpeed, 0); // Ensure speed is non-negative
+                // Update speed and ensure it doesn't decrease negatively
+                currentSpeed += deltaSpeed * deltaTime * 3.6; // Convert to km/h
+                currentSpeed = Math.max(currentSpeed, 0);
 
-                // Update the current kilometer based on speed (assuming small time intervals)
-                const distanceTraveled = currentSpeed * deltaTime / 3600; // Convert km/h to km per second
+                // Update Km based on speed
+                const distanceTraveled = (currentSpeed / 3600) * deltaTime; // km
                 currentKm += distanceTraveled;
 
                 // Update the location display
@@ -115,12 +114,12 @@
                 // Check for speed restrictions
                 checkSpeedRestrictions();
 
-                // Store the current time for the next iteration
+                // Store the current time and acceleration for the next iteration
                 lastUpdateTime = Date.now();
             }
         }
 
-        // Function to check if the vehicle is approaching or overspeeding in a speed-restricted zone
+        // Function to check for speed restrictions
         function checkSpeedRestrictions() {
             speedZones.forEach(zone => {
                 if (Math.abs(currentKm - zone.fromKm) <= 0.5) {
@@ -136,15 +135,14 @@
         // Function to trigger speech (voice alerts)
         function speak(message) {
             const speech = new SpeechSynthesisUtterance(message);
-            speech.lang = 'en-US';  // Specify language
+            speech.lang = 'en-US'; // Specify language
             speech.rate = 1;  // Normal rate of speech
             speech.pitch = 1;  // Normal pitch
 
-            // Speak the message
             window.speechSynthesis.speak(speech);
         }
 
-        // Function to request permissions for motion
+        // Request permissions for motion
         function requestMotionPermissions() {
             if (typeof DeviceMotionEvent.requestPermission === "function") {
                 DeviceMotionEvent.requestPermission()
@@ -159,7 +157,6 @@
                         console.error("Permission request failed:", error);
                     });
             } else {
-                // For browsers that don't require permission prompt
                 window.addEventListener("devicemotion", handleDeviceMotion, true);
             }
         }
