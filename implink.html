@@ -3,39 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speed Restriction Alert</title>
+    <title>CAUTION ORDER APPLICATION</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #speedZoneInputs {
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #location {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Enter Speed Restriction Details</h1>
+    <h1>ENTER CAUTION ORDER DETAILS</h1>
 
     <!-- Start Place and Start Kilometer Inputs -->
     <label for="startPlace">Start Place: </label>
-    <input type="text" id="startPlace" placeholder="Enter Start Place" /><br><br>
+    <input type="text" id="startPlace" placeholder="Enter Start Place" />
 
     <label for="startKm">Start Kilometer: </label>
-    <input type="number" id="startKm" placeholder="Enter Start Kilometer" /><br><br>
+    <input type="number" id="startKm" placeholder="Enter Start Kilometer" />
 
     <!-- End Place and End Kilometer Inputs -->
     <label for="endPlace">End Place: </label>
-    <input type="text" id="endPlace" placeholder="Enter End Place" /><br><br>
+    <input type="text" id="endPlace" placeholder="Enter End Place" />
 
     <label for="endKm">End Kilometer: </label>
-    <input type="number" id="endKm" placeholder="Enter End Kilometer" /><br><br>
+    <input type="number" id="endKm" placeholder="Enter End Kilometer" />
 
-    <button onclick="addSpeedZone()">Add</button><br><br>
+    <button onclick="addSpeedZone()">Add</button>
 
     <!-- Inputs for Speed Zones (will be shown after clicking Add button) -->
     <div id="speedZoneInputs" style="display:none;">
         <label for="fromKm">From Kilometer: </label>
-        <input type="number" id="fromKm" placeholder="Enter From Kilometer" /><br><br>
+        <input type="number" id="fromKm" placeholder="Enter From Kilometer" />
 
         <label for="toKm">To Kilometer: </label>
-        <input type="number" id="toKm" placeholder="Enter To Kilometer" /><br><br>
+        <input type="number" id="toKm" placeholder="Enter To Kilometer" />
 
         <label for="speedLimit">Speed Limit (km/h): </label>
-        <input type="number" id="speedLimit" placeholder="Enter Speed Limit" /><br><br>
+        <input type="number" id="speedLimit" placeholder="Enter Speed Limit" />
 
-        <button onclick="saveSpeedZone()">Save Speed Zone</button><br><br>
+        <button onclick="saveSpeedZone()">Save Speed Zone</button>
     </div>
 
     <h2>Speed Zones Set:</h2>
@@ -47,8 +101,8 @@
     <script>
         let speedZones = [];
         let currentKm = 0;  // Current kilometer (initially 0)
-        let currentSpeed = 0;  // Current speed entered by the user
-        let lastAcceleration = { x: 0, y: 0, z: 0 }; // To store previous acceleration data
+        let currentSpeed = 0;  // Current speed from Geolocation API
+        let alertedZones = new Set();  // To track zones that have already been alerted
 
         // Function to handle the "Add" button click
         function addSpeedZone() {
@@ -87,43 +141,32 @@
             document.getElementById('speedLimit').value = '';
         }
 
-        // Function to handle the device motion event
-        function handleDeviceMotion(event) {
-            // Extract acceleration data
-            const acceleration = event.accelerationIncludingGravity;  // Includes gravity as well
-            const x = acceleration.x;
-            const y = acceleration.y;
-            const z = acceleration.z;
-
-            // Calculate the change in speed based on acceleration (ignoring gravity here for simplicity)
-            const deltaSpeed = Math.sqrt(Math.pow(x - lastAcceleration.x, 2) + Math.pow(y - lastAcceleration.y, 2) + Math.pow(z - lastAcceleration.z, 2));
-            
-            // Assuming that we use this acceleration change to update the current speed in km/h
-            currentSpeed += deltaSpeed * 0.1;  // Scale factor to convert units appropriately
-
-            // Ensure speed doesn't go negative (minimum speed is 0 km/h)
-            currentSpeed = Math.max(currentSpeed, 0);
-
-            // Update the current kilometer based on the speed (approximation, assuming 1-second intervals for now)
-            const distanceTraveled = currentSpeed / 3600; // Convert km/h to km/s (approximate)
-            currentKm += distanceTraveled;
+        // Function to handle the geolocation success
+        function handleGeolocationSuccess(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            currentSpeed = position.coords.speed * 3.6; // Convert m/s to km/h
 
             // Update the location display
-            document.getElementById('location').innerText = `Speed: ${currentSpeed.toFixed(2)} km/h, Km: ${currentKm.toFixed(2)}`;
+            document.getElementById('location').innerText = `Latitude: ${latitude}, Longitude: ${longitude}, Speed: ${currentSpeed.toFixed(2)} km/h`;
 
             // Check speed restrictions
             checkSpeedRestrictions();
+        }
 
-            // Store the current acceleration data for the next event
-            lastAcceleration = { x, y, z };
+        // Function to handle geolocation errors
+        function handleGeolocationError(error) {
+            console.error('Error getting location:', error);
+            document.getElementById('location').innerText = 'Error getting location.';
         }
 
         // Function to check if the vehicle is approaching or overspeeding in a speed-restricted zone
         function checkSpeedRestrictions() {
-            speedZones.forEach(zone => {
+            speedZones.forEach((zone, index) => {
                 // Alert when within 500 meters (0.5 km) of the speed restriction
-                if (Math.abs(currentKm - zone.fromKm) <= 0.5) {
+                if (Math.abs(currentKm - zone.fromKm) <= 0.5 && !alertedZones.has(index)) {
                     speak(`Ahead is a speed restriction of ${zone.speedLimit} km/h`);
+                    alertedZones.add(index);  // Mark this zone as alerted
                 }
 
                 // Alert if overspeeding in the speed-restricted zone
@@ -144,12 +187,16 @@
             window.speechSynthesis.speak(speech);
         }
 
-        // Start listening for device motion events
+        // Start listening for geolocation updates
         function startTracking() {
-            if (window.DeviceMotionEvent) {
-                window.addEventListener("devicemotion", handleDeviceMotion, true);
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(handleGeolocationSuccess, handleGeolocationError, {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 5000
+                });
             } else {
-                alert("Device motion is not supported on this device.");
+                alert("Geolocation is not supported on this device.");
             }
         }
 
