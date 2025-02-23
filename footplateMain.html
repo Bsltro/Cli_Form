@@ -251,7 +251,7 @@
             </div>
             <div class="container">
                 <label for="startTime" style="color: red; font-weight: bold;">Start Time (HH:MM):</label>
-                <input type="time" id="startTime" name="startTime" required>
+                <input type="datetime-local" id="startTime" name="startTime" required>
             </div><br>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
@@ -259,8 +259,22 @@
             </div>
             <div class="container">
                 <label for="endTime" style="color: red; font-weight: bold;">End Time (HH:MM):</label>
-                <input type="time" id="endTime" name="endTime" required>
+                <input type="datetime-local" id="endTime" name="endTime" required>
             </div><br>
+            <script>
+                const startTimeInput = document.getElementById('startTime');
+                const endTimeInput = document.getElementById('endTime');
+                
+                endTimeInput.addEventListener('change', function() {
+                    const startTime = new Date(startTimeInput.value);
+                    const endTime = new Date(endTimeInput.value);
+                    
+                    if (startTime && endTime && endTime <= startTime) {
+                        alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
+                        endTimeInput.value = ''; // Clear the invalid end time input
+                    }
+                });
+            </script>
             <div class="form-outer">
                 <label for="signalcallinglp" style="color: red; font-weight: bold;">Signal Calling By LP</label>
                 <select name="sigcalllp" id="sigcalllp" onchange="if (this.value === 'POOR') { alert('You have selected POOR option, it will be considered as irregularity.'); }">
