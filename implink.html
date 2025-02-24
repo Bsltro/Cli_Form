@@ -3,93 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAUTION ORDER APPLICATION</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        #speedZoneInputs {
-            margin-top: 20px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background-color: #fff;
-            margin: 5px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        #location {
-            background-color: #fff;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-    </style>
+    <title>Speed Restriction Alert</title>
 </head>
 <body>
-    <h1>ENTER CAUTION ORDER DETAILS</h1>
+    <h1>Enter Speed Restriction Details</h1>
 
     <!-- Start Place and Start Kilometer Inputs -->
     <label for="startPlace">Start Place: </label>
-    <input type="text" id="startPlace" placeholder="Enter Start Place" />
+    <input type="text" id="startPlace" placeholder="Enter Start Place" /><br><br>
 
     <label for="startKm">Start Kilometer: </label>
-    <input type="number" id="startKm" placeholder="Enter Start Kilometer" />
+    <input type="number" id="startKm" placeholder="Enter Start Kilometer" /><br><br>
 
     <!-- End Place and End Kilometer Inputs -->
     <label for="endPlace">End Place: </label>
-    <input type="text" id="endPlace" placeholder="Enter End Place" />
+    <input type="text" id="endPlace" placeholder="Enter End Place" /><br><br>
 
     <label for="endKm">End Kilometer: </label>
-    <input type="number" id="endKm" placeholder="Enter End Kilometer" />
+    <input type="number" id="endKm" placeholder="Enter End Kilometer" /><br><br>
 
-    <button onclick="addSpeedZone()">Add</button>
+    <button onclick="addSpeedZone()">Add</button><br><br>
 
     <!-- Inputs for Speed Zones (will be shown after clicking Add button) -->
     <div id="speedZoneInputs" style="display:none;">
         <label for="fromKm">From Kilometer: </label>
-        <input type="number" id="fromKm" placeholder="Enter From Kilometer" />
+        <input type="number" id="fromKm" placeholder="Enter From Kilometer" /><br><br>
 
         <label for="toKm">To Kilometer: </label>
-        <input type="number" id="toKm" placeholder="Enter To Kilometer" />
+        <input type="number" id="toKm" placeholder="Enter To Kilometer" /><br><br>
 
         <label for="speedLimit">Speed Limit (km/h): </label>
-        <input type="number" id="speedLimit" placeholder="Enter Speed Limit" />
+        <input type="number" id="speedLimit" placeholder="Enter Speed Limit" /><br><br>
 
-        <button onclick="saveSpeedZone()">Save Speed Zone</button>
+        <button onclick="saveSpeedZone()">Save Speed Zone</button><br><br>
     </div>
 
     <h2>Speed Zones Set:</h2>
@@ -102,7 +48,7 @@
         let speedZones = [];
         let currentKm = 0;  // Current kilometer (initially 0)
         let currentSpeed = 0;  // Current speed from Geolocation API
-        let alertedZones = new Set();  // To track zones that have already been alerted
+        let lastPosition = null;  // To store the last known position
 
         // Function to handle the "Add" button click
         function addSpeedZone() {
@@ -147,11 +93,39 @@
             const longitude = position.coords.longitude;
             currentSpeed = position.coords.speed * 3.6; // Convert m/s to km/h
 
+            // Update the current kilometer based on the distance traveled
+            if (lastPosition) {
+                const distance = calculateDistance(
+                    lastPosition.coords.latitude,
+                    lastPosition.coords.longitude,
+                    latitude,
+                    longitude
+                );
+                currentKm += distance; // Update the current kilometer
+            }
+
+            // Update the last known position
+            lastPosition = position;
+
             // Update the location display
-            document.getElementById('location').innerText = `Latitude: ${latitude}, Longitude: ${longitude}, Speed: ${currentSpeed.toFixed(2)} km/h`;
+            document.getElementById('location').innerText = `Latitude: ${latitude}, Longitude: ${longitude}, Speed: ${currentSpeed.toFixed(2)} km/h, Current Km: ${currentKm.toFixed(2)}`;
 
             // Check speed restrictions
             checkSpeedRestrictions();
+        }
+
+        // Function to calculate the distance between two coordinates (in kilometers)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Distance in km
+            return distance;
         }
 
         // Function to handle geolocation errors
@@ -162,11 +136,10 @@
 
         // Function to check if the vehicle is approaching or overspeeding in a speed-restricted zone
         function checkSpeedRestrictions() {
-            speedZones.forEach((zone, index) => {
+            speedZones.forEach(zone => {
                 // Alert when within 500 meters (0.5 km) of the speed restriction
-                if (Math.abs(currentKm - zone.fromKm) <= 0.5 && !alertedZones.has(index)) {
+                if (Math.abs(currentKm - zone.fromKm) <= 0.5) {
                     speak(`Ahead is a speed restriction of ${zone.speedLimit} km/h`);
-                    alertedZones.add(index);  // Mark this zone as alerted
                 }
 
                 // Alert if overspeeding in the speed-restricted zone
