@@ -178,14 +178,31 @@
                 <input type="text" name="lpname" id="lpname" >
             </div>
             <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP Type</label>
-                <input type="text" name="lptype" id="lptype">
+                <div>
+                    <label for="lptype">LP Designation</label>
+                        <datalist id="suggestionslptype">
+                        <option>LPM</option>
+                        <option>LPG</option>
+                        <option>SLPS</option>
+                        <option>LPP</option>
+                        <option>LPS</option>
+                        <option>LPTW</option>
+                       </datalist>
+                    <input  autoComplete="on" list="suggestionslptype" name="lptype" id="lptype"/> 
+                </div>
+            </div>
+            <div class="form-outer">
+                <div>
+                    <label for="lpcat">LP CAT</label>
+                        <datalist id="suggestionslplpcat">
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option>
+                       </datalist>
+                    <input  autoComplete="on" list="suggestionslplpcat" name="lpcat" id="lpcat"/> 
+                </div>
             </div>
 
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP Category</label>
-                <input type="text" name="lpcat" id="lpcat" >
-            </div>
 
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP HQ</label>
@@ -212,8 +229,15 @@
                 <input type="text" name="alpname" id="alpname">
             </div><br>
             <div class="form-outer">
-                <label style="color: red; font-weight: bold;">ALP Designation</label>
-                <input type="text" name="alpdesg" id="alpdesg">
+                <div>
+                    <label for="alpdesg">ALP DESG</label>
+                        <datalist id="suggestionsalpdesg">
+                        <option>ALP</option>
+                        <option>SALP</option>
+                        <option>COLP</option>
+                        </datalist>
+                    <input  autoComplete="on" list="suggestionsalpdesg" name="alpdesg" id="alpdesg"/> 
+                </div>
             </div>
             
             <div class="form-outer">
@@ -250,7 +274,7 @@
                 <input type="text" name="fromstation" id="fromstation" oninput="upperCase()" class="uppercase" required>
             </div>
             <div class="container">
-                <label for="startTime" style="color: red; font-weight: bold;">Start Time (HH:MM):</label>
+                <label for="startTime" style="color: red; font-weight: bold;">Departure Date And Time (HH:MM):</label>
                 <input type="datetime-local" id="startTime" name="startTime" required>
             </div><br>
             <div class="form-outer">
@@ -258,7 +282,7 @@
                 <input type="text" name="tostation" id="tostation"  class="uppercase" required>
             </div>
             <div class="container">
-                <label for="endTime" style="color: red; font-weight: bold;">End Time (HH:MM):</label>
+                <label for="endTime" style="color: red; font-weight: bold;">Arrival Date And Time (HH:MM):</label>
                 <input type="datetime-local" id="endTime" name="endTime" required>
             </div><br>
             <script>
