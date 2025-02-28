@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Sheets Data Viewer</title>
+  <title>CLI INSPECTION COUNT/PCDO</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -32,9 +32,12 @@
       padding: 8px;
       border: 1px solid #ddd;
       text-align: center;
+      max-width: 85px;
+      word-wrap: break-word;
     }
     th {
       background-color: #f2f2f2;
+      word-wrap: break-word;
     }
     .column-checkboxes {
       margin: 10px 0;
@@ -58,7 +61,7 @@
 </head>
 <body>
 
-<h1>MASTER COUNT TABLE</h1>
+<h1>CLI INSPECTION COUNT TABLE</h1>
 
 <!-- Tabs -->
 <div class="tabs">
@@ -67,6 +70,7 @@
   <button id="tab3" class="tab-button" onclick="switchTab(2)">SPM count</button>
   <button id="tab4" class="tab-button" onclick="switchTab(3)">RR/Lobby count</button>
   <button id="tab5" class="tab-button" onclick="switchTab(4)">Loco Stabling count</button>
+  <button id="tab6" class="tab-button" onclick="switchTab(5)">SUMMARY</button>
 </div>
 
 <!-- Column Checkbox -->
@@ -93,7 +97,7 @@
   // Google Sheets API configuration
   const sheetId = '1C6cXq3L-0cQY6YOv1fnQ1pCptqqy1TWxqNTBYVF636s';
   const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
-  const range = 'Sheet1!A1:BL1000';  // Adjust the range if needed
+  const range = 'Sheet1!A1:BQ1000';  // Adjust the range if needed
   const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
   let data = [];
@@ -101,11 +105,12 @@
 
   // Tab-specific columns
   const tabColumns = [
-    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS'],
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS','BQ'],
     ['A', 'AT', 'AU', 'AV', 'AW', 'AX'],
     ['A', 'AY', 'AZ', 'BA', 'BB', 'BC'],
     ['A', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI'],
-    ['A', 'BJ', 'BK', 'BL']
+    ['A', 'BJ', 'BK', 'BL'],
+    ['BM', 'BN', 'BO', 'BP']
   ];
 
   // Fetch the Google Sheets data
@@ -116,7 +121,7 @@
       loadTabData(currentTab);  // Load the first tab (Footplate count)
     })
     .catch(error => {
-      console.error('Error fetching data from Google Sheets API:', error);
+      console.error('Error fetching data :', error);
     });
 
   // Load data for the current tab
