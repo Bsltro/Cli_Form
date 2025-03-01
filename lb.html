@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Running Room Form</title>
+    <title>Stabling Form</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         * {
@@ -123,51 +123,51 @@
         <div id="res" style="color: brown;font-size: 14px;" class="tabcontent"></div>
         <div class="form-outer">
             <label>Inspection ID</label>
-            <input type="number" name="rrinspectionid" id="rrinspectionid" required>
+            <input type="number" name="lbinspectionid" id="lbinspectionid" required>
         </div>
         <div class="form-outer">
             <label>Inspection Date</label>
-            <input type="date" name="rrinspectiondate" id="rrinspectiondate" required>
+            <input type="date" name="lbinspectiondate" id="lbinspectiondate" required>
         </div>
         <div class="form-outer">
             <label style="color: red; font-weight: bold;">CLI Name</label>
-            <input type="text" name="rrcliname" id="rrcliname" required readonly>
+            <input type="text" name="lbcliname" id="lbcliname" required readonly>
         </div>
         <div class="form-outer">
             <label>Start Time</label>
-            <input type="time" name="rrstarttime" id="rrstarttime">
+            <input type="time" name="lbstarttime" id="lbstarttime">
         </div>
         <div class="form-outer">
             <label>End Time</label>
-            <input type="time" name="rrendtime" id="rrendtime">
+            <input type="time" name="lbendtime" id="lbendtime">
         </div>
         <div class="form-outer">
             <div>
-                <label for="rrplace">Place/Station</label>
-                <datalist id="suggestionsrrplace">
+                <label for="lbplace">Place/Station</label>
+                <datalist id="suggestionslbplace">
                     <option>BSL GOODS</option><option>BSL PASSANGER</option><option>PASS Shed</option>
                     <option>ET</option><option>BPL</option><option>KNW</option>
                     <option>NGN</option><option>MMR</option><option>BD</option><option>NGP</option><option>BSL/TRIP SHED</option>
                 </datalist>
-                <input autoComplete="on" list="suggestionsrrplace" name="rrplace" class="uppercase" required/> 
+                <input autoComplete="on" list="suggestionslbplace" name="lbplace" class="uppercase" required/> 
             </div>
         </div>
         <div class="form-outer">
             <label>On Duty Staff And Other Details</label>
-            <input type="text" name="rrondutystaff" id="rrondutystaff" oninput="upperCase()" class="uppercase" required>
+            <input type="text" name="lbondutystaff" id="lbondutystaff" oninput="upperCase()" class="uppercase" required>
         </div>
         <div class="form-outer">
             <label>Remark Or Irregularity</label>
-            <input type="text" name="rrirregular" id="rrirregular" oninput="upperCase()" class="uppercase">
+            <input type="text" name="lbirregular" id="lbirregular" oninput="upperCase()" class="uppercase">
         </div>
         <div class="justify-content">
             <label style="color: red; font-weight: bold;">Day Or Night</label><br><br>
             <div class="container">
                 <label for="DAY" class="radio-inline">DAY
-                    <input type="radio" id="day" name="rrdn" value="DAY" checked>
+                    <input type="radio" id="day" name="lbdn" value="DAY" checked>
                 </label>
                 <label for="NIGHT" class="radio-inline">NIGHT
-                    <input type="radio" id="night" name="rrdn" value="NIGHT">
+                    <input type="radio" id="night" name="lbdn" value="NIGHT">
                 </label><br><br>
             </div>   
         </div>
@@ -198,7 +198,7 @@
 
     // Function to auto-fill CLI Name and Inspection Date
     function autoFillDetailsstb() {
-        const inspectionID = document.getElementById('rrinspectionid').value;
+        const inspectionID = document.getElementById('lbinspectionid').value;
         console.log("Inspection ID entered: ", inspectionID); // Log inspection ID to see if it's being captured
 
         if (!inspectionID) return;
@@ -207,11 +207,11 @@
 
         if (matchingRow) {
             console.log("Matching Row found:", matchingRow); // Log the matching row
-            document.getElementById('rrcliname').value = matchingRow[1]; // CLI Name (column B)
+            document.getElementById('lbcliname').value = matchingRow[1]; // CLI Name (column B)
 
             // Set today's date in the Inspection Date field
             const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-            document.getElementById('rrinspectiondate').value = today;
+            document.getElementById('lbinspectiondate').value = today;
         } else {
             console.log("Inspection ID not found in sheet data.");
             //alert('Inspection ID not found!');
@@ -219,7 +219,7 @@
     }
 
     // Event listener for Inspection ID field
-    document.getElementById('rrinspectionid').addEventListener('input', autoFillDetailsstb);
+    document.getElementById('lbinspectionid').addEventListener('input', autoFillDetailsstb);
 
     // Fetch sheet data on page load
     window.onload = () => {
@@ -254,7 +254,7 @@
         .then(data => {
             document.querySelector("#sub5").value = "Submit";
             form.reset();
-            alert("Running Room Data Saved Successfully...");
+            alert("Lobby Data Saved Successfully...");
         })
         .catch(error => {
             document.querySelector("#sub5").value = "Submit";
