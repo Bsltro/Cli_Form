@@ -52,12 +52,21 @@
         .filters label, .filters input {
             margin-right: 10px;
         }
+        .buttons {
+            margin-bottom: 20px;
+        }
+        .buttons button {
+            margin-right: 10px;
+            padding: 8px 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <h1>SPM IRREGULARITIES DATA</h1>
-    
+
     <!-- Filters for date range -->
     <div class="filters">
         <label for="from-date">From:</label>
@@ -67,6 +76,12 @@
         <input type="date" id="to-date">
         
         <button onclick="applyDateFilter()">Apply Date Filter</button>
+    </div>
+
+    <!-- Print and Download buttons -->
+    <div class="buttons">
+        <button onclick="printTable()">Print</button>
+        <button onclick="downloadCSV()">Download CSV</button>
     </div>
 
     <div id="loading">Loading data...</div>
@@ -84,8 +99,8 @@
 
     <script>
         const sheetID = '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI'; // Replace with your sheet ID
-        const range = 'Sheet1!A1:AD'; // Adjust the range if necessary, here we are fetching columns A to Z
-        let allRows = []; // Store the fetched rows to apply the date filter later
+        const range = 'Sheet1!A1:AD'; // Adjust the range if necessary
+        let allRows = [];
 
         function fetchSheetData() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`;
@@ -93,9 +108,9 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    allRows = data.values; // Store the entire data set
-                    const headers = allRows[0]; // Assuming first row contains headers
-                    const filteredRows = applyFilters(allRows.slice(1)); // Filter rows based on conditions
+                    allRows = data.values;
+                    const headers = allRows[0];
+                    const filteredRows = applyFilters(allRows.slice(1));
                     displayHeaders(headers);
                     displayFilteredRows(filteredRows);
                 })
@@ -106,61 +121,39 @@
         }
 
         function applyFilters(rows) {
-    const fromDate = document.getElementById('from-date').value;
-    const toDate = document.getElementById('to-date').value;
-    
-    const fromDateObj = fromDate ? new Date(fromDate + 'T00:00:00') : null; 
-    const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
+            const fromDate = document.getElementById('from-date').value;
+            const toDate = document.getElementById('to-date').value;
+            
+            const fromDateObj = fromDate ? new Date(fromDate + 'T00:00:00') : null; 
+            const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
 
-    console.log("Filtering from:", fromDateObj);
-    console.log("Filtering to:", toDateObj);
+            return rows.filter(row => {
+                const rowDateString = row[1]; 
+                const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
 
-    return rows.filter(row => {
-        const rowDateString = row[1]; 
-        const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
+                let isDateInRange = true;
+                if (fromDateObj && rowDateObj < fromDateObj) isDateInRange = false;
+                if (toDateObj && rowDateObj > toDateObj) isDateInRange = false;
 
-        console.log("Row date:", rowDateObj);
+                const condition1 = ['CONDUCTED BUT NOT PROPER', 'NO'].includes(row[15]) || 
+                                  ['CONDUCTED BUT NOT PROPER', 'NO'].includes(row[16]) || 
+                                  row[18] === 'NO';
 
-        // Check if the date falls within the selected range (if any)
-        let isDateInRange = true;
-        if (fromDateObj && rowDateObj < fromDateObj) {
-            isDateInRange = false;
-            console.log("Row date is before fromDate");
+                const condition2 = row[19] === 'YES' || 
+                                   ['MOMENTARY OVER SPEED-NOT PERMISSIBLE', 'CONTINUOUS OVER SPEED'].includes(row[20]) || 
+                                   row[21] === 'YES';
+
+                return isDateInRange && (condition1 || condition2);
+            });
         }
-        if (toDateObj && rowDateObj > toDateObj) {
-            isDateInRange = false;
-            console.log("Row date is after toDate");
-        }
 
-        const condition1 =  row[15] === 'NO' || row[16] === 'NO' || row[18] === 'NO' ;
-                               
-        const condition2 =  row[19] === 'YES' || row[20] === 'NO' || row[21] === 'YES';
-
-        return isDateInRange && (condition1 || condition2);
-    });
-}
         function displayHeaders(headers) {
             const tableHead = document.querySelector('#results thead tr');
-            tableHead.innerHTML = ''; // Clear any existing headers
+            tableHead.innerHTML = '';
 
-            headers.forEach((header, index) => {
+            headers.forEach(header => {
                 const th = document.createElement('th');
-
-                const columnHeaderContainer = document.createElement('div');
-                columnHeaderContainer.classList.add('column-header-container');
-
-                const headerDiv = document.createElement('div');
-                headerDiv.textContent = header || '';
-                headerDiv.classList.add('column-header');
-                columnHeaderContainer.appendChild(headerDiv);
-
-                const redCellCountDiv = document.createElement('div');
-                redCellCountDiv.id = `red-cell-count-column-${index}`;
-                redCellCountDiv.classList.add('red-cell-count');
-                redCellCountDiv.textContent = 'Red cells: 0';
-                columnHeaderContainer.appendChild(redCellCountDiv);
-
-                th.appendChild(columnHeaderContainer);
+                th.textContent = header || '';
                 tableHead.appendChild(th);
             });
         }
@@ -168,7 +161,6 @@
         function displayFilteredRows(filteredRows) {
             const tableBody = document.querySelector('#results tbody');
             tableBody.innerHTML = '';
-            const redCellCounts = new Array(filteredRows[0].length).fill(0);
             let totalRedCells = 0;
 
             filteredRows.forEach(row => {
@@ -177,14 +169,20 @@
                     const td = document.createElement('td');
                     td.textContent = cell || '';
 
-                    if (index === 15 && cell === 'NO' ||   // Column W
-                        index === 16 && cell === 'NO' ||   // Column X
-                        index === 18 && cell === 'NO' ||     // Column Y
-                        index === 19 && cell === 'YES' ||     // Column Z
-                        index === 20 && cell === 'NO' ||     // Column AA
-                        index === 21 && cell === 'YES' ) {
+                    // if ([15, 16, 18, 19, 20, 21].includes(index) && 
+                    //     ['NO', 'YES', 'MOMENTARY OVER SPEED-NOT PERMISSIBLE', 'CONTINUOUS OVER SPEED'].includes(cell)) {
+                    //     td.classList.add('highlight');
+                    //     totalRedCells++;
+                    // }
+                    if (   // Column AC
+                        (index === 15 && ['CONDUCTED BUT NOT PROPER', 'NO'].includes(cell)) || // Column AD
+                        
+                        (index === 16 && ['CONDUCTED BUT NOT PROPER', 'NO'].includes(cell)) ||
+                        index === 18 && cell === 'NO' || index === 19 && cell === 'YES' ||
+                        (index === 20 &&  ['MOMENTARY OVER SPEED-NOT PERMISSIBLE', 'CONTINUOUS OVER SPEED'].includes(cell)) ||
+                        index === 21 && cell === 'YES') {
                             td.classList.add('highlight');
-                            redCellCounts[index]++;
+                            //redCellCounts[index]++;
                             totalRedCells++;
                     }
 
@@ -193,24 +191,47 @@
                 tableBody.appendChild(tr);
             });
 
-            redCellCounts.forEach((count, index) => {
-                const countElement = document.getElementById(`red-cell-count-column-${index}`);
-                countElement.textContent = `Red cells: ${count}`;
-            });
-
             document.getElementById('red-cell-count').textContent = `TOTAL IRREGULARITIES: ${totalRedCells}`;
             document.getElementById('loading').style.display = 'none';
         }
 
-        // Apply date filter on button click
         function applyDateFilter() {
-            const filteredRows = applyFilters(allRows.slice(1)); // Apply filters based on date
-            const headers = allRows[0]; // Get headers from stored data
+            const filteredRows = applyFilters(allRows.slice(1));
+            const headers = allRows[0];
             displayHeaders(headers);
             displayFilteredRows(filteredRows);
         }
 
-        // Fetch data when the page is loaded
+        function printTable() {
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write('<html><head><title>Print</title></head><body>');
+            printWindow.document.write('<h1>SPM IRREGULARITIES DATA</h1>');
+            printWindow.document.write(document.getElementById('results').outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function downloadCSV() {
+            let csvContent = '';
+            const table = document.getElementById('results');
+            for (let row of table.rows) {
+                let rowData = [];
+                for (let cell of row.cells) {
+                    rowData.push(`"${cell.innerText}"`);
+                }
+                csvContent += rowData.join(',') + '\n';
+            }
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'SPM_Irregularities.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         window.onload = fetchSheetData;
     </script>
 

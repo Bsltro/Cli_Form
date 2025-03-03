@@ -200,7 +200,7 @@
             <label>TRAIN DATE</label>
             <input type="date" name="spmdatasent" id="spmdatasent" required>
         </div>
-        <div class="justify-content">
+        <!-- <div class="justify-content">
             <label style="color: red; font-weight: bold;">BFT</label><br><br>
             <div class="container">
                 
@@ -212,8 +212,27 @@
                     <input type="radio" id="no" name="spmbft" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                 </label><br><br>
             </div>   
+        </div> -->
+        <!-- <div class="form-outer">
+            <label for="spmbft" style="color: red; font-weight: bold;">BFT</label>
+            <select name="spmbft" id="spmbft" onchange="handleSelectionChange(this)">
+                <option value="select">-------SELECT-------</option>
+                <option value="YES">YES</option>
+                <option value="CONDUCTED BUT NOT PROPER">CONDUCTED BUT NOT PROPER</option>
+                <option value="NO">NO</option>
+            </select>
         </div>
-        <div class="justify-content">
+        <script>
+            function handleSelectionChange(selectElement) {
+                var value = selectElement.value;
+                if (value === 'CONDUCTED BUT NOT PROPER') {
+                    alert('You have selected CONDUCTED BUT NOT PROPER option, it will be considered as irregularity.');
+                } else if (value === 'NO') {
+                    alert('You have selected NO option, it will be considered as irregularity.');
+                }
+            }
+        </script> -->
+        <!-- <div class="justify-content">
             <label style="color: red; font-weight: bold;">BPT</label><br><br>
             <div class="container">
                 <label for="YES">YES
@@ -224,7 +243,62 @@
                     <input type="radio" id="no" name="spmbpt" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                 </label><br><br>
             </div>   
+        </div> -->
+        
+
+
+    <div class="form-outer">
+        <label for="spmbft" style="color: red; font-weight: bold;">BFT</label>
+        <select name="spmbft" id="spmbft">
+            <option value="select">-------SELECT-------</option>
+            <option value="YES">YES</option>
+            <option value="CONDUCTED BUT NOT PROPER">CONDUCTED BUT NOT PROPER</option>
+            <option value="NO">NO</option>
+        </select>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var selectElement = document.getElementById("spmbft");
+
+            selectElement.addEventListener("change", function () {
+                var value = selectElement.value;
+
+                if (value === 'CONDUCTED BUT NOT PROPER') {
+                    alert('You have selected CONDUCTED BUT NOT PROPER option, it will be considered as irregularity.');
+                } else if (value === 'NO') {
+                    alert('You have selected NO option, it will be considered as irregularity.');
+                }
+            });
+        });
+    </script>
+
+
+
+        <div class="form-outer">
+            <label for="spmbpt" style="color: red; font-weight: bold;">BPT</label>
+            <select name="spmbpt" id="spmbpt" onchange="handleSelectionChange(this)">
+                <option value="select">-------SELECT-------</option>
+                <option value="YES">YES</option>
+                <option value="CONDUCTED BUT NOT PROPER">CONDUCTED BUT NOT PROPER</option>
+                <option value="NO">NO</option>
+            </select>
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var selectElement = document.getElementById("spmbpt");
+    
+                selectElement.addEventListener("change", function () {
+                    var value = selectElement.value;
+    
+                    if (value === 'CONDUCTED BUT NOT PROPER') {
+                        alert('You have selected CONDUCTED BUT NOT PROPER option, it will be considered as irregularity.');
+                    } else if (value === 'NO') {
+                        alert('You have selected NO option, it will be considered as irregularity.');
+                    }
+                });
+            });
+        </script>
     
         <div class="form-outer">
             <label>MPS Of Train</label>
@@ -255,7 +329,7 @@
                 </label><br><br>
             </div>   
         </div>
-        <div class="justify-content">
+        <!-- <div class="justify-content">
             <label style="color: red; font-weight: bold;">Run With Constant Speed</label><br><br>
             <div class="container">
                 <label for="YES">YES
@@ -266,7 +340,27 @@
                     <input type="radio" id="no" name="spmconstsp" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                 </label><br><br>
             </div>   
+        </div> -->
+        <div class="form-outer">
+            <label for="spmconstsp" style="color: red; font-weight: bold;">RUN WITH CONSTANT SPEED</label>
+            <select name="spmconstsp" id="spmconstsp" onchange="handleSelectionChange(this)">
+                <option value="select">-------SELECT-------</option>
+                <option value="YES">YES</option>
+                <option value="MOMENTARY OVER SPEED-PERMISSIBLE">MOMENTARY OVER SPEED-PERMISSIBLE</option>
+                <option value="MOMENTARY OVER SPEED-NOT PERMISSIBLE">MOMENTARY OVER SPEED-NOT PERMISSIBLE</option>
+                <option value="CONTINUOUS OVER SPEED">CONTINUOUS OVER SPEED</option>
+            </select>
         </div>
+        <script>
+            function handleSelectionChange(selectElement) {
+                var value = selectElement.value;
+                if (value === 'MOMENTARY OVER SPEED-NOT PERMISSIBLE') {
+                    alert('You have selected MOMENTARY OVER SPEED-NOT PERMISSIBLE option, it will be considered as irregularity.');
+                } else if (value === 'CONTINUOUS OVER SPEED') {
+                    alert('You have selected CONTINUOUS OVER SPEED option, it will be considered as irregularity.');
+                }
+            }
+        </script>
         <div class="justify-content">
             <label style="color: red; font-weight: bold;">Short Controlling</label><br><br>
             <div class="container">
