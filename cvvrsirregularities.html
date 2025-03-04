@@ -68,7 +68,10 @@
         
         <button onclick="applyDateFilter()">Apply Date Filter</button>
     </div>
-
+    <div class="buttons">
+        <button onclick="printTable()">Print</button>
+        <button onclick="downloadCSV()">Download CSV</button>
+    </div>
     <div id="loading">Loading data...</div>
     <div id="red-cell-count">TOTAL RED CELLS: 0</div> 
     <table id="results">
@@ -226,8 +229,38 @@
             displayFilteredRows(filteredRows);
         }
 
-        // Fetch data when the page is loaded
+        function printTable() {
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write('<html><head><title>Print</title></head><body>');
+            printWindow.document.write('<h1>CVVRS IRREGULARITIES DATA</h1>');
+            printWindow.document.write(document.getElementById('results').outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function downloadCSV() {
+            let csvContent = '';
+            const table = document.getElementById('results');
+            for (let row of table.rows) {
+                let rowData = [];
+                for (let cell of row.cells) {
+                    rowData.push(`"${cell.innerText}"`);
+                }
+                csvContent += rowData.join(',') + '\n';
+            }
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'CVVRS_Irregularities.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         window.onload = fetchSheetData;
+
     </script>
 
 </body>

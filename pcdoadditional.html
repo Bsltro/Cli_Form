@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADDITIONAL DATA</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            max-width: 60px; /* Allow more space */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        th {
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        /* Style for red columns */
+        .red-column {
+            background-color: red;
+            color: white; /* Optional: Change text color for better visibility */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MONITORING COUNT OF DATA</h1>
+
+    <!-- Date Pickers -->
+    <label for="fromDate">From:</label>
+    <input type="date" id="fromDate">
+    <label for="toDate">To:</label>
+    <input type="date" id="toDate">
+    <button onclick="fetchData()">Load Data</button>
+
+    <table id="dataTable">
+        <thead>
+            <!-- Dynamic headers will be inserted here -->
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <div class="button-container">
+        <button onclick="printTable()">Print</button>
+        <button onclick="downloadCSV()">Download CSV</button>
+    </div>
+
+    <script>
+        const sheetId = '1Yj8Nh_0BXJ0Q9p7CQFdv4QDKdOmXJ_-vM2mGnuhraWA';
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+        const sheetName = 'Sheet1'; // Change if necessary
+
+        // Define the columns to display (Including Date Column B at index 1)
+        const relevantColumns = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33,  37, 41, 43, 48, 50, 52, 54, 56, 58, 60, 62,64,66,69,71,73,75,77,79,81,82,84,85,86,87,88,89,91,93,94,102,104,106,108,110,112,114,116,118,120,123,124,125];
+
+        // Columns to color red
+        const redColumns = [48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 69, 71, 73, 75, 77, 79, 81,82];
+
+        // Set default values for date filters
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementById('fromDate').value = today;
+        document.getElementById('toDate').value = today;
+
+        async function fetchData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            const rows = data.values;
+
+            if (!rows || rows.length < 2) {
+                alert('No data found!');
+                return;
+            }
+
+            const headers = rows[0]; // First row contains headers
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            // Filter rows by date range using Column B (Dates in DD/MM/YY format)
+            const filteredRows = rows.slice(1).filter(row => {
+                if (!row[1]) return false; // Skip rows with no date in Column B
+                const rowDate = formatDate(row[1].trim()); // Convert DD/MM/YY to YYYY-MM-DD
+                return rowDate >= fromDate && rowDate <= toDate;
+            });
+
+            // Ensure only one row per date (Column B)
+            const uniqueRows = [];
+            const dateSet = new Set();
+            filteredRows.forEach(row => {
+                const rowDate = row[1].trim(); // Column B is index 1
+                if (!dateSet.has(rowDate)) {
+                    dateSet.add(rowDate);
+                    uniqueRows.push(row);
+                }
+            });
+
+            // Populate headers and table
+            populateHeaders(headers);
+            if (uniqueRows.length > 0) {
+                populateTable(uniqueRows);
+            } else {
+                alert(`No data found between ${fromDate} and ${toDate}`);
+            }
+        }
+
+        // Convert DD/MM/YY format (from Google Sheets) to YYYY-MM-DD
+        function formatDate(dateString) {
+            if (dateString && typeof dateString === 'string') {
+                const [day, month, year] = dateString.split('/');
+                if (day && month && year) {
+                    return `20${year.padStart(2, '0')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                }
+            }
+            return '';
+        }
+
+        // Populate table headers dynamically
+        function populateHeaders(headers) {
+            const tableHead = document.querySelector("#dataTable thead");
+            tableHead.innerHTML = ''; // Clear previous headers
+            const tr = document.createElement("tr");
+
+            relevantColumns.forEach((colIndex, index) => {
+                const th = document.createElement("th");
+                th.textContent = headers[colIndex] || ''; // Handle missing headers
+                // Add red-column class if the column index is in redColumns
+                if (redColumns.includes(relevantColumns[index])) {
+                    th.classList.add('red-column');
+                }
+                tr.appendChild(th);
+            });
+
+            tableHead.appendChild(tr);
+        }
+
+        // Populate table rows dynamically
+        function populateTable(rows) {
+            const tableBody = document.querySelector("#dataTable tbody");
+            tableBody.innerHTML = ''; // Clear previous data
+
+            rows.forEach(row => {
+                const tr = document.createElement("tr");
+
+                relevantColumns.forEach((colIndex, index) => {
+                    const td = document.createElement("td");
+                    td.textContent = row[colIndex] || ''; // Handle missing data
+                    // Add red-column class if the column index is in redColumns
+                    if (redColumns.includes(relevantColumns[index])) {
+                        td.classList.add('red-column');
+                    }
+                    tr.appendChild(td);
+                });
+
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Print table
+        function printTable() {
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>ADDITIONAL DATA(NUMBERS)</title>
+                        <style>
+                            table { width: 100%; border-collapse: collapse; }
+                            table, th, td { border: 1px solid black; }
+                            th, td { padding: 8px; text-align: center; }
+                            .red-column { background-color: red; color: white; }
+                        </style>
+                    </head>
+                    <body>
+                        ${document.getElementById('dataTable').outerHTML}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Download table data as CSV
+        function downloadCSV() {
+            const table = document.getElementById('dataTable');
+            let csv = [];
+            for (let row of table.rows) {
+                const rowData = [];
+                for (let cell of row.cells) {
+                    rowData.push(cell.innerText);
+                }
+                csv.push(rowData.join(','));
+            }
+
+            const csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(csvData);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'google_sheet_data.csv';
+            a.click();
+        }
+
+        // Fetch data when the page loads
+        fetchData();
+    </script>
+</body>
+</html>

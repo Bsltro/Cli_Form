@@ -52,6 +52,12 @@
         .filters label, .filters input {
             margin-right: 10px;
         }
+        .buttons-container {
+            margin-bottom: 20px;
+        }
+        .buttons-container button {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +73,12 @@
         <input type="date" id="to-date">
         
         <button onclick="applyDateFilter()">Apply Date Filter</button>
+    </div>
+
+    <!-- Buttons for print and download -->
+    <div class="buttons-container">
+        <button onclick="printTable()">Print</button>
+        <button onclick="downloadCSV()">Download CSV</button>
     </div>
 
     <div id="loading">Loading data...</div>
@@ -106,44 +118,45 @@
         }
 
         function applyFilters(rows) {
-    const fromDate = document.getElementById('from-date').value;
-    const toDate = document.getElementById('to-date').value;
+            const fromDate = document.getElementById('from-date').value;
+            const toDate = document.getElementById('to-date').value;
     
-    const fromDateObj = fromDate ? new Date(fromDate + 'T00:00:00') : null; 
-    const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
+            const fromDateObj = fromDate ? new Date(fromDate + 'T00:00:00') : null; 
+            const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
 
-    console.log("Filtering from:", fromDateObj);
-    console.log("Filtering to:", toDateObj);
+            console.log("Filtering from:", fromDateObj);
+            console.log("Filtering to:", toDateObj);
 
-    return rows.filter(row => {
-        const rowDateString = row[1]; 
-        const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
+            return rows.filter(row => {
+                const rowDateString = row[1]; 
+                const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
 
-        console.log("Row date:", rowDateObj);
+                console.log("Row date:", rowDateObj);
 
-        // Check if the date falls within the selected range (if any)
-        let isDateInRange = true;
-        if (fromDateObj && rowDateObj < fromDateObj) {
-            isDateInRange = false;
-            console.log("Row date is before fromDate");
+                // Check if the date falls within the selected range (if any)
+                let isDateInRange = true;
+                if (fromDateObj && rowDateObj < fromDateObj) {
+                    isDateInRange = false;
+                    console.log("Row date is before fromDate");
+                }
+                if (toDateObj && rowDateObj > toDateObj) {
+                    isDateInRange = false;
+                    console.log("Row date is after toDate");
+                }
+
+                const condition1 = row[22] === 'POOR' || row[23] === 'POOR' || row[24] === 'NO' || 
+                                               row[25] === 'NO' || row[26] === 'NO' || row[27] === 'POOR' || 
+                                               row[28] === 'POOR' || (['LPON', 'ALPON', 'ON'].includes(row[29])) || 
+                                               row[30] === 'POOR' || row[31] === 'NO' || row[33] === 'NO' || 
+                                                row[46] === 'NOT PROPER' || row[47] ==='NOT PROPER' ||
+                                               ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(row[34]);
+                const condition2 = (row[36] === 'GOODS' && ['40 - 50', 'ABOVE50'].includes(row[32])) || 
+                (row[36] === 'COACHING' && ['ABOVE50'].includes(row[32])) || row[43] === 'NO' ||row[44] === 'YES';
+
+                return isDateInRange && (condition1 || condition2);
+            });
         }
-        if (toDateObj && rowDateObj > toDateObj) {
-            isDateInRange = false;
-            console.log("Row date is after toDate");
-        }
 
-        const condition1 = row[22] === 'POOR' || row[23] === 'POOR' || row[24] === 'NO' || 
-                                           row[25] === 'NO' || row[26] === 'NO' || row[27] === 'POOR' || 
-                                           row[28] === 'POOR' || (['LPON', 'ALPON', 'ON'].includes(row[29])) || 
-                                           row[30] === 'POOR' || row[31] === 'NO' || row[33] === 'NO' || 
-                                            row[46] === 'NOT PROPER' || row[47] ==='NOT PROPER' ||
-                                           ['ALP LUGGAGE PACKING', 'LP LUGGAGE PACKING', 'YES'].includes(row[34]);
-        const condition2 = (row[36] === 'GOODS' && ['40 - 50', 'ABOVE50'].includes(row[32])) || 
-        (row[36] === 'COACHING' && ['ABOVE50'].includes(row[32])) || row[43] === 'NO' ||row[44] === 'YES';
-
-        return isDateInRange && (condition1 || condition2);
-    });
-}
         function displayHeaders(headers) {
             const tableHead = document.querySelector('#results thead tr');
             tableHead.innerHTML = ''; // Clear any existing headers
@@ -225,6 +238,35 @@
             const headers = allRows[0]; // Get headers from stored data
             displayHeaders(headers);
             displayFilteredRows(filteredRows);
+        }
+
+        // Print table functionality
+        function printTable() {
+            const table = document.querySelector('table');
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write('<html><head><title>Print Table</title></head><body>');
+            printWindow.document.write(table.outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Download data as CSV
+        function downloadCSV() {
+            const headers = allRows[0];
+            const filteredRows = applyFilters(allRows.slice(1));
+
+            let csvContent = headers.join(',') + '\n';
+
+            filteredRows.forEach(row => {
+                csvContent += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'footplate_irregularities.csv';
+            link.click();
         }
 
         // Fetch data when the page is loaded
