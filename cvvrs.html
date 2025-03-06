@@ -139,7 +139,7 @@
             </div>
             <div class="form-outer">
                 <label for="trainLoad">Train Load (in Tonn):</label>
-                <input type="number" name="cvvrsTrainLoad" id="cvvrsTrainLoad" placeholder="Enter train load" required>
+                <input type="number" name="cvvrsTrainLoad" id="cvvrsTrainLoad" placeholder="Enter train load" >
             </div>
             <div class="form-outer">
                 <label for="trainNumber">LOCO Number:</label>
@@ -152,7 +152,7 @@
             </div>
             <div class="form-outer">
                 <label>Start Time</label>
-                <input type="time" name="cvvrsstarttime" id="cvvrsstarttime" required>
+                <input type="datetime-local" name="cvvrsstarttime" id="cvvrsstarttime" required>
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
@@ -160,8 +160,22 @@
             </div>
             <div class="form-outer">
                 <label>End Time</label>
-                <input type="time" name="cvvrsendtime" id="cvvrsendtime" required>
+                <input type="datetime-local" name="cvvrsendtime" id="cvvrsendtime" required>
             </div>
+            <script>
+                const startTimeInput = document.getElementById('cvvrsstarttime');
+                const endTimeInput = document.getElementById('cvvrsendtime');
+                
+                endTimeInput.addEventListener('change', function() {
+                    const startTime = new Date(startTimeInput.value);
+                    const endTime = new Date(endTimeInput.value);
+                    
+                    if (startTime && endTime && endTime <= startTime) {
+                        alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
+                        endTimeInput.value = ''; // Clear the invalid end time input
+                    }
+                });
+            </script>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP CMS ID</label>
                 <input type="text" name="cvvrslpcmsid" id="cvvrslpcmsid">
@@ -200,7 +214,7 @@
                 <input type="text" name="cvvrsalphq" id="cvvrsalphq" >
             </div>
             <div class="form-outer">
-                <label>Data Sent Date</label>
+                <label>TRAIN DATE</label>
                 <input type="date" name="cvvrsdatasentdt" id="cvvrsdatasentdt" required>
                 </div>
                 <div class="justify-content">
@@ -381,7 +395,7 @@
                             </label><br><br>
                         </div>   
                     </div>
-            <div class="justify-content">
+            <!-- <div class="justify-content">
                 <label style="color: red; font-weight: bold;">COACHING/GOODS</label><br><br>
                 <div class="container">
                     <label for="COACHING" class="radio-inline">COACHING
@@ -413,7 +427,7 @@
                         <input type="radio" id="cvvrsn" name="cvvrsdn" value="NIGHT">
                     </label><br><br>
                 </div>
-            </div>
+            </div> -->
             <!-- <div class="justify-content">
                 <label style="color: red; font-weight: bold;">IRREGULARITY OBSERVED</label><br><br>
                 <div class="container">
@@ -539,8 +553,8 @@
     
             if (matchingRow) {
                 document.getElementById('cvvrscliname').value = matchingRow[1]; // CLI Name (column B)
-                const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-                document.getElementById('cvvrsinspectiondate').value = today; // Set today's date
+                //const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                //document.getElementById('cvvrsinspectiondate').value = today; // Set today's date
             }
         }
     

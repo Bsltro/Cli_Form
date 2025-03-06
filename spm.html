@@ -474,8 +474,8 @@
             document.getElementById('spmcliname').value = matchingRow[1]; // CLI Name (column B)
             
             // Set today's date in the Inspection Date field
-            const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-            document.getElementById('spminspectiondate').value = today;
+            //const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            //document.getElementById('spminspectiondate').value = today;
         } else {
             // Optional: You might want to handle the scenario when the Inspection ID is not found
             document.getElementById('spmcliname').value = ''; // Clear CLI Name if no match

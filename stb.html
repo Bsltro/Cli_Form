@@ -135,12 +135,26 @@
         </div>
         <div class="form-outer">
             <label>Start Time</label>
-            <input type="time" name="stbstarttime" id="stbstarttime">
+            <input type="datetime-local" name="stbstarttime" id="stbstarttime">
         </div>
         <div class="form-outer">
             <label>End Time</label>
-            <input type="time" name="stbendtime" id="stbendtime">
+            <input type="datetime-local" name="stbendtime" id="stbendtime">
         </div>
+        <script>
+            const startTimeInput1 = document.getElementById('stbstarttime');
+            const endTimeInput1 = document.getElementById('stbendtime');
+            
+            endTimeInput1.addEventListener('change', function() {
+                const startTime = new Date(startTimeInput1.value);
+                const endTime = new Date(endTimeInput1.value);
+                
+                if (startTime && endTime && endTime <= startTime) {
+                    alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
+                    endTimeInput1.value = ''; // Clear the invalid end time input
+                }
+            });
+        </script>
         <div class="form-outer">
             <div>
                 <label for="stbplace">Place/Station</label>
@@ -210,8 +224,8 @@
             document.getElementById('stbcliname').value = matchingRow[1]; // CLI Name (column B)
 
             // Set today's date in the Inspection Date field
-            const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-            document.getElementById('stbinspectiondate').value = today;
+           // const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            //document.getElementById('stbinspectiondate').value = today;
         } else {
             console.log("Inspection ID not found in sheet data.");
             //alert('Inspection ID not found!');
@@ -225,6 +239,54 @@
     window.onload = () => {
         fetchSheetDatastb();
     };
+
+    const startTimeInput = document.getElementById('stbstarttime');
+    const endTimeInput = document.getElementById('stbendtime');
+    
+    endTimeInput.addEventListener('change', function() {
+        const startTime = new Date(startTimeInput.value);
+        const endTime = new Date(endTimeInput.value);
+        
+        if (startTime && endTime && endTime <= startTime) {
+            alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
+            endTimeInput.value = ''; // Clear the invalid end time input
+        }
+
+        // Call the auto-checking function when end time changes
+        checkDayNight();
+    });
+
+    document.querySelectorAll('input[type="datetime-local"]').forEach(function(input) {
+        input.addEventListener('input', checkDayNight);
+    });
+
+    function checkDayNight() {
+        const startTime = startTimeInput.value;
+        const endTime = endTimeInput.value;
+
+        const isNight = (time) => {
+            const [datePart, timePart] = time.split('T');
+            const [hours] = timePart.split(':').map(n => parseInt(n, 10));
+            return hours >= 22 || hours < 6;
+        };
+
+        if (startTime && isNight(startTime)) {
+            document.getElementById('night').checked = true;  // Auto-check NIGHT
+            document.getElementById('day').checked = false;
+        } else {
+            document.getElementById('day').checked = true;    // Auto-check DAY
+            document.getElementById('night').checked = false;
+        }
+
+        // Check end time if start time is not selected
+        if (endTime && isNight(endTime)) {
+            document.getElementById('night').checked = true;
+            document.getElementById('day').checked = false;
+        } else {
+            document.getElementById('day').checked = true;
+            document.getElementById('night').checked = false;
+        }
+    }
 
     const form = document.getElementById('tab5');
     form.addEventListener('submit', (e) => {
