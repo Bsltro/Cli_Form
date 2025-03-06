@@ -285,16 +285,16 @@
                 <input type="datetime-local" id="endTime" name="endTime" required>
             </div><br>
             <script>
-                const startTimeInput = document.getElementById('startTime');
-                const endTimeInput = document.getElementById('endTime');
+                const startTimeInput1 = document.getElementById('startTime');
+                const endTimeInput1 = document.getElementById('endTime');
                 
-                endTimeInput.addEventListener('change', function() {
-                    const startTime = new Date(startTimeInput.value);
-                    const endTime = new Date(endTimeInput.value);
+                endTimeInput1.addEventListener('change', function() {
+                    const startTime = new Date(startTimeInput1.value);
+                    const endTime = new Date(endTimeInput1.value);
                     
                     if (startTime && endTime && endTime <= startTime) {
                         alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
-                        endTimeInput.value = ''; // Clear the invalid end time input
+                        endTimeInput1.value = ''; // Clear the invalid end time input
                     }
                 });
             </script>
@@ -874,25 +874,54 @@
         });
         
         // Auto-check Day or Night based on time input
-        document.querySelectorAll('input[type="time"]').forEach(function(input) {
-            input.addEventListener('input', function() {
-                const startTime = document.getElementById('startTime').value;
-                const endTime = document.getElementById('endTime').value;
-                
-                const isNight = (time) => {
-                    const [hours] = time.split(':').map(n => parseInt(n, 10));
-                    return hours >= 22 || hours < 6;
-                };
+        const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
+    
+    endTimeInput.addEventListener('change', function() {
+        const startTime = new Date(startTimeInput.value);
+        const endTime = new Date(endTimeInput.value);
         
-                if (isNight(startTime) || isNight(endTime)) {
-                    document.getElementById('night').checked = true;  // Auto-check NIGHT
-                    document.getElementById('day').checked = false;
-                } else {
-                    document.getElementById('day').checked = true;  // Auto-check DAY
-                    document.getElementById('night').checked = false;
-                }
-            });
-        });
+        if (startTime && endTime && endTime <= startTime) {
+            alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
+            endTimeInput.value = ''; // Clear the invalid end time input
+        }
+
+        // Call the auto-checking function when end time changes
+        checkDayNight();
+    });
+
+    document.querySelectorAll('input[type="datetime-local"]').forEach(function(input) {
+        input.addEventListener('input', checkDayNight);
+    });
+
+    function checkDayNight() {
+        const startTime = startTimeInput.value;
+        const endTime = endTimeInput.value;
+
+        const isNight = (time) => {
+            const [datePart, timePart] = time.split('T');
+            const [hours] = timePart.split(':').map(n => parseInt(n, 10));
+            return hours >= 22 || hours < 6;
+        };
+
+        if (startTime && isNight(startTime)) {
+            document.getElementById('night').checked = true;  // Auto-check NIGHT
+            document.getElementById('day').checked = false;
+        } else {
+            document.getElementById('day').checked = true;    // Auto-check DAY
+            document.getElementById('night').checked = false;
+        }
+
+        // Check end time if start time is not selected
+        if (endTime && isNight(endTime)) {
+            document.getElementById('night').checked = true;
+            document.getElementById('day').checked = false;
+        } else {
+            document.getElementById('day').checked = true;
+            document.getElementById('night').checked = false;
+        }
+    }
+
         
         // Fetch sheet data when the page loads
         window.onload = () => {
