@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CVVRS REPORT</title>
+    <title>STABLING INSPECTION</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,6 +15,7 @@
         h1 {
             color: #333;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .filter-container {
@@ -22,6 +23,10 @@
             flex-wrap: wrap;
             justify-content: space-between;
             margin: 20px 0;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .filter-group {
@@ -29,11 +34,19 @@
             flex: 1 1 200px; /* Allows filters to shrink and grow */
         }
 
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
         select, input[type="date"] {
             width: 100%;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            font-size: 14px;
         }
 
         .button-group {
@@ -51,6 +64,7 @@
             background-color: #007bff;
             color: white;
             transition: background-color 0.3s;
+            font-size: 14px;
         }
 
         button:hover {
@@ -60,6 +74,8 @@
         #inspectionCountDisplay {
             text-align: center;
             margin-top: 10px;
+            font-size: 18px;
+            color: #333;
         }
 
         table {
@@ -67,11 +83,12 @@
             border-collapse: collapse;
             margin: 20px 0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #fff;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
             text-align: center;
             max-width: 50px; /* Reduce the width of each column */
             word-wrap: break-word;
@@ -80,6 +97,15 @@
         th {
             background-color: #f2f2f2;
             font-weight: bold;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
         }
 
         @media (max-width: 768px) {
@@ -100,7 +126,7 @@
     </style>
 </head>
 <body>
-    <h1>CVVRS REPORT</h1>
+    <h1>STABLING INSPECTION</h1>
     
     <div id="filterContainer" class="filter-container"></div>
     
@@ -159,7 +185,7 @@
     </table>
 
     <script>
-        const sheetId = '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk'; // Replace with your Google Sheet ID
+        const sheetId = '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA'; // Replace with your Google Sheet ID
         const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Replace with your Google API Key
 
         let data = [];
@@ -168,7 +194,7 @@
         
         // Fetch data from Google Sheets API
         function fetchDataFromSheet() {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!S:AA?key=${apiKey}`; // Fetch only columns A to I
 
             fetch(url)
                 .then(response => response.json())
@@ -196,10 +222,10 @@
             const yearFilter = document.getElementById('yearFilter');
             const years = new Set();
 
-            // Assuming the date is in the second column (adjust if needed)
+            // Assuming the date is in the second column (Column B)
             data.forEach(row => {
-                const rowDate = row[1]; // Assuming date is in column 1 (adjust if needed)
-                const year = new Date(rowDate).getFullYear();
+                const rowDate = row[1]; // Column B contains the date in YYYY-MM-DD format
+                const year = rowDate.split('-')[0]; // Extract year from YYYY-MM-DD
                 years.add(year);
             });
 
@@ -284,6 +310,7 @@
         function filterData() {
             let filteredData = [...data];
 
+            // Apply column filters
             filters.forEach((filter, index) => {
                 const value = filter.value;
                 if (value) {
@@ -291,28 +318,30 @@
                 }
             });
 
-            // Date Range Filter
-            const fromDate = new Date(document.getElementById('fromDate').value);
-            const toDate = new Date(document.getElementById('toDate').value);
+            // Apply date range filter (Column B)
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (fromDate || toDate) {
+                filteredData = filteredData.filter(row => {
+                    const rowDate = row[1]; // Column B contains the date in YYYY-MM-DD format
+                    if (fromDate && rowDate < fromDate) return false;
+                    if (toDate && rowDate > toDate) return false;
+                    return true;
+                });
+            }
+
+            // Apply month and year filter (Column B)
             const monthFilter = document.getElementById('monthFilter').value;
             const yearFilter = document.getElementById('yearFilter').value;
 
-            if (fromDate || toDate || monthFilter || yearFilter) {
+            if (monthFilter || yearFilter) {
                 filteredData = filteredData.filter(row => {
-                    const rowDate = new Date(row[1]); // Assuming date is in the second column
-                    const monthMatch = monthFilter ? (rowDate.getMonth() + 1 === parseInt(monthFilter)) : true;
-                    const yearMatch = yearFilter ? (rowDate.getFullYear() === parseInt(yearFilter)) : true;
-
-                    // Check if the rowDate falls within the From and To Date range
-                    let dateMatch = true;
-                    if (fromDate && rowDate < fromDate) {
-                        dateMatch = false;
-                    }
-                    if (toDate && rowDate > toDate) {
-                        dateMatch = false;
-                    }
-
-                    return dateMatch && monthMatch && yearMatch;
+                    const rowDate = row[1]; // Column B contains the date in YYYY-MM-DD format
+                    const [year, month] = rowDate.split('-');
+                    if (monthFilter && month !== monthFilter) return false;
+                    if (yearFilter && year !== yearFilter) return false;
+                    return true;
                 });
             }
 
@@ -329,7 +358,7 @@
             renderTable(data);
         }
 
-        // Print the table
+        // Print the table (only filtered data)
         function printTable() {
             const printWindow = window.open('', '', 'width=800, height=600');
             printWindow.document.write('<html><head><title>Print Table</title></head><body>');
@@ -339,16 +368,22 @@
             printWindow.print();
         }
 
-        // Download table data as CSV
+        // Download table data as CSV (only filtered data)
         function downloadCSV() {
+            const rows = document.querySelectorAll('#tableBody tr');
             let csv = columnNames.join(',') + '\n';
-            data.forEach(row => {
-                csv += row.join(',') + '\n';
+
+            rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                csv += rowData.join(',') + '\n';
             });
 
             const link = document.createElement('a');
             link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            link.download = 'inspections.csv';
+            link.download = 'filtered_inspections.csv';
             link.click();
         }
 

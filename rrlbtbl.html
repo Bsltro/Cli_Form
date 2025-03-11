@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RR_Lobby_Stabling Filter Search Table</title>
+    <title>RUNNING ROOM INSPECTION</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
             background-color: #f9f9f9;
         }
 
         h1 {
+            color: #333;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -19,427 +21,379 @@
         .filter-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-            justify-content: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .filter-container label {
-            font-weight: bold;
-            min-width: 120px;
+        .filter-group {
+            margin: 10px 5px;
+            flex: 1 1 200px; /* Allows filters to shrink and grow */
+        }
+
+        .filter-group label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
         }
 
-        .filter-container select,
-        .filter-container input {
-            width: 200px;
+        select, input[type="date"] {
+            width: 100%;
             padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 14px;
         }
 
-        .checkbox-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .button-container {
-            text-align: center;
+        .button-group {
+            display: flex;
+            justify-content: center;
             margin: 20px 0;
         }
 
-        .button-container button {
-            padding: 10px 20px;
-            margin: 0 10px;
+        button {
+            padding: 10px 15px;
+            margin: 0 5px;
+            cursor: pointer;
             border: none;
             border-radius: 4px;
-            cursor: pointer;
-            background-color: #4CAF50;
+            background-color: #007bff;
             color: white;
+            transition: background-color 0.3s;
+            font-size: 14px;
         }
 
-        .button-container button:hover {
-            background-color: #45a049;
+        button:hover {
+            background-color: #0056b3;
         }
 
-        .table-container {
-            overflow-x: auto;
-            margin-top: 20px;
-            border-radius: 8px;
+        #inspectionCountDisplay {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             background-color: #fff;
         }
 
         th, td {
-            padding: 12px;
-            text-align: left;
             border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            max-width: 50px; /* Reduce the width of each column */
+            word-wrap: break-word;
         }
 
         th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        tr:nth-child(even) {
             background-color: #f2f2f2;
-        }
-
-        tr:hover {
-            background-color: #ddd;
-        }
-
-        .inspection-count {
-            font-size: 18px;
             font-weight: bold;
-            margin-top: 20px;
-            text-align: center;
             color: #333;
         }
 
-        .clear-filters-btn {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #FF5733;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
-        .clear-filters-btn:hover {
-            background-color: #FF4511;
+        tr:hover {
+            background-color: #f1f1f1;
         }
 
-        /* Print styles */
-        @media print {
-            .filter-container,
-            .button-container,
-            .clear-filters-btn {
-                display: none; /* Hide filters and buttons when printing */
+        @media (max-width: 768px) {
+            .filter-container {
+                flex-direction: column; /* Stack filters on mobile */
             }
 
-            table {
-                width: 100%; /* Ensure table takes full width on print */
+            .filter-group {
+                margin-right: 0;
+                margin-bottom: 15px;
             }
 
-            th, td {
-                border: 1px solid black; /* Solid border for table cells */
-            }
-
-            h1,
-            .inspection-count {
-                text-align: center; /* Center text for title and count in print */
-            }
-
-            body {
-                margin: 0; /* Remove margin for print */
-                padding: 20px; /* Optional padding for printed body */
+            button {
+                width: 100%; /* Full width buttons on mobile */
+                margin: 5px 0; /* Vertical margin between buttons */
             }
         }
     </style>
 </head>
 <body>
+    <h1>RUNNING ROOM INSPECTION</h1>
+    
+    <div id="filterContainer" class="filter-container"></div>
+    
+    <div id="dateRangeContainer" class="filter-container">
+        <div class="filter-group">
+            <label for="fromDate">From Date:</label>
+            <input type="date" id="fromDate">
+        </div>
 
-<h1>RR_Lobby_Stabling Filter Search Table</h1>
-
-<!-- Inspection Type Dropdown -->
-<div class="filter-container">
-    <label for="inspectionTypeFilter">Inspection Type:</label>
-    <select id="inspectionTypeFilter">
-        <option value="">Select Inspection Type</option>
-        <option value="Running Room">Running Room</option>
-        <option value="Lobby Inspection">Lobby Inspection</option>
-        <option value="Loco Stabling">Loco Stabling</option>
-    </select>
-</div>
-
-<!-- Filters for Inspection Data -->
-<div class="filter-container" id="filterContainer"></div>
-
-<!-- Additional filters for Month and Year -->
-<div class="filter-container" id="monthYearFilterContainer">
-    <div class="filter-group">
-        <label for="monthFilter">Month:</label>
-        <select id="monthFilter">
-            <option value="">Select Month</option>
-        </select>
+        <div class="filter-group">
+            <label for="toDate">To Date:</label>
+            <input type="date" id="toDate">
+        </div>
     </div>
-    <div class="filter-group">
-        <label for="yearFilter">Year:</label>
-        <select id="yearFilter">
-            <option value="">Select Year</option>
-        </select>
+
+    <div id="monthYearContainer" class="filter-container">
+        <div class="filter-group">
+            <label for="monthFilter">Month:</label>
+            <select id="monthFilter">
+                <option value="">Select Month</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="yearFilter">Year:</label>
+            <select id="yearFilter">
+                <option value="">Select Year</option>
+            </select>
+        </div>
     </div>
-</div>
 
-<!-- Irregularity checkbox -->
-<div class="checkbox-container">
-    <label for="irregularityCheckbox">Show only rows with Irregularity:</label>
-    <input type="checkbox" id="irregularityCheckbox">
-</div>
-
-<!-- Clear Filters Button -->
-<button class="clear-filters-btn" id="clearFiltersBtn">Clear Filters</button>
-
-<!-- Inspection Count Display -->
-<div class="inspection-count" id="inspectionCountDisplay"></div>
-
-<!-- Button container for Print and Download -->
-<div class="button-container">
-    <button id="printBtn">Print</button>
-    <button id="downloadBtn">Download CSV</button>
-</div>
-
-<!-- Table to display the data -->
-<div class="table-container">
-    <table id="dataTable">
+    <div class="button-group">
+        <button id="clearFiltersButton">Clear Filters</button>
+        <button id="printButton">Print</button>
+        <button id="downloadButton">Download CSV</button>
+    </div>
+    
+    <div id="inspectionCountDisplay"></div>
+    <table>
         <thead>
-            <tr>
-                <th>Inspection Id</th>
-                <th>Inspection Date</th>
-                <th>Cli Name</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Place/Station</th>
-                <th>On Duty Staff</th>
-                <th>Remark</th>
-                <th>Day/Night</th>
-            </tr>
+            <tr id="headerRow"></tr>
         </thead>
         <tbody id="tableBody"></tbody>
     </table>
-</div>
 
-<script>
-    // CSV URL from Google Sheets (replace with your actual CSV link)
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQRaU_RQarVgUm_C55wpJHBwiB9QjsPvbA0xig5_kCKmuDfLwliLOMhbz5cdZ6oOwAhs29hjsm8Xzjm/pub?output=csv';
-    
-    let data = []; // Store data from CSV
-    let columnNames = []; // Store column names for dynamic generation
-    const filters = [];
-    let months = [];
-    let years = [];
-    
-    const irregularityCheckbox = document.getElementById('irregularityCheckbox');
-    const inspectionCountDisplay = document.getElementById('inspectionCountDisplay');
-    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
-    const monthFilter = document.getElementById('monthFilter');
-    const yearFilter = document.getElementById('yearFilter');
-    const inspectionTypeFilter = document.getElementById('inspectionTypeFilter');
-    
-    // Fetch data from Google Sheets CSV
-    fetch(sheetUrl)
-        .then(response => response.text())
-        .then(csvData => {
-            const rows = csvData.trim().split('\n').map(row => row.split(','));
-            columnNames = rows[0]; // First row contains column names
-            data = rows.slice(1); // Skip header row
-            populateFilters();
-            extractMonthYearData(); // Extract months and years from Date column (column B)
-            populateMonthYearFilters(); // Populate month/year filters
-            renderTable(data); // Render table with all data initially
-        })
-        .catch(error => console.error('Error fetching data:', error));
+    <script>
+        const sheetId = '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA'; // Replace with your Google Sheet ID
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Replace with your Google API Key
 
-    // Populate filters dynamically based on CSV columns
-    function populateFilters() {
-        const filterContainer = document.getElementById('filterContainer');
+        let data = [];
+        let columnNames = [];
+        const filters = [];
         
-        columnNames.forEach((colName, index) => {
-            const filterGroup = document.createElement('div');
-            filterGroup.classList.add('filter-group');
-            
-            const label = document.createElement('label');
-            label.setAttribute('for', `filter${index}`);
-            label.textContent = colName;
-            filterGroup.appendChild(label);
-            
-            const select = document.createElement('select');
-            select.id = `filter${index}`;
-            select.innerHTML = '<option value="">Select</option>'; // Default "Select" option
-            
-            // Collect unique values for this column
-            const uniqueValues = new Set();
-            data.forEach(row => uniqueValues.add(row[index]));
-            uniqueValues.forEach(value => {
+        // Fetch data from Google Sheets API
+        function fetchDataFromSheet() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1!A:I?key=${apiKey}`; // Fetch only columns A to I
+
+            fetch(url)
+                .then(response => response.json())
+                .then(responseData => {
+                    const rows = responseData.values;
+
+                    if (!rows || rows.length === 0) {
+                        console.error("No data found in the sheet.");
+                        return;
+                    }
+
+                    columnNames = rows[0]; // First row contains the column headers
+                    data = rows.slice(1);   // Remaining rows contain the actual data
+
+                    renderTable(data);
+                    populateFilters();
+                    updateInspectionCount(data);
+                    populateYearFilter();  // Populate Year Filter dynamically
+                })
+                .catch(error => console.error('Error fetching data from Google Sheets API:', error));
+        }
+
+        // Populate Year Filter dynamically based on data
+        function populateYearFilter() {
+            const yearFilter = document.getElementById('yearFilter');
+            const years = new Set();
+
+            // Assuming the date is in the second column (Column B)
+            data.forEach(row => {
+                const rowDate = row[1]; // Column B contains the date in YYYY-MM-DD format
+                const year = rowDate.split('-')[0]; // Extract year from YYYY-MM-DD
+                years.add(year);
+            });
+
+            years.forEach(year => {
                 const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value;
-                select.appendChild(option);
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+        }
+
+        // Render table based on data
+        function renderTable(dataToRender) {
+            const tableBody = document.getElementById('tableBody');
+            const headerRow = document.getElementById('headerRow');
+            tableBody.innerHTML = '';
+            headerRow.innerHTML = '';
+
+            columnNames.forEach(col => {
+                const th = document.createElement('th');
+                th.textContent = col;
+                headerRow.appendChild(th);
             });
 
-            filterGroup.appendChild(select);
-            filterContainer.appendChild(filterGroup);
-            filters.push(select); // Add this filter to the filters array
-        });
+            dataToRender.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
 
-        // Add event listeners to the filters to update the table on change
-        filters.forEach((filter) => {
-            filter.addEventListener('change', () => filterData());
-        });
-        
-        irregularityCheckbox.addEventListener('change', () => filterData());
-        monthFilter.addEventListener('change', () => filterData());
-        yearFilter.addEventListener('change', () => filterData());
-        inspectionTypeFilter.addEventListener('change', () => filterData());
-    }
+            updateInspectionCount(dataToRender);
+        }
 
-    // Extract unique months and years from the Inspection Date (column B)
-    function extractMonthYearData() {
-        const inspectionDateColumnIndex = 1; // Column B is index 1
-        
-        data.forEach(row => {
-            const dateStr = row[inspectionDateColumnIndex];
-            const date = new Date(dateStr);
-            if (!isNaN(date)) {
-                const month = date.getMonth() + 1; // Get month (1-12)
-                const year = date.getFullYear(); // Get year
-                if (!months.includes(month)) months.push(month);
-                if (!years.includes(year)) years.push(year);
+        // Update the count of inspections displayed
+        function updateInspectionCount(dataToRender) {
+            const inspectionCount = document.getElementById('inspectionCountDisplay');
+            inspectionCount.textContent = `Total Inspections: ${dataToRender.length}`;
+        }
+
+        // Populate dynamic filters
+        function populateFilters() {
+            const filterContainer = document.getElementById('filterContainer');
+            filterContainer.innerHTML = ''; // Clear existing filters
+
+            columnNames.forEach((colName, index) => {
+                const filterGroup = document.createElement('div');
+                filterGroup.classList.add('filter-group');
+
+                const label = document.createElement('label');
+                label.setAttribute('for', `filter${index}`);
+                label.textContent = colName;
+                filterGroup.appendChild(label);
+
+                const select = document.createElement('select');
+                select.id = `filter${index}`;
+                select.innerHTML = '<option value="">Select</option>';
+
+                const uniqueValues = new Set();
+                data.forEach(row => {
+                    if (row[index]) uniqueValues.add(row[index]);
+                });
+
+                [...uniqueValues].forEach(value => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = value;
+                    select.appendChild(option);
+                });
+
+                select.addEventListener('change', filterData);
+                filterGroup.appendChild(select);
+                filterContainer.appendChild(filterGroup);
+                filters.push(select);
+            });
+        }
+
+        // Filter data based on selected filter values
+        function filterData() {
+            let filteredData = [...data];
+
+            // Apply column filters
+            filters.forEach((filter, index) => {
+                const value = filter.value;
+                if (value) {
+                    filteredData = filteredData.filter(row => row[index] === value);
+                }
+            });
+
+            // Apply date range filter (Column B)
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (fromDate || toDate) {
+                filteredData = filteredData.filter(row => {
+                    const rowDate = row[1]; // Column B contains the date in YYYY-MM-DD format
+                    if (fromDate && rowDate < fromDate) return false;
+                    if (toDate && rowDate > toDate) return false;
+                    return true;
+                });
             }
-        });
-    }
 
-    // Populate Month and Year filters
-    function populateMonthYearFilters() {
-        // Populate Month Filter
-        months.sort((a, b) => a - b).forEach(month => {
-            const option = document.createElement('option');
-            option.value = month;
-            option.textContent = new Date(2000, month - 1).toLocaleString('default', { month: 'long' });
-            monthFilter.appendChild(option);
-        });
+            // Apply month and year filter (Column B)
+            const monthFilter = document.getElementById('monthFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
 
-        // Populate Year Filter
-        years.sort((a, b) => a - b).forEach(year => {
-            const option = document.createElement('option');
-            option.value = year;
-            option.textContent = year;
-            yearFilter.appendChild(option);
-        });
-    }
-
-    // Filter data based on selected filters
-    function filterData() {
-        let filteredData = data;
-
-        // Check the selected inspection type
-        const selectedInspectionType = inspectionTypeFilter.value;
-
-        if (selectedInspectionType === "Running Room") {
-            // Show data from columns A to I
-            filteredData = filteredData.map(row => row.slice(0, 9));
-        } else if (selectedInspectionType === "Lobby Inspection") {
-            // Show data from columns J to R
-            filteredData = filteredData.map(row => row.slice(9, 18));
-        } else if (selectedInspectionType === "Loco Stabling") {
-            // Show data from columns S to AA
-            filteredData = filteredData.map(row => row.slice(18, 27));
-        }
-
-        // Apply general filters
-        filters.forEach((filter, index) => {
-            const selectedValue = filter.value;
-            if (selectedValue) {
-                filteredData = filteredData.filter(row => row[index] === selectedValue);
+            if (monthFilter || yearFilter) {
+                filteredData = filteredData.filter(row => {
+                    const rowDate = row[1]; // Column B contains the date in YYYY-MM-DD format
+                    const [year, month] = rowDate.split('-');
+                    if (monthFilter && month !== monthFilter) return false;
+                    if (yearFilter && year !== yearFilter) return false;
+                    return true;
+                });
             }
-        });
 
-        // Apply Irregularity filter
-        if (irregularityCheckbox.checked) {
-            filteredData = filteredData.filter(row => row.some(cell => cell.toLowerCase().includes('irregularity')));
+            renderTable(filteredData);
         }
 
-        // Apply Month filter (based on Inspection Date)
-        if (monthFilter.value) {
-            const selectedMonth = parseInt(monthFilter.value);
-            filteredData = filteredData.filter(row => {
-                const date = new Date(row[1]); // Assuming Inspection Date is in column B
-                return date.getMonth() + 1 === selectedMonth;
-            });
+        // Clear all filters
+        function clearFilters() {
+            filters.forEach(filter => filter.value = "");
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            document.getElementById('monthFilter').value = '';
+            document.getElementById('yearFilter').value = '';
+            renderTable(data);
         }
 
-        // Apply Year filter (based on Inspection Date)
-        if (yearFilter.value) {
-            const selectedYear = parseInt(yearFilter.value);
-            filteredData = filteredData.filter(row => {
-                const date = new Date(row[1]); // Assuming Inspection Date is in column B
-                return date.getFullYear() === selectedYear;
-            });
+        // Print the table (only filtered data)
+        function printTable() {
+            const printWindow = window.open('', '', 'width=800, height=600');
+            printWindow.document.write('<html><head><title>Print Table</title></head><body>');
+            printWindow.document.write(document.querySelector('table').outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
         }
 
-        // Render filtered table and update inspection count
-        renderTable(filteredData);
-    }
+        // Download table data as CSV (only filtered data)
+        function downloadCSV() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            let csv = columnNames.join(',') + '\n';
 
-    // Render filtered table and update inspection count
-    function renderTable(filteredData) {
-        const tableBody = document.getElementById('tableBody');
-        tableBody.innerHTML = ''; // Clear existing rows
-        
-        filteredData.forEach(row => {
-            const tr = document.createElement('tr');
-            row.forEach(cell => {
-                const td = document.createElement('td');
-                td.textContent = cell;
-                tr.appendChild(td);
+            rows.forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                csv += rowData.join(',') + '\n';
             });
-            tableBody.appendChild(tr);
-        });
 
-        // Update inspection count
-        inspectionCountDisplay.textContent = `Inspection Count: ${filteredData.length}`;
-    }
+            const link = document.createElement('a');
+            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+            link.download = 'filtered_inspections.csv';
+            link.click();
+        }
 
-    // Clear all filters
-    clearFiltersBtn.addEventListener('click', () => {
-        filters.forEach(filter => filter.value = '');
-        monthFilter.value = '';
-        yearFilter.value = '';
-        irregularityCheckbox.checked = false;
-        inspectionTypeFilter.value = '';
-        renderTable(data); // Re-render table with no filters
-    });
+        // Attach event listeners to buttons
+        document.getElementById('clearFiltersButton').addEventListener('click', clearFilters);
+        document.getElementById('printButton').addEventListener('click', printTable);
+        document.getElementById('downloadButton').addEventListener('click', downloadCSV);
 
-    // Print functionality
-    document.getElementById('printBtn').addEventListener('click', () => {
-        window.print(); // Triggers the print dialog
-    });
-
-    // Download functionality
-    document.getElementById('downloadBtn').addEventListener('click', () => {
-        downloadCSV(); // Calls the download function
-    });
-
-    // Function to download table data as CSV
-    function downloadCSV() {
-        let csvContent = "data:text/csv;charset=utf-8,";
-        const rows = document.querySelectorAll("table tr");
-
-        rows.forEach(row => {
-            const cols = row.querySelectorAll("td, th");
-            const rowData = Array.from(cols).map(col => col.textContent).join(",");
-            csvContent += rowData + "\r\n"; // Add commas and new line; CRLF for Windows compatibility
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "inspections.csv");
-        document.body.appendChild(link); // Required for FF
-        link.click(); // This will download the CSV file
-        document.body.removeChild(link); // Remove the link after the download
-    }
-</script>
-
+        // Fetch the data from the Google Sheets API when the page loads
+        window.onload = fetchDataFromSheet;
+    </script>
 </body>
 </html>

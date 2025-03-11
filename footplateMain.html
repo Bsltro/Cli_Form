@@ -180,25 +180,26 @@
             <div class="form-outer">
                 <div>
                     <label for="lptype">LP Designation</label>
-                        <datalist id="suggestionslptype">
-                        <option>LPM</option>
-                        <option>LPG</option>
-                        <option>LPP</option>
-                        <option>LPS</option>
-                        <option>LPTW</option>
-                       </datalist>
-                    <input  autoComplete="on" list="suggestionslptype" name="lptype" id="lptype"/> 
+                    <div class="form-outer">
+                        <select name="lptype" id="lptype">
+                            <option value="">select</option>
+                            <option value="LPG">LPG</option>
+                            <option value="LPM">LPM</option>
+                            <option value="LPP">LPP</option>
+                            <option value="LPS">LPS</option>
+                        </select>
+                    </div> 
                 </div>
             </div>
             <div class="form-outer">
                 <div>
                     <label for="lpcat">LP CAT</label>
-                        <datalist id="suggestionslplpcat">
-                        <option>A</option>
-                        <option>B</option>
-                        <option>C</option>
-                       </datalist>
-                    <input  autoComplete="on" list="suggestionslplpcat" name="lpcat" id="lpcat"/> 
+                    <select name="lpcat" id="lpcat">
+                        <option value="">select</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select> 
                 </div>
             </div>
 
@@ -230,12 +231,14 @@
             <div class="form-outer">
                 <div>
                     <label for="alpdesg">ALP DESG</label>
-                        <datalist id="suggestionsalpdesg">
-                        <option>ALP</option>
-                        <option>SALP</option>
-                        <option>COLP</option>
-                        </datalist>
-                    <input  autoComplete="on" list="suggestionsalpdesg" name="alpdesg" id="alpdesg"/> 
+                    <div>
+                        <select name="alpdesg" id="alpdesg">
+                            <option value="">select</option>
+                            <option value="ALP">ALP</option>
+                            <option value="SALP">SALP</option>
+                            <option value="COLP">COLP</option>
+                        </select> 
+                    </div> 
                 </div>
             </div>
             
@@ -614,12 +617,12 @@
                    <label for="sd2" class="radio-inline">05/2025
                         <input type="checkbox" id="sd2" name="sd2" value="05/2025">
                     </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                   <label for="sd3" class="radio-inline">03/2025
-                           <input type="checkbox" id="sd3" name="sd3" value="03/2025">
+                   <label for="sd3" class="radio-inline">06/2025
+                           <input type="checkbox" id="sd3" name="sd3" value="06/2025">
                     </label><br> <br><br>
                     <a href="https://drive.google.com/file/d/1mXM6r7FovLUir1dv2Ag4Ni2cDQJ0l0N0/view?usp=sharing">***Click Here To View PDF of Safety Drive-04/2025***</a><br><br>
                     <a href="https://drive.google.com/file/d/1GsO4tINoPZi4pkf_UMUN5fZoKoQ8MVox/view?usp=sharing">***Click Here To View PDF of Safety Drive-05/2025***</a><br><br>
-                    <a href="https://drive.google.com/file/d/16AMjxCOmUUQ7vg4kM0Djt1grsll8P2Hp/view?usp=sharing">***Click Here To View PDF of Safety Drive-03/2025***</a>
+                    <a href="https://drive.google.com/file/d/1qQ5Rfe3nUjaTvmbJ_1XGT2TeRJquNyFK/view?usp=sharing">***Click Here To View PDF of Safety Drive-03/2025***</a>
                 </div> <br>  
                 </div>
                 <div class="justify-content">
@@ -705,41 +708,74 @@
         
         // Function to auto-fill details based on the entered LP CMS ID
         function autoFillLPDetails() {
-            const lpcmsid = document.getElementById('lpcmsid').value;
-            if (!lpcmsid) return; // Exit if no LP CMS ID is entered
-        
-            // Find the row that matches the LP CMS ID
-            const matchingRow = window.sheetData?.find(row => row[2] === lpcmsid); // Presumed to be in column A
-        
-            if (matchingRow) {
-                document.getElementById('lpname').value = matchingRow[3]; // LP Name
-                document.getElementById('lptype').value = matchingRow[4]; // LP Type
-                document.getElementById('lpcat').value = matchingRow[5]; // LP Category
-                document.getElementById('lphq').value = matchingRow[6]; // LP HQ
-                
-                // Automatically update the due date if LP Category is available
-                setDueDate();
-            } else {
-                clearLPFields(); // Clear fields if no match
+    const lpcmsid = document.getElementById('lpcmsid').value;
+    if (!lpcmsid) return; // Exit if no LP CMS ID is entered
+
+    // Find the row that matches the LP CMS ID (assumed to be in the first column)
+    const matchingRow = window.sheetData?.find(row => row[2] == lpcmsid);
+
+    if (matchingRow) {
+        // Auto-fill LP Name (third column in Google Sheet)
+        document.getElementById('lpname').value = matchingRow[3];
+
+        // Auto-select LP Type (fourth column in Google Sheet)
+        const lpType = matchingRow[4];
+        const lpTypeSelect = document.getElementById('lptype');
+        for (let i = 0; i < lpTypeSelect.options.length; i++) {
+            if (lpTypeSelect.options[i].value === lpType) {
+                lpTypeSelect.selectedIndex = i;
+                break;
             }
         }
-        
-        // Function to auto-fill ALP details based on the entered ALP CMS ID
-        function autoFillALPDetails() {
-            const alpcmsid = document.getElementById('alpcmsid').value;
-            if (!alpcmsid) return; // Exit if no ALP CMS ID is entered
-        
-            // Find the row that matches the ALP CMS ID
-            const matchingRow = window.sheetData?.find(row => row[7] === alpcmsid); // Presumed to be in column A
-        
-            if (matchingRow) {
-                document.getElementById('alpname').value = matchingRow[8]; // ALP Name
-                document.getElementById('alpdesg').value = matchingRow[9]; // ALP Designation
-                document.getElementById('alphq').value = matchingRow[10]; // ALP HQ
-            } else {
-                clearALPFields(); // Clear fields if no match
+
+        // Auto-select LP Category (fifth column in Google Sheet)
+        const lpCategory = matchingRow[5];
+        const lpCatSelect = document.getElementById('lpcat');
+        for (let i = 0; i < lpCatSelect.options.length; i++) {
+            if (lpCatSelect.options[i].value === lpCategory) {
+                lpCatSelect.selectedIndex = i;
+                break;
             }
         }
+
+        // Auto-fill LP HQ (sixth column in Google Sheet)
+        document.getElementById('lphq').value = matchingRow[6];
+
+        // Automatically update the due date if LP Category is available
+        setDueDate();
+    } else {
+        clearLPFields(); // Clear fields if no match
+    }
+}
+
+// Function to auto-fill ALP details based on the entered ALP CMS ID
+function autoFillALPDetails() {
+    const alpcmsid = document.getElementById('alpcmsid').value;
+    if (!alpcmsid) return; // Exit if no ALP CMS ID is entered
+
+    // Find the row that matches the ALP CMS ID (assumed to be in the seventh column)
+    const matchingRow = window.sheetData?.find(row => row[7] == alpcmsid);
+
+    if (matchingRow) {
+        // Auto-fill ALP Name (eighth column in Google Sheet)
+        document.getElementById('alpname').value = matchingRow[8];
+
+        // Auto-select ALP Designation (ninth column in Google Sheet)
+        const alpDesg = matchingRow[9];
+        const alpDesgSelect = document.getElementById('alpdesg');
+        for (let i = 0; i < alpDesgSelect.options.length; i++) {
+            if (alpDesgSelect.options[i].value === alpDesg) {
+                alpDesgSelect.selectedIndex = i;
+                break;
+            }
+        }
+
+        // Auto-fill ALP HQ (tenth column in Google Sheet)
+        document.getElementById('alphq').value = matchingRow[10];
+    } else {
+        clearALPFields(); // Clear fields if no match
+    }
+}
         
         // Clear LP fields
         function clearLPFields() {
