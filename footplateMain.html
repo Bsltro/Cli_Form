@@ -202,12 +202,36 @@
                     </select> 
                 </div>
             </div>
-
-
             <div class="form-outer">
+                <div>
+                    <label for="lphq">LP HQ</label>
+                    <select name="lphq" id="lphq">
+                        <option value="">select</option>
+                        <option value="BSL">BSL</option>
+                        <option value="BSLX">BSLX</option>
+                        <option value="BD">BD</option>
+                        <option value="NGN">NGN</option>
+                        <option value="KNW">KNW</option>
+                        <option value="IGP">IGP</option>
+                        <option value="MMR">MMR</option>
+                        <option value="CSMT">CSMT</option>
+                        <option value="PA">PA</option>
+                        <option value="UDN">UDN</option>
+                        <option value="NDB">NDB</option>
+                        <option value="BPL">BPL</option>
+                        <option value="ET">ET</option>
+                        <option value="NGP">NGP</option>
+                        <option value="BPQ">BPQ</option>
+                        <option value="SUR">SUR</option>
+                        <option value="PB">PB</option>
+                    </select> 
+                </div>
+            </div>
+
+            <!-- <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP HQ</label>
                 <input type="text" name="lphq" id="lphq" >
-            </div>
+            </div> -->
             
             <div class="justify-content">
                 <label style="color: red; font-weight: bold;">Select ALP Nominated Or Other</label><br><br>
@@ -241,11 +265,35 @@
                     </div> 
                 </div>
             </div>
-            
             <div class="form-outer">
+                <div>
+                    <label for="alphq">LP HQ</label>
+                    <select name="alphq" id="alphq">
+                        <option value="">select</option>
+                        <option value="BSL">BSL</option>
+                        <option value="BSLX">BSLX</option>
+                        <option value="BD">BD</option>
+                        <option value="NGN">NGN</option>
+                        <option value="KNW">KNW</option>
+                        <option value="IGP">IGP</option>
+                        <option value="MMR">MMR</option>
+                        <option value="CSMT">CSMT</option>
+                        <option value="PA">PA</option>
+                        <option value="UDN">UDN</option>
+                        <option value="NDB">NDB</option>
+                        <option value="BPL">BPL</option>
+                        <option value="ET">ET</option>
+                        <option value="NGP">NGP</option>
+                        <option value="BPQ">BPQ</option>
+                        <option value="SUR">SUR</option>
+                        <option value="PB">PB</option>
+                    </select> 
+                </div>
+            </div>
+            <!-- <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP HQ</label>
                 <input type="text" name="alphq" id="alphq">
-            </div>
+            </div> -->
             <div class="form-outer">
                 <label for="trainNumber" style="color: red; font-weight: bold;">Train Number:</label>
                 <input type="text" name="trainNumber" id="trainNumber" placeholder="Enter train number" class="uppercase">
@@ -740,8 +788,18 @@
             }
         }
 
+
+        // Auto-select LP HQ (fifth column in Google Sheet)
+        const lpHQ = matchingRow[6];
+        const lpHQSelect = document.getElementById('lphq');
+        for (let i = 0; i < lpHQSelect.options.length; i++) {
+            if (lpHQSelect.options[i].value === lpHQ) {
+                lpHQSelect.selectedIndex = i;
+                break;
+            }
+        }
         // Auto-fill LP HQ (sixth column in Google Sheet)
-        document.getElementById('lphq').value = matchingRow[6];
+       // document.getElementById('lphq').value = matchingRow[6];
 
         // Automatically update the due date if LP Category is available
         setDueDate();
@@ -772,8 +830,17 @@ function autoFillALPDetails() {
             }
         }
 
+         // Auto-select ALP Designation (ninth column in Google Sheet)
+         const alpHQ = matchingRow[10];
+        const alpHQSelect = document.getElementById('alphq');
+        for (let i = 0; i < alpHQSelect.options.length; i++) {
+            if (alpHQSelect.options[i].value === alpHQ) {
+                alpHQSelect.selectedIndex = i;
+                break;
+            }
+        }
         // Auto-fill ALP HQ (tenth column in Google Sheet)
-        document.getElementById('alphq').value = matchingRow[10];
+        //document.getElementById('alphq').value = matchingRow[10];
     } else {
         clearALPFields(); // Clear fields if no match
     }

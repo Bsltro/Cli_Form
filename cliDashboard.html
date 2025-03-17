@@ -84,11 +84,13 @@
         <div id="lobbyTab" class="tab">Lobby</div>
         <div id="stablingTab" class="tab">Stabling</div>
         <div id="nominatedTab" class="tab">Nominated</div>
+        <div id="cvvrspendingTab" class="tab">VIEW PENDING CVVRS</div>
+        <div class="tab" onclick="redirectToPage('clicvvrspage.html')">FILL CVVRS DETAILS</div><br><br>
     </div>
 
     <!-- Table filters -->
     <div id="filters" class="filters" style="display: none;">
-        <!-- Filters for the footplate tab will be dynamically inserted here -->
+        <!-- Filters will be dynamically inserted here -->
     </div>
     <div id="columnCheckboxes"></div>
     <!-- Row count display -->
@@ -144,6 +146,10 @@
         nominated: {
             sheetID: '1MFtqC6Gq17KN6-afXXH1I8oIT3JfJ1qRiOh0dOj-S58',
             range: 'Sheet1!A1:I1000',
+        },
+        cvvrspending: {
+            sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
+            range: 'Sheet3!A1:S1000',
         }
     };
 
@@ -158,13 +164,14 @@
     // Function to fetch data from a given Google Sheet based on the tab
     function fetchDataFromGoogleSheet(sheetType) {
         const sheet = sheetURLs[sheetType];
-        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${sheet.range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`; 
+        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${sheet.range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`; // Replace with your actual API key
 
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 if (data.values) {
                     const rows = data.values;
+                    console.log("Fetched Rows:", rows); // Log the fetched rows for debugging
                     const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
                     const tableHead = document.getElementById('dataTable').getElementsByTagName('thead')[0];
 
@@ -174,6 +181,7 @@
 
                     // Get column headers from the first row
                     const headers = rows[0];
+                    console.log("Headers:", headers); // Log headers for debugging
 
                     // Insert table headers dynamically
                     let headerRow = tableHead.insertRow();
@@ -255,9 +263,7 @@
         filterContainer.innerHTML = '';
 
         // Columns as per your previous logic
-        //const filterColumns = [3, 4, 5, 6, 7, 9, 11, 36, 37, 38];
-        const filterColumns = [ 36, 37, 38];
-
+        const filterColumns = [36, 37, 38];
 
         // Date filters
         const fromDateLabel = document.createElement('label');
@@ -340,7 +346,7 @@
         }
     }
 
-    // Function to render filtered data with current data
+    // Function to render filtered data
     function renderFilteredData(data, headers) {
         const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = '';
@@ -350,19 +356,24 @@
             row.forEach(cell => {
                 let newCell = newRow.insertCell();
                 newCell.textContent = cell || '';
-
-                // Highlight rows based on the value in the last column
-                const lastColumnValue = parseFloat(row[headers.length - 1]);
-                if (!isNaN(lastColumnValue)) {
-                    if (lastColumnValue >= 6 && lastColumnValue <= 10) {
-                        newRow.style.backgroundColor = 'yellow';
-                    } else if (lastColumnValue >= 3 && lastColumnValue < 6) {
-                        newRow.style.backgroundColor = 'orange';
-                    } else if (lastColumnValue < 3) {
-                        newRow.style.backgroundColor = 'red';
-                    }
-                }
             });
+
+            // Add Copy button for each row only if the current tab is "cvvrspending"
+            if (currentTab === 'cvvrspending') {
+                const copyButtonCell = newRow.insertCell();
+                const copyButton = document.createElement('button');
+                copyButton.textContent = 'Copy';
+                copyButton.className = 'copyButton';
+                copyButton.addEventListener('click', () => {
+                    const textToCopy = row.join('\t');
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        alert('Row data copied to clipboard!');
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+                });
+                copyButtonCell.appendChild(copyButton);
+            }
         });
 
         // Update row count
@@ -417,6 +428,7 @@
     document.getElementById('lobbyTab').addEventListener('click', () => switchTab('lobbyTab'));
     document.getElementById('stablingTab').addEventListener('click', () => switchTab('stablingTab'));
     document.getElementById('nominatedTab').addEventListener('click', () => switchTab('nominatedTab'));
+    document.getElementById('cvvrspendingTab').addEventListener('click', () => switchTab('cvvrspendingTab'));
 
     // Initial load - fetch data for Footplate tab by default
     fetchDataFromGoogleSheet('footplate');
@@ -427,19 +439,22 @@
         let textToCopy = '';
 
         // Get headers
-        const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent).join('\t');
-        textToCopy += headers + '\n';
-
-        // Get rows
+        const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+        
+        // Prepare the data based on headerOrder
         const rows = table.querySelectorAll('tbody tr');
         rows.forEach(row => {
-            const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent).join('\t');
-            textToCopy += rowData + '\n';
+            const formData = headerOrder.map(header => {
+                const index = headers.indexOf(header);
+                return index !== -1 ? row.cells[index].textContent : ''; // Fill with cell data
+            });
+
+            textToCopy += formData.join('\t') + '\n'; // Join with tabs for separation
         });
 
         // Copy to clipboard
         navigator.clipboard.writeText(textToCopy).then(() => {
-            alert('Table data copied to clipboard!');
+            alert('Table data copied to clipboard! Please paste it into the form.');
         }).catch(() => {
             alert('Failed to copy data.');
         });
@@ -481,6 +496,31 @@
         printWindow.document.close();
         printWindow.print();
     });
+
+    function redirectToPage(page) {
+            window.location.href = page; // Redirect to the specified page
+        }
+
+    const headerOrder = [
+        "CMS ID",                    
+        "CVVRS Inspection Date",      
+        "CLI Name",                  
+        "Train Number", 
+        "TRAIN LOAD",             
+        "LOCO Number",               
+        "From Station",              
+        "Train Departure Date",      
+        "To Station",                
+        "Train Arrival Date",        
+        "LP CMS ID",                 
+        "LP Name",                   
+        "LP Designation",            
+        "LP Category",               
+        "LP HQ",                     
+        "ALP CMS ID",                
+        "ALP Name",                  
+        "ALP DESG", "ALP HQ"          
+    ];
 </script>
 </body>
 </html>

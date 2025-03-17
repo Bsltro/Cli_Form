@@ -1,0 +1,374 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CVVRS SEND DATA FORM</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Times New Roman', Times, serif;
+            }
+        
+            body {
+                background-color: aqua;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-repeat: no-repeat;
+                padding: 20px;
+            }
+        
+            .main {
+                width: 100%;
+                max-width: 400px;
+                background: rgb(245, 242, 242);
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+        
+            .main h3 {
+                padding-bottom: 20px;
+                font-size: 30px;
+                color: #333;
+            }
+        
+            .main form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        
+            .form-outer {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        
+            .form-outer label {
+                display: block;
+                color: red;
+                font-weight: bold;
+                margin-bottom: 8px;
+                text-align: left;
+            }
+        
+            .form-outer input {
+                width: 100%;
+                height: 40px;
+                padding: 8px;
+                background-color: rgb(203, 218, 223);
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+            }
+        
+            .form-outer button {
+                width: 100%;
+                padding: 12px;
+                background-color: blueviolet;
+                color: white;
+                font-size: 18px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+        
+            .form-outer button:hover {
+                background-color: darkviolet;
+            }
+        
+            /* For mobile responsiveness */
+            @media (max-width: 600px) {
+                .main {
+                    padding: 15px;
+                    width: 100%;
+                    max-width: 100%;
+                }
+        
+                .form-outer input,
+                .form-outer button {
+                    height: 45px;
+                    font-size: 16px;
+                }
+        
+                .main h3 {
+                    font-size: 26px;
+                }
+        
+                .form-outer label {
+                    font-size: 14px;
+                }
+            }
+        
+            .dropbtn {
+                background-color: #04AA6D;
+                color: white;
+                padding: 16px;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+            }
+        </style>
+        
+        
+        
+    </head>
+    <form id="tab2" class="tabcontent">
+        <div id="res" style="color: brown;font-size: 14px;" class="tabcontent">
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">CMS ID<b style="color: blue;">**Enter last digits of CLI CMS ID Only,ex if CLI CMS ID is BSL0048 enter only 48,ex if CLI CMS ID is BSL0106 enter only 106**</b></p></label>
+                <input type="number" name="cvvrssdinspectionid" id="cvvrssdinspectionid" required>
+            </div>
+            <div class="form-outer">
+                <label>DATA SENT Date</label>
+                <input type="date" name="cvvrssdinspectiondate" id="cvvrssdinspectiondate" required>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">CLI Name</label>
+                <input type="text" name="cvvrssdcliname" id="cvvrssdcliname"  readonly>
+            </div>
+            <div class="form-outer">
+                <label for="trainNumber">Train Number:</label>
+                <input type="text" name="cvvrssdTrainNumber" id="cvvrssdTrainNumber" placeholder="Enter train number" class="uppercase" required>
+            </div>
+            <div class="form-outer">
+                <label for="trainLoad">Train Load (in Tonn):</label>
+                <!-- <input type="number" name="cvvrsSDTrainLoad" id="cvvrsSDTrainLoad" placeholder="Enter train load" > -->
+                <input type="number" name="cvvrsSDTrainLoad" id="cvvrsSDTrainLoad" placeholder="Enter train load">
+
+            </div>
+            <div class="form-outer">
+                <label for="trainNumber">LOCO Number:</label>
+                <input type="text" name="cvvrssdlocono" id="cvvrssdlocono" placeholder="Enter LOCO number" class="uppercase" required>
+            </div>
+            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
+                <input type="text" name="cvvrssdfromstation" id="cvvrssdfromstation" oninput="upperCase()" class="uppercase" required>
+            </div>
+            <div class="form-outer">
+                <label>Departure Time</label>
+                <input type="datetime-local" name="cvvrssdstarttime" id="cvvrssdstarttime" required>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
+                <input type="text" name="cvvrssdtostation" id="cvvrssdtostation"  class="uppercase" required>
+            </div>
+            <div class="form-outer">
+                <label>Arrival Time</label>
+                <input type="datetime-local" name="cvvrssdendtime" id="cvvrssdendtime" required>
+            </div>
+            <script>
+                const startTimeInput = document.getElementById('cvvrssdstarttime');
+                const endTimeInput = document.getElementById('cvvrssdendtime');
+                
+                endTimeInput.addEventListener('change', function() {
+                    const startTime = new Date(startTimeInput.value);
+                    const endTime = new Date(endTimeInput.value);
+                    
+                    if (startTime && endTime && endTime <= startTime) {
+                        alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
+                        endTimeInput.value = ''; // Clear the invalid end time input
+                    }
+                });
+            </script>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP CMS ID</label>
+                <input type="text" name="cvvrssdlpcmsid" id="cvvrssdlpcmsid">
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Name</label>
+                <input type="text" name="cvvrssdlpname" id="cvvrssdlpname" >
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Desg</label>
+                <input type="text" name="cvvrssdlptype" id="cvvrssdlptype">
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Category</label>
+                <input type="text" name="cvvrssdlpcat" id="cvvrssdlpcat" >
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP HQ</label>
+                <input type="text" name="cvvrssdlphq" id="cvvrssdlphq" >
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP CMS ID</label>
+                <input type="text" name="cvvrssdalpcmsid" id="cvvrssdalpcmsid">
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Name</label>
+                <input type="text" name="cvvrssdalpname" id="cvvrssdalpname" >
+            </div><br>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Designation</label>
+                <input type="text" name="cvvrssdalpdesg" id="cvvrssdalpdesg" >
+            </div>
+           <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP HQ</label>
+                <input type="text" name="cvvrssdalphq" id="cvvrssdalphq" >
+            </div>
+            <!-- <div class="form-outer">
+                <label>Data Sent From Drive</label>
+                <input type="text" name="cvvrssddatasent" id="cvvrssddatasent" required>
+                </div> -->
+                
+            <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
+            <div class="form-outer">
+                <input type="submit" id="sub2" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
+            </div>
+        </div>
+    </form>
+
+    <script>
+        const sheetIDcvvrs = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
+        const apiKeycvvrs = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+        const dataRangecvvrs = 'Sheet1!A2:K900'; 
+    
+        const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetIDcvvrs}/values/${dataRangecvvrs}?key=${apiKeycvvrs}`;
+    
+        // Fetch data from Google Sheets
+        function fetchSheetDatacvvrs() {
+            fetch(sheetURL)
+                .then(response => response.json())
+                .then(data => {
+                    const rows = data.values;
+                    window.sheetData = rows;
+                    populateNamescvvrs();
+                })
+                .catch(error => console.error('Error fetching data from Google Sheets:', error));
+        }
+    
+        // Populate Loco Pilot and Assistant Loco Pilot names
+        function populateNamescvvrs() {
+            const lpNames = document.getElementById('cvvrssdlpnames');
+            const alpNames = document.getElementById('cvvrssdalpnames');
+            lpNames.innerHTML = '';
+            alpNames.innerHTML = '';
+    
+            window.sheetData.forEach(row => {
+                const lpOption = document.createElement('option');
+                lpOption.value = row[2];  // Loco Pilot Name (column C)
+                lpNames.appendChild(lpOption);
+    
+                const alpOption = document.createElement('option');
+                alpOption.value = row[6]; // Assistant Loco Pilot Name (column G)
+                alpNames.appendChild(alpOption);
+            });
+        }
+    
+        // Auto-fill fields based on LP CMS ID
+        document.getElementById('cvvrssdlpcmsid').addEventListener('input', function() {
+            const lpcmsid = document.getElementById('cvvrssdlpcmsid').value;
+            if (!lpcmsid) return;
+    
+            const matchingRow = window.sheetData?.find(row => row[2] === lpcmsid); // Assumes LP CMS ID is in column I (index 8)
+    
+            if (matchingRow) {
+                document.getElementById('cvvrssdlpname').value = matchingRow[3]; // LP Name (column C)
+                document.getElementById('cvvrssdlptype').value = matchingRow[4]; // LP Type (column D)
+                document.getElementById('cvvrssdlpcat').value = matchingRow[5]; // LP Category (column E)
+                document.getElementById('cvvrssdlphq').value = matchingRow[6]; // LP HQ (column F)
+            } else {
+                clearLPFields();
+            }
+        });
+    
+        // Clear LP fields
+        function clearLPFields() {
+            document.getElementById('cvvrssdlpname').value = '';
+            document.getElementById('cvvrssdlptype').value = '';
+            document.getElementById('cvvrssdlpcat').value = '';
+            document.getElementById('cvvrssdlphq').value = '';
+        }
+    
+        // Auto-fill fields based on ALP CMS ID
+        document.getElementById('cvvrssdalpcmsid').addEventListener('input', function() {
+            const alpcmsid = document.getElementById('cvvrssdalpcmsid').value;
+            if (!alpcmsid) return;
+    
+            const matchingRow = window.sheetData?.find(row => row[7] === alpcmsid); // Assumes ALP CMS ID is in column J (index 9)
+    
+            if (matchingRow) {
+                document.getElementById('cvvrssdalpname').value = matchingRow[8]; // ALP Name (column G)
+                document.getElementById('cvvrssdalpdesg').value = matchingRow[9]; // ALP Designation (assuming it's in column K, index 10)
+                document.getElementById('cvvrssdalphq').value = matchingRow[10]; // ALP HQ (column H)
+            } else {
+                clearALPFields();
+            }
+        });
+    
+        // Clear ALP fields
+        function clearALPFields() {
+            document.getElementById('cvvrssdalpname').value = '';
+            document.getElementById('cvvrssdalpdesg').value = '';
+            document.getElementById('cvvrssdalphq').value = '';
+        }
+    
+        // Auto-fill CLI Name and Inspection Date based on Inspection ID
+        document.getElementById('cvvrssdinspectionid').addEventListener('input', autoFillDetailscvvrs);
+    
+        function autoFillDetailscvvrs() {
+            const inspectionID = document.getElementById('cvvrssdinspectionid').value;
+            if (!inspectionID) return;
+    
+            const matchingRow = window.sheetData?.find(row => row[0] == inspectionID);
+    
+            if (matchingRow) {
+                document.getElementById('cvvrssdcliname').value = matchingRow[1]; // CLI Name (column B)
+                const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                document.getElementById('cvvrssdinspectiondate').value = today; // Set today's date
+            }
+        }
+    
+        // Set radio buttons based on input values
+        
+        // Initial load function
+        window.onload = () => {
+            fetchSheetDatacvvrs();
+        };
+    
+        const form = document.getElementById('tab2');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!form.checkValidity()) {
+                alert("Please fill all the required fields.");
+                return;
+            }
+            document.querySelector("#sub2").value = "Submitting.........";
+    
+            // Create a new FormData object
+            let data = new FormData(form);
+    
+            // Convert all form data values to uppercase
+            data.forEach((value, key) => {
+                if (typeof value === 'string') {
+                    data.set(key, value.toUpperCase());
+                }
+            });
+    
+            // Send the data to the server
+            fetch('https://script.google.com/macros/s/AKfycbxY-givoCeMhHdI-hBs-b_lZiOLR0ZJ5YHPDS4Kr2jtYpMw0mXpbOELZR6riv98vd3k3Q/exec', {
+                method: "POST",
+                body: data
+            })
+            .then(res => res.text())
+            .then(data => {
+                document.querySelector("#sub2").value = "Submit";
+                form.reset();
+                alert("cvvrs Data Saved Successfully...");
+            })
+            .catch(error => {
+                document.querySelector("#sub2").value = "Submit";
+                alert("An error occurred while saving the data. Please try again.");
+                console.error(error);
+            });
+        });
+        </script>
+</html>

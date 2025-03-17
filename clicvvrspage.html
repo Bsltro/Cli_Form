@@ -1,0 +1,503 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CVVRS Form</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Times New Roman', Times, serif;
+            }
+        
+            body {
+                background-color: aqua;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-repeat: no-repeat;
+                padding: 20px;
+            }
+        
+            .main {
+                width: 100%;
+                max-width: 400px;
+                background: rgb(245, 242, 242);
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+        
+            .main h3 {
+                padding-bottom: 20px;
+                font-size: 30px;
+                color: #333;
+            }
+        
+            .main form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        
+            .form-outer {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        
+            .form-outer label {
+                display: block;
+                color: red;
+                font-weight: bold;
+                margin-bottom: 8px;
+                text-align: left;
+            }
+        
+            .form-outer input {
+                width: 100%;
+                height: 40px;
+                padding: 8px;
+                background-color: rgb(203, 218, 223);
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+            }
+        
+            .form-outer button {
+                width: 100%;
+                padding: 12px;
+                background-color: blueviolet;
+                color: white;
+                font-size: 18px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+        
+            .form-outer button:hover {
+                background-color: darkviolet;
+            }
+        
+            /* For mobile responsiveness */
+            @media (max-width: 600px) {
+                .main {
+                    padding: 15px;
+                    width: 100%;
+                    max-width: 100%;
+                }
+        
+                .form-outer input,
+                .form-outer button {
+                    height: 45px;
+                    font-size: 16px;
+                }
+        
+                .main h3 {
+                    font-size: 26px;
+                }
+        
+                .form-outer label {
+                    font-size: 14px;
+                }
+            }
+        
+            .dropbtn {
+                background-color: #04AA6D;
+                color: white;
+                padding: 16px;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+            }
+        </style>
+        
+        
+        
+    </head>
+    <form id="tab2" class="tabcontent">
+        <div id="res" style="color: brown;font-size: 14px;" class="tabcontent">
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">CMS ID<b style="color: blue;">**PASTE THE COPIED DATA IN CLI ID FIELD REMAINING DATA WILL WE AUTO FILLED**</b></p></label>
+                <input type="number" name="cvvrsinspectionid" id="cvvrsinspectionid" required>
+            </div>
+            <div class="form-outer">
+                <label>CVVRS DATA SENT Date</label>
+                <input type="date" name="cvvrsinspectiondate" id="cvvrsinspectiondate" required readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">CLI Name</label>
+                <input type="text" name="cvvrscliname" id="cvvrscliname"  readonly>
+            </div>
+            <div class="form-outer">
+                <label for="trainNumber">Train Number:</label>
+                <input type="text" name="cvvrsTrainNumber" id="cvvrsTrainNumber" placeholder="Enter train number" class="uppercase" required readonly>
+            </div>
+            <div class="form-outer">
+                <label for="trainLoad">Train Load (in Tonn):</label>
+                <input type="number" name="cvvrsTrainLoad" id="cvvrsTrainLoad" placeholder="Enter train load" >
+            </div>
+            <div class="form-outer">
+                <label for="trainNumber">LOCO Number:</label>
+                <input type="text" name="cvvrslocono" id="cvvrslocono" placeholder="Enter train number" class="uppercase" required readonly>
+            </div>
+            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
+                <input type="text" name="cvvrsfromstation" id="cvvrsfromstation" oninput="upperCase()" class="uppercase" required readonly>
+            </div>
+            <div class="form-outer">
+                <label>Train Departure Date and Time</label>
+                <input type="datetime-local" name="cvvrsstarttime" id="cvvrsstarttime" required readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
+                <input type="text" name="cvvrstostation" id="cvvrstostation"  class="uppercase" required readonly>
+            </div>
+            <div class="form-outer">
+                <label>Train Arrival Date and Time</label>
+                <input type="datetime-local" name="cvvrsendtime" id="cvvrsendtime" required readonly>
+            </div>
+            <script>
+                const startTimeInput = document.getElementById('cvvrsstarttime');
+                const endTimeInput = document.getElementById('cvvrsendtime');
+                
+                endTimeInput.addEventListener('change', function() {
+                    const startTime = new Date(startTimeInput.value);
+                    const endTime = new Date(endTimeInput.value);
+                    
+                    if (startTime && endTime && endTime <= startTime) {
+                        alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
+                        endTimeInput.value = ''; // Clear the invalid end time input
+                    }
+                });
+            </script>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP CMS ID</label>
+                <input type="text" name="cvvrslpcmsid" id="cvvrslpcmsid" readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Name</label>
+                <input type="text" name="cvvrslpname" id="cvvrslpname" readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Designation</label>
+                <input type="text" name="cvvrslptype" id="cvvrslptype" readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP Category</label>
+                <input type="text" name="cvvrslpcat" id="cvvrslpcat"readonly >
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">LP HQ</label>
+                <input type="text" name="cvvrslphq" id="cvvrslphq" readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP CMS ID</label>
+                <input type="text" name="cvvrsalpcmsid" id="cvvrsalpcmsid" readonly>
+            </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Name</label>
+                <input type="text" name="cvvrsalpname" id="cvvrsalpname" readonly>
+            </div><br>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP Designation</label>
+                <input type="text" name="cvvrsalpdesg" id="cvvrsalpdesg"readonly >
+            </div>
+            
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">ALP HQ</label>
+                <input type="text" name="cvvrsalphq" id="cvvrsalphq"readonly >
+            </div>
+            <div class="form-outer">
+                <label>INSPECTION DATE</label>
+                <input type="date" name="cvvrsdatasentdt" id="cvvrsdatasentdt" required>
+                </div>
+                <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Whether Keeping Necessary Personal Store Items On Desk</label><br><br>
+                        <div class="container">
+                            <label for="YES" class="radio-inline">YES
+                                <input type="radio" id="yes" name="cvvrsps" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NO" class="radio-inline">NO
+                                <input type="radio" id="no" name="cvvrsps" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label>
+                           
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Continuity Test</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrscont" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrscont" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NA" class="radio-inline">NA
+                                <input type="radio" id="na" name="cvvrscont" value="NA"><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">LP Signal Calling Out With Hand Gesture</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrslpsig" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrslpsig" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">ALP Signal Calling Out With Hand Gesture</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrsalpsig" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrsalpsig" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">BFT/BPT</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrsbft" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrsbft" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NA" class="radio-inline">NA
+                                <input type="radio" id="na" name="cvvrsbft" value="NA"><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">LP Reducing Speed With Respect To Signal Aspect</label><br><br>
+                        <div class="container">
+                        <label for="YES">YES
+                            <input type="radio" id="yes" name="cvvrssp" value="YES">
+                        </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                       <label for="NO">NO
+                            <input type="radio" id="no" name="cvvrssp" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                        </label><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">ALP Kept Hand On RS Valve</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrsrs" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                           <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrsrs" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                            </div>  
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Use Of Walkie Talkie For Signal Aspect Or Train Operations</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrswt" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            
+                            <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrswt" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                            </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Whisteling At W/L Board</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrswl" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                           <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrswl" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Putting Reverser Or Throttle To Neutral At All Halts</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrsth" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                           <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrsth" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NA" class="radio-inline">AT DESTINATION ONLY 
+                                <input type="radio" id="dest" name="cvvrsth" value="AT DESTINATION ONLY"><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Whether Crew Vigilant And Not Indulge In Discussion</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrsdis" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                           <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrsdis" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Ensure Proper Signal Taken Off Before Start</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrssigtoff" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrssigtoff" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Whether LP/ALP Using Mobile Phone</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrsmob" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            
+                            <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrsmob" value="NO">
+                            </label><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Whether VCD Not Isolated By Crew On Line/ Acknowledge Within Time</label><br><br>
+                        <div class="container">
+                            <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrsvcd" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                           <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrsvcd" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                        </div>   
+                    </div>
+                    <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">MP On Zero Before Braking</label><br><br>
+                        <div class="container">
+                           <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrsmp" value="YES">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                           <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrsmp" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                        </div>   
+                    </div>
+                   <div class="justify-content">
+                        <label style="color: red; font-weight: bold;">Luggage Packing</label><br><br>
+                        <div class="container">
+                          <label for="NO">NO
+                                <input type="radio" id="no" name="cvvrslugg" value="NO">
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                           <label for="YES">YES
+                                <input type="radio" id="yes" name="cvvrslugg" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
+                            </label><br><br>
+                        </div>   
+                    </div>
+            <div class="form-outer">
+                <label style="color: red; font-weight: bold;">REMARK</label>
+                <input type="text" name="cvvrsremark" id="cvvrsremark">
+            </div>
+            <br>
+            <!-- <div class="form-outer">
+                <label style="color: red; font-weight: bold;">RFERENCE NO</label>
+                <input type="text" name="cvvrsrefno" id="cvvrsrefno">
+            </div> -->
+            <br>
+            <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
+            <div class="form-outer">
+                <input type="submit" id="sub2" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
+            </div>
+        </div>
+    </form>
+
+    <script>
+           
+    const form = document.getElementById('tab2');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+            alert("Please fill all the required fields.");
+            return;
+        }
+        document.querySelector("#sub2").value = "Submitting.........";
+
+        // Create a new FormData object
+        let data = new FormData(form);
+
+        // Convert all form data values to uppercase
+        data.forEach((value, key) => {
+            if (typeof value === 'string') {
+                data.set(key, value.toUpperCase());
+            }
+        });
+
+        // Send the data to the server
+        fetch('https://script.google.com/macros/s/AKfycbxY-givoCeMhHdI-hBs-b_lZiOLR0ZJ5YHPDS4Kr2jtYpMw0mXpbOELZR6riv98vd3k3Q/exec', {
+            method: "POST",
+            body: data
+        })
+        .then(res => res.text())
+        .then(data => {
+            document.querySelector("#sub2").value = "Submit";
+            form.reset();
+            alert("CVVRS Data Saved Successfully...");
+        })
+        .catch(error => {
+            document.querySelector("#sub2").value = "Submit";
+            alert("An error occurred while saving the data. Please try again.");
+            console.error(error);
+        });
+    });
+
+    // Handle paste events
+    // Handle paste events
+// Handle paste events
+form.addEventListener('paste', (e) => {
+    // Prevent default paste behavior
+    e.preventDefault();
+
+    // Get the pasted data
+    const pastedData = e.clipboardData.getData('Text');
+
+    // Split the pasted data by tabs or new lines to capture fields accurately
+    const rowData = pastedData.split('\t');
+
+    // Debugging: Check the content of the pasted data
+    console.log('Pasted Data:', rowData); // Log the pasted data to the console
+
+    // Fill in the form fields based on the pasted data
+    if (rowData.length >= 18) { // updated to check for the total number of fields
+        document.getElementById('cvvrsinspectionid').value = rowData[0] || ''; // CLI ID
+        document.getElementById('cvvrsinspectiondate').value = rowData[1] || ''; // DATA SENT DT
+        document.getElementById('cvvrscliname').value = rowData[2] || ''; // CLI Name
+        document.getElementById('cvvrsTrainNumber').value = rowData[3] || ''; // Train Number
+        document.getElementById('cvvrsTrainLoad').value = rowData[4] || ''; // Train Number
+        document.getElementById('cvvrslocono').value = rowData[5] || ''; // Loco Number
+        document.getElementById('cvvrsfromstation').value = rowData[6] || ''; // From Station
+        document.getElementById('cvvrsstarttime').value = rowData[7] || ''; // Train Departure Date and Time
+        document.getElementById('cvvrstostation').value = rowData[8] || ''; // To Station
+        document.getElementById('cvvrsendtime').value = rowData[9] || ''; // Train Arrival Date and Time
+        document.getElementById('cvvrslpcmsid').value = rowData[10] || ''; // LP CMS ID
+        document.getElementById('cvvrslpname').value = rowData[11] || ''; // LP Name
+        document.getElementById('cvvrslptype').value = rowData[12] || ''; // LP Type
+        document.getElementById('cvvrslpcat').value = rowData[13] || ''; // LP CAT
+        document.getElementById('cvvrslphq').value = rowData[14] || ''; // LP HQ (correct index)
+        document.getElementById('cvvrsalpcmsid').value = rowData[15] || ''; // ALP CMS ID
+        document.getElementById('cvvrsalpname').value = rowData[16] || ''; // ALP Name
+        document.getElementById('cvvrsalpdesg').value = rowData[17] || ''; // ALP Designation
+        document.getElementById('cvvrsalphq').value = rowData[18] || ''; // ALP HQ
+    } else {
+        alert('Insufficient data pasted. Please ensure the source has the correct number of columns.');
+    }
+});
+</script>    
+</html>
