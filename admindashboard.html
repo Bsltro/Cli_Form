@@ -5,48 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <style>
-        /* General Body Styles */
+        /* General Styles */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
             margin: 0;
             min-height: 100vh;
+            background: url('img3.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
         }
 
-        /* Header Style */
         h1 {
             color: orange;
             font-size: 28px;
             margin-bottom: 20px;
             font-weight: bold;
             text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            display: inline-block;
+            border-radius: 8px;
         }
 
-        /* Tabs Style */
+        /* Tabs Styling */
         .tab {
             display: inline-block;
             padding: 10px 20px;
             cursor: pointer;
-            background-color: #f1f1f1;
-            margin-right: 10px;
+            margin: 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            transition: 0.3s;
+        }
+
+        /* Different colors for each tab */
+        .footplate { background-color: #ff5733; } /* Red-Orange */
+        .cvvrs { background-color: #2980b9; } /* Blue */
+        .spm { background-color: #27ae60; } /* Green */
+        .rr-lb-stb { background-color: #f39c12; } /* Orange */
+        .pcdo { background-color: #8e44ad; } /* Purple */
+        .search-btn { background-color: #34495e; } /* Dark Blue */
+
+        .tab:hover {
+            opacity: 0.8;
+        }
+
+        /* Dropdown Styling */
+        .dropdown {
+            display: inline-block;
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            min-width: 200px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            text-align: left;
             border-radius: 4px;
         }
 
-        .tab:hover {
+        .dropdown-content div {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+            color: black;
+            font-weight: bold;
+        }
+
+        .dropdown-content div:hover {
             background-color: #ddd;
         }
 
-        .tab-content {
-            margin-top: 20px;
+        .dropdown:hover .dropdown-content {
+            display: block;
         }
 
-        /* Responsive Layout */
+        /* Responsive Design */
         @media (max-width: 600px) {
             h1 {
                 font-size: 24px;
             }
-
             .tab {
                 padding: 8px 15px;
             }
@@ -55,38 +101,73 @@
 </head>
 <body>
 
-    <h1>Admin Dashboard</h1>
+    <h1>Admin Dashboard</h1><br><br>
 
-    <!-- Tabs for different tables -->
-    <div>
-        <button class="tab-btn" onclick="window.location.href='https://script.google.com/macros/s/AKfycbyv744jJ7Rs7xCxZ70R7mPvs9JV5hZDvO49v4x89kdILe56qqUiFXLsaDKx4sPnksBy/exec'">Search LP or ALP By Their Name Or CMS ID</button><br><br>
-        <div class="tab" onclick="redirectToPage('countMastertbl.html')">CLI INSP COUNT/PCDO</div><br><br>
-        <div class="tab" onclick="redirectToPage('footplatetbl.html')">FOOTPLATE MONITORING</div><br><br>
-        <div class="tab" onclick="redirectToPage('cvvrstbl.html')">CVVRS ANALYSIS REPORT</div><br><br>
-        <div class="tab" onclick="redirectToPage('cvvrssenddata.html')">SEND CVVRS DATA TO CLI</div><br><br>
-        <div class="tab" onclick="redirectToPage('rrlbtbl.html')">RUNNING ROOM INSPECTION</div><br><br> 
-        <div class="tab" onclick="redirectToPage('spmtbl.html')">SPM ANALYSIS REPORT</div><br><br>
-       <div class="tab" onclick="redirectToPage('lbtbl.html')">LOBBY INSPECTION</div> 
-        <div class="tab" onclick="redirectToPage('stbtbl.html')">STB MONITORING</div><br><br>
-        <!-- <div class="tab" onclick="redirectToPage('cvvrssenddata.html')">SEND CVVRS DATA TO CLI</div><br><br> -->
-        <div class="tab" onclick="redirectToPage('fpirregularities.html')">FOOTPLATE IRREGULARITIES</div><br><br>
-        <div class="tab" onclick="redirectToPage('cvvrsirregularities.html')">CVVRS IRREGULARITIES</div><br><br>
-        <div class="tab" onclick="redirectToPage('spmirregularities.html')">SPM IRREGULARITIES</div><br><br>
+    <!-- Search Button -->
+    <button class="tab search-btn" onclick="window.location.href='https://script.google.com/macros/s/AKfycbyv744jJ7Rs7xCxZ70R7mPvs9JV5hZDvO49v4x89kdILe56qqUiFXLsaDKx4sPnksBy/exec'">
+        Search LP or ALP By Their Name Or CMS ID
+    </button>
+    <br><br>
 
-        <!-- New Tab for SPM HARD COPY UPDATE -->
-        <div class="tab" onclick="window.location.href='https://script.google.com/macros/s/AKfycbxfRDKgzVw_7pNvgUnaWMMjnfmb4_cTnNREm6iyMIXG_1Lc8PjylHN9zGPqRNtfbweO/exec'">SPM HARD COPY UPDATE</div><br><br>
-        <div class="tab" onclick="window.location.href='https://script.google.com/macros/s/AKfycbwr0C0nBStb_yY5D0eG3yN7bbAoeD-hYwX8LkR24GHou-2dM8StGJZrvBifbmejkDvlsg/exec'">CVVRS HARD COPY UPDATE</div><br><br>
-        <div class="tab" onclick="redirectToPage('pcdoadditional.html')">ADDITIONAL DATA(NUMBERS)</div>
+    <!-- Footplate Tab -->
+    <div class="dropdown">
+        <div class="tab footplate">FOOTPLATE</div>
+        <div class="dropdown-content">
+            <div onclick="redirectToPage('footplatetbl.html')">Footplate Monitoring</div>
+            <div onclick="redirectToPage('fpirregularities.html')">Footplate Irregularities</div>
+        </div>
     </div>
 
-    <div class="tab-content">
+    <!-- CVVRS Tab -->
+    <div class="dropdown">
+        <div class="tab cvvrs">CVVRS</div>
+        <div class="dropdown-content">
+            <div onclick="redirectToPage('cvvrstbl.html')">CVVRS Analysis Report</div>
+            <div onclick="redirectToPage('cvvrssenddata.html')">Send CVVRS Data to CLI</div>
+            <div onclick="redirectToPage('cvvrsirregularities.html')">CVVRS Irregularities</div>
+            <div onclick="window.location.href='https://script.google.com/macros/s/AKfycbwr0C0nBStb_yY5D0eG3yN7bbAoeD-hYwX8LkR24GHou-2dM8StGJZrvBifbmejkDvlsg/exec'">CVVRS Irregularities Update</div>
+        </div>
+    </div>
+
+    <!-- SPM Tab -->
+    <div class="dropdown">
+        <div class="tab spm">SPM</div>
+        <div class="dropdown-content">
+            <div onclick="redirectToPage('spmtbl.html')">SPM Analysis Report</div>
+            <div onclick="redirectToPage('spmirregularities.html')">SPM Irregularities</div>
+            <div onclick="window.location.href='https://script.google.com/macros/s/AKfycbxfRDKgzVw_7pNvgUnaWMMjnfmb4_cTnNREm6iyMIXG_1Lc8PjylHN9zGPqRNtfbweO/exec'">SPM Hard Copy Update</div>
+        </div>
+    </div>
+
+    <!-- RR/LB/STB Tab -->
+    <div class="dropdown">
+        <div class="tab rr-lb-stb">RR / LB / STB</div>
+        <div class="dropdown-content">
+            <div onclick="redirectToPage('rrlbtbl.html')">Running Room Inspection</div>
+            <div onclick="redirectToPage('lbtbl.html')">Lobby Inspection</div>
+            <div onclick="redirectToPage('stbtbl.html')">STB Monitoring</div>
+        </div>
+    </div>
+
+    <!-- PCDO Data Tab -->
+    <div class="dropdown">
+        <div class="tab pcdo">PCDO DATA</div>
+        <div class="dropdown-content">
+            <div onclick="redirectToPage('countMastertbl.html')">CLI Insp Count/PCDO</div>
+            <div onclick="redirectToPage('pcdoadditional.html')">Additional Data (Numbers)</div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <!-- <div class="tab-content">
         <p>Select a table from the tabs above to view details.</p>
-    </div>
+    </div> -->
 
     <script>
         // Function to redirect to the respective page
         function redirectToPage(page) {
-            window.location.href = page; // Redirect to the specified page
+            window.location.href = page;
         }
     </script>
 

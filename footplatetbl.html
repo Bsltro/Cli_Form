@@ -10,6 +10,9 @@
             margin: 0;
             padding: 20px;
             background-color: #f9f9f9;
+            background-image: url('img4.avif'); /* Add your background image */
+            background-size: cover; /* Cover the entire page */
+            background-position: center; /* Center the background image */
         }
 
         h1 {
@@ -23,10 +26,11 @@
             flex-wrap: wrap;
             justify-content: space-between;
             margin: 20px 0;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for better visual */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease; /* Animation for smoother transitions */
         }
 
         .filter-group {
@@ -84,6 +88,7 @@
             margin: 20px 0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             background-color: #fff;
+            opacity: 0.9; /* Slight transparency for the table */
         }
 
         th, td {
@@ -124,14 +129,23 @@
                 margin: 5px 0; /* Vertical margin between buttons */
             }
         }
+
+        .hidden {
+            display: none; /* Class to hide elements */
+        }
     </style>
 </head>
 <body>
     <h1>FOOTPLATE MONITORING</h1>
     
-    <div id="filterContainer" class="filter-container"></div>
+    <div class="button-group">
+        <button id="showFiltersButton">Show Filters</button>
+        <button id="hideFiltersButton" class="hidden">Hide Filters</button>
+    </div>
+
+    <div id="filterContainer" class="filter-container hidden"></div>
     
-    <div id="dateRangeContainer" class="filter-container">
+    <div id="dateRangeContainer" class="filter-container hidden">
         <div class="filter-group">
             <label for="fromDate">From Date:</label>
             <input type="date" id="fromDate">
@@ -143,7 +157,7 @@
         </div>
     </div>
 
-    <div id="monthYearContainer" class="filter-container">
+    <div id="monthYearContainer" class="filter-container hidden">
         <div class="filter-group">
             <label for="monthFilter">Month:</label>
             <select id="monthFilter">
@@ -245,14 +259,22 @@
             tableBody.innerHTML = '';
             headerRow.innerHTML = '';
 
+            const srNoTh = document.createElement('th');
+            srNoTh.textContent = 'SR No';
+            headerRow.appendChild(srNoTh);
+
             columnNames.forEach(col => {
                 const th = document.createElement('th');
                 th.textContent = col;
                 headerRow.appendChild(th);
             });
 
-            dataToRender.forEach(row => {
+            dataToRender.forEach((row, index) => {
                 const tr = document.createElement('tr');
+                const srNoTd = document.createElement('td');
+                srNoTd.textContent = index + 1; // SR No is index + 1
+                tr.appendChild(srNoTd);
+                
                 row.forEach(cell => {
                     const td = document.createElement('td');
                     td.textContent = cell;
@@ -392,6 +414,23 @@
         document.getElementById('clearFiltersButton').addEventListener('click', clearFilters);
         document.getElementById('printButton').addEventListener('click', printTable);
         document.getElementById('downloadButton').addEventListener('click', downloadCSV);
+
+        // Show/Hide filters
+        document.getElementById('showFiltersButton').addEventListener('click', () => {
+            document.getElementById('filterContainer').classList.remove('hidden');
+            document.getElementById('dateRangeContainer').classList.remove('hidden');
+            document.getElementById('monthYearContainer').classList.remove('hidden');
+            document.getElementById('showFiltersButton').classList.add('hidden');
+            document.getElementById('hideFiltersButton').classList.remove('hidden');
+        });
+
+        document.getElementById('hideFiltersButton').addEventListener('click', () => {
+            document.getElementById('filterContainer').classList.add('hidden');
+            document.getElementById('dateRangeContainer').classList.add('hidden');
+            document.getElementById('monthYearContainer').classList.add('hidden');
+            document.getElementById('hideFiltersButton').classList.add('hidden');
+            document.getElementById('showFiltersButton').classList.remove('hidden');
+        });
 
         // Fetch the data from the Google Sheets API when the page loads
         window.onload = fetchDataFromSheet;
