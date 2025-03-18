@@ -434,31 +434,70 @@
     fetchDataFromGoogleSheet('footplate');
 
     // Function to copy table data to clipboard
-    document.getElementById('copyData').addEventListener('click', () => {
-        const table = document.getElementById('dataTable');
-        let textToCopy = '';
+    // document.getElementById('copyData').addEventListener('click', () => {
+    //     const table = document.getElementById('dataTable');
+    //     let textToCopy = '';
 
-        // Get headers
-        const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+    //     // Get headers
+    //     const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
         
-        // Prepare the data based on headerOrder
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const formData = headerOrder.map(header => {
-                const index = headers.indexOf(header);
-                return index !== -1 ? row.cells[index].textContent : ''; // Fill with cell data
-            });
+    //     // Prepare the data based on headerOrder
+    //     const rows = table.querySelectorAll('tbody tr');
+    //     rows.forEach(row => {
+    //         const formData = headerOrder.map(header => {
+    //             const index = headers.indexOf(header);
+    //             return index !== -1 ? row.cells[index].textContent : ''; // Fill with cell data
+    //         });
 
-            textToCopy += formData.join('\t') + '\n'; // Join with tabs for separation
+    //         textToCopy += formData.join('\t') + '\n'; // Join with tabs for separation
+    //     });
+
+    //     // Copy to clipboard
+    //     navigator.clipboard.writeText(textToCopy).then(() => {
+    //         alert('Table data copied to clipboard! Please paste it into the form.');
+    //     }).catch(() => {
+    //         alert('Failed to copy data.');
+    //     });
+    // });
+
+    document.getElementById('copyData').addEventListener('click', () => {
+    const table = document.getElementById('dataTable');
+    let textToCopy = '';
+
+    // Get headers
+    const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+    
+    // Prepare the data based on headerOrder
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const formData = headerOrder.map(header => {
+            const index = headers.indexOf(header);
+            return index !== -1 ? row.cells[index].textContent : ''; // Fill with cell data
         });
 
-        // Copy to clipboard
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            alert('Table data copied to clipboard! Please paste it into the form.');
-        }).catch(() => {
-            alert('Failed to copy data.');
-        });
+        textToCopy += formData.join('\t') + '\n'; // Join with tabs for separation
     });
+
+    // Use a textarea to copy the data
+    const textarea = document.createElement('textarea');
+    textarea.value = textToCopy;
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            alert('Table data copied to clipboard! Please paste it into the form.');
+        } else {
+            alert('Failed to copy data. Please manually copy the data.');
+        }
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy data. Please manually copy the data.');
+    } finally {
+        document.body.removeChild(textarea);
+    }
+});
 
     // Function to download filtered data as CSV
     document.getElementById('downloadTable').addEventListener('click', () => {
