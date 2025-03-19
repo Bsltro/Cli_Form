@@ -38,6 +38,8 @@
             text-align: left;
             max-width: 50px; /* Reduce the width of each column */
             word-wrap: break-word;
+            /* background: url('img3.jpg') no-repeat center center fixed;
+            background-size: cover; */
         }
         th {
             background-color: #f2f2f2;
@@ -433,33 +435,31 @@
     // Initial load - fetch data for Footplate tab by default
     fetchDataFromGoogleSheet('footplate');
 
-    // Function to copy table data to clipboard
-    // document.getElementById('copyData').addEventListener('click', () => {
-    //     const table = document.getElementById('dataTable');
-    //     let textToCopy = '';
+    // Function to render filtered data with current data
+    function renderFilteredData(data, headers) {
+        const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ''; // Clear previous rows
 
-    //     // Get headers
-    //     const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
-        
-    //     // Prepare the data based on headerOrder
-    //     const rows = table.querySelectorAll('tbody tr');
-    //     rows.forEach(row => {
-    //         const formData = headerOrder.map(header => {
-    //             const index = headers.indexOf(header);
-    //             return index !== -1 ? row.cells[index].textContent : ''; // Fill with cell data
-    //         });
+        data.forEach(row => {
+            let newRow = tableBody.insertRow();
+            row.forEach(cell => {
+                let newCell = newRow.insertCell();
+                newCell.textContent = cell || ''; // Handle empty cells
+            });
 
-    //         textToCopy += formData.join('\t') + '\n'; // Join with tabs for separation
-    //     });
-
-    //     // Copy to clipboard
-    //     navigator.clipboard.writeText(textToCopy).then(() => {
-    //         alert('Table data copied to clipboard! Please paste it into the form.');
-    //     }).catch(() => {
-    //         alert('Failed to copy data.');
-    //     });
-    // });
-
+            // Highlight rows based on the value in the last column
+            const lastColumnValue = parseFloat(row[headers.length - 1]);
+            if (!isNaN(lastColumnValue)) {
+                if (lastColumnValue >= 6 && lastColumnValue <= 10) {
+                    newRow.style.backgroundColor = 'yellow';
+                } else if (lastColumnValue >= 3 && lastColumnValue < 6) {
+                    newRow.style.backgroundColor = 'orange';
+                } else if (lastColumnValue < 3) {
+                    newRow.style.backgroundColor = 'red';
+                }
+            }
+        });
+    }
     document.getElementById('copyData').addEventListener('click', () => {
     const table = document.getElementById('dataTable');
     let textToCopy = '';
@@ -560,6 +560,8 @@
         "ALP Name",                  
         "ALP DESG", "ALP HQ"          
     ];
+
+    
 </script>
 </body>
 </html>
