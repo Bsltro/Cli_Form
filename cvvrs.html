@@ -126,16 +126,16 @@
                 <input type="number" name="cvvrsinspectionid" id="cvvrsinspectionid" required>
             </div>
             <div class="form-outer">
-                <label>Inspection Date</label>
-                <input type="date" name="cvvrsinspectiondate" id="cvvrsinspectiondate" required>
+                <label>CVVRS DATA SENT DATE</label>
+                <input type="date" name="cvvrsinspectiondate" id="cvvrsinspectiondate" >
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">CLI Name</label>
-                <input type="text" name="cvvrscliname" id="cvvrscliname"  readonly>
+                <input type="text" name="cvvrscliname" id="cvvrscliname"  >
             </div>
             <div class="form-outer">
                 <label for="trainNumber">Train Number:</label>
-                <input type="text" name="cvvrsTrainNumber" id="cvvrsTrainNumber" placeholder="Enter train number" class="uppercase" required>
+                <input type="text" name="cvvrsTrainNumber" id="cvvrsTrainNumber" placeholder="Enter train number" class="uppercase">
             </div>
             <div class="form-outer">
                 <label for="trainLoad">Train Load (in Tonn):</label>
@@ -143,24 +143,24 @@
             </div>
             <div class="form-outer">
                 <label for="trainNumber">LOCO Number:</label>
-                <input type="text" name="cvvrslocono" id="cvvrslocono" placeholder="Enter train number" class="uppercase" required>
+                <input type="text" name="cvvrslocono" id="cvvrslocono" placeholder="Enter train number" class="uppercase">
             </div>
             
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
-                <input type="text" name="cvvrsfromstation" id="cvvrsfromstation" oninput="upperCase()" class="uppercase" required>
+                <input type="text" name="cvvrsfromstation" id="cvvrsfromstation" oninput="upperCase()" class="uppercase">
             </div>
             <div class="form-outer">
-                <label>Start Time</label>
-                <input type="datetime-local" name="cvvrsstarttime" id="cvvrsstarttime" required>
+                <label>Train Departure Date and Time</label>
+                <input type="datetime-local" name="cvvrsstarttime" id="cvvrsstarttime">
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
-                <input type="text" name="cvvrstostation" id="cvvrstostation"  class="uppercase" required>
+                <input type="text" name="cvvrstostation" id="cvvrstostation"  class="uppercase">
             </div>
             <div class="form-outer">
-                <label>End Time</label>
-                <input type="datetime-local" name="cvvrsendtime" id="cvvrsendtime" required>
+                <label>Train Arrival Date and Time</label>
+                <input type="datetime-local" name="cvvrsendtime" id="cvvrsendtime">
             </div>
             <script>
                 const startTimeInput = document.getElementById('cvvrsstarttime');
@@ -182,19 +182,19 @@
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP Name</label>
-                <input type="text" name="cvvrslpname" id="cvvrslpname" >
+                <input type="text" name="cvvrslpname" id="cvvrslpname">
             </div>
             <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP Type</label>
+                <label style="color: red; font-weight: bold;">LP Designation</label>
                 <input type="text" name="cvvrslptype" id="cvvrslptype">
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP Category</label>
-                <input type="text" name="cvvrslpcat" id="cvvrslpcat" >
+                <input type="text" name="cvvrslpcat" id="cvvrslpcat">
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP HQ</label>
-                <input type="text" name="cvvrslphq" id="cvvrslphq" >
+                <input type="text" name="cvvrslphq" id="cvvrslphq">
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP CMS ID</label>
@@ -202,20 +202,20 @@
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP Name</label>
-                <input type="text" name="cvvrsalpname" id="cvvrsalpname" >
+                <input type="text" name="cvvrsalpname" id="cvvrsalpname">
             </div><br>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP Designation</label>
-                <input type="text" name="cvvrsalpdesg" id="cvvrsalpdesg" >
+                <input type="text" name="cvvrsalpdesg" id="cvvrsalpdesg">
             </div>
             
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP HQ</label>
-                <input type="text" name="cvvrsalphq" id="cvvrsalphq" >
+                <input type="text" name="cvvrsalphq" id="cvvrsalphq">
             </div>
             <div class="form-outer">
-                <label>TRAIN DATE</label>
-                <input type="date" name="cvvrsdatasentdt" id="cvvrsdatasentdt" required>
+                <label>INSPECTION DATE</label>
+                <input type="date" name="cvvrsdatasentdt" id="cvvrsdatasentdt">
                 </div>
                 <div class="justify-content">
                         <label style="color: red; font-weight: bold;">Whether Keeping Necessary Personal Store Items On Desk</label><br><br>
@@ -225,8 +225,8 @@
                             </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                             <label for="NO" class="radio-inline">NO
                                 <input type="radio" id="no" name="cvvrsps" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
+                            </label>
+                           
                     </div>
                     <div class="justify-content">
                         <label style="color: red; font-weight: bold;">Continuity Test</label><br><br>
@@ -236,7 +236,9 @@
                             </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                             <label for="NO">NO
                                 <input type="radio" id="no" name="cvvrscont" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NA" class="radio-inline">NA
+                                <input type="radio" id="na" name="cvvrscont" value="NA"><br><br>
                         </div>   
                     </div>
                     <div class="justify-content">
@@ -269,7 +271,9 @@
                             </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                             <label for="NO">NO
                                 <input type="radio" id="no" name="cvvrsbft" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NA" class="radio-inline">NA
+                                <input type="radio" id="na" name="cvvrsbft" value="NA"><br><br>
                         </div>   
                     </div>
                     <div class="justify-content">
@@ -318,14 +322,16 @@
                         </div>   
                     </div>
                     <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Putting Reverser Or Throttle To Neutral At Halt</label><br><br>
+                        <label style="color: red; font-weight: bold;">Putting Reverser Or Throttle To Neutral At All Halts</label><br><br>
                         <div class="container">
                             <label for="YES">YES
                                 <input type="radio" id="yes" name="cvvrsth" value="YES">
                             </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                            <label for="NO">NO
                                 <input type="radio" id="no" name="cvvrsth" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
+                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <label for="NA" class="radio-inline">AT DESTINATION ONLY 
+                                <input type="radio" id="dest" name="cvvrsth" value="AT DESTINATION ONLY"><br><br>
                         </div>   
                     </div>
                     <div class="justify-content">
@@ -351,7 +357,7 @@
                         </div>   
                     </div>
                     <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Whether LP Using Mobile Phone</label><br><br>
+                        <label style="color: red; font-weight: bold;">Whether LP/ALP Using Mobile Phone</label><br><br>
                         <div class="container">
                             <label for="YES">YES
                                 <input type="radio" id="yes" name="cvvrsmob" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
@@ -395,51 +401,6 @@
                             </label><br><br>
                         </div>   
                     </div>
-            <!-- <div class="justify-content">
-                <label style="color: red; font-weight: bold;">COACHING/GOODS</label><br><br>
-                <div class="container">
-                    <label for="COACHING" class="radio-inline">COACHING
-                        <input type="radio" id="cvvrsco" name="cvvrscogd" value="COACHING">
-                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    <label for="GOODS" class="radio-inline">GOODS
-                        <input type="radio" id="cvvrsgd" name="cvvrscogd" value="GOODS">
-                    </label><br><br>
-                </div>
-            </div>
-            <div class="justify-content">
-                <label style="color: red; font-weight: bold;">LOADED/EMPTY</label><br><br>
-                <div class="container">
-                    <label for="LOADED" class="radio-inline">LOADED
-                        <input type="radio" id="cvvrsld" name="cvvrsldemp" value="LOADED">
-                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    <label for="EMPTY" class="radio-inline">EMPTY
-                        <input type="radio" id="cvvrsemp" name="cvvrsldemp" value="EMPTY">
-                    </label><br><br>
-                </div>
-            </div>
-            <div class="justify-content">
-                <label style="color: red; font-weight: bold;">DAY/NIGHT</label><br><br>
-                <div class="container">
-                    <label for="DAY" class="radio-inline">DAY
-                        <input type="radio" id="cvvrsd" name="cvvrsdn" value="DAY">
-                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    <label for="NIGHT" class="radio-inline">NIGHT
-                        <input type="radio" id="cvvrsn" name="cvvrsdn" value="NIGHT">
-                    </label><br><br>
-                </div>
-            </div> -->
-            <!-- <div class="justify-content">
-                <label style="color: red; font-weight: bold;">IRREGULARITY OBSERVED</label><br><br>
-                <div class="container">
-                    <label for="yes" class="radio-inline">YES
-                        <input type="radio" id="cvvrsyes" name="cvvrsirr" value="YES">
-                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    <label for="other" class="radio-inline">NO
-                        <input type="radio" id="cvvrsno" name="cvvrsirr" value="NO" checked>
-                    </label><br><br>
-                </div>
-            </div> -->
-            <br>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">REMARK</label>
                 <input type="text" name="cvvrsremark" id="cvvrsremark">
