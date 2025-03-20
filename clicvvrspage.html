@@ -12,7 +12,7 @@
                 font-family: 'Times New Roman', Times, serif;
             }
         
-            body {
+            /* body {
                 background-color: aqua;
                 min-height: 100vh;
                 display: flex;
@@ -20,7 +20,12 @@
                 align-items: center;
                 background-repeat: no-repeat;
                 padding: 20px;
-            }
+            } */
+            body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
         
             .main {
                 width: 100%;
@@ -44,18 +49,19 @@
                 align-items: center;
             }
         
-            .form-outer {
+            /* .form-outer {
                 width: 100%;
                 margin-bottom: 20px;
-            }
+            } *//* Form Outer Container */
+.form-outer {
+    margin-bottom: 15px;
+}
         
-            .form-outer label {
-                display: block;
-                color: red;
-                font-weight: bold;
-                margin-bottom: 8px;
-                text-align: left;
-            }
+.form-outer label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
         
             .form-outer input {
                 width: 100%;
@@ -113,12 +119,56 @@
                 font-size: 16px;
                 border: none;
                 cursor: pointer;
-            }
+            }  /* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+/* Form Outer Container */
+.form-outer {
+    margin-bottom: 15px;
+}
+
+/* Label Styling */
+.form-outer label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+/* Dropdown Styling */
+.form-outer select {
+    width: 100%;
+    max-width: 500px;  /* Adjust for large screens */
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #4CAF50;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover & Focus Effects */
+.form-outer select:hover, 
+.form-outer select:focus {
+    border-color: #2E7D32;
+    background-color: #f0fff0;
+}
+
+/* Mobile Friendly */
+@media (max-width: 600px) {
+    .form-outer select {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
         </style>
-        
-        
-        
-    </head>
+     </head>
     <form id="tab2" class="tabcontent">
         <div id="res" style="color: brown;font-size: 14px;" class="tabcontent">
             <div class="form-outer">
