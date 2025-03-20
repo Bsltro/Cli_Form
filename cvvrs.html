@@ -12,7 +12,7 @@
                 font-family: 'Times New Roman', Times, serif;
             }
         
-            body {
+            /* body {
                 background-color: aqua;
                 min-height: 100vh;
                 display: flex;
@@ -20,9 +20,15 @@
                 align-items: center;
                 background-repeat: no-repeat;
                 padding: 20px;
-            }
-        
-            .main {
+            } */
+            body {
+    font-family: Arial, sans-serif;
+    background-color: aqua;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+.main {
                 width: 100%;
                 max-width: 400px;
                 background: rgb(245, 242, 242);
@@ -44,18 +50,19 @@
                 align-items: center;
             }
         
-            .form-outer {
+            /* .form-outer {
                 width: 100%;
                 margin-bottom: 20px;
-            }
+            } *//* Form Outer Container */
+.form-outer {
+    margin-bottom: 15px;
+}
         
-            .form-outer label {
-                display: block;
-                color: red;
-                font-weight: bold;
-                margin-bottom: 8px;
-                text-align: left;
-            }
+.form-outer label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
         
             .form-outer input {
                 width: 100%;
@@ -113,16 +120,60 @@
                 font-size: 16px;
                 border: none;
                 cursor: pointer;
-            }
+            }  /* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+/* Form Outer Container */
+.form-outer {
+    margin-bottom: 15px;
+}
+
+/* Label Styling */
+.form-outer label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+/* Dropdown Styling */
+.form-outer select {
+    width: 100%;
+    max-width: 500px;  /* Adjust for large screens */
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #4CAF50;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover & Focus Effects */
+.form-outer select:hover, 
+.form-outer select:focus {
+    border-color: #2E7D32;
+    background-color: #f0fff0;
+}
+
+/* Mobile Friendly */
+@media (max-width: 600px) {
+    .form-outer select {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
         </style>
-        
-        
-        
-    </head>
+      </head>
     <form id="tab2" class="tabcontent">
         <div id="res" style="color: brown;font-size: 14px;" class="tabcontent">
             <div class="form-outer">
-                <label style="color: red; font-weight: bold;">CMS ID<b style="color: blue;">**Enter last digits of CLI CMS ID Only,ex if CLI CMS ID is BSL0048 enter only 48,ex if CLI CMS ID is BSL0106 enter only 106**</b></p></label>
+                <label style="color: red; font-weight: bold;">CLI ID<b style="color: blue;">**Enter last digits of CLI CMS ID Only,ex if CLI CMS ID is BSL0048 enter only 48,ex if CLI CMS ID is BSL0106 enter only 106**</b></p></label>
                 <input type="number" name="cvvrsinspectionid" id="cvvrsinspectionid" required>
             </div>
             <div class="form-outer">
@@ -151,7 +202,7 @@
                 <input type="text" name="cvvrsfromstation" id="cvvrsfromstation" oninput="upperCase()" class="uppercase">
             </div>
             <div class="form-outer">
-                <label>Train Departure Date and Time</label>
+                <label>Train Date and CVVRS START Time</label>
                 <input type="datetime-local" name="cvvrsstarttime" id="cvvrsstarttime">
             </div>
             <div class="form-outer">
@@ -159,7 +210,7 @@
                 <input type="text" name="cvvrstostation" id="cvvrstostation"  class="uppercase">
             </div>
             <div class="form-outer">
-                <label>Train Arrival Date and Time</label>
+                <label>Train Date and CVVRS END Time</label>
                 <input type="datetime-local" name="cvvrsendtime" id="cvvrsendtime">
             </div>
             <script>
@@ -208,208 +259,202 @@
                 <label style="color: red; font-weight: bold;">ALP Designation</label>
                 <input type="text" name="cvvrsalpdesg" id="cvvrsalpdesg">
             </div>
-            
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP HQ</label>
                 <input type="text" name="cvvrsalphq" id="cvvrsalphq">
             </div>
             <div class="form-outer">
-                <label>INSPECTION DATE</label>
+                <label>CVVRS INSPECTION DATE</label>
                 <input type="date" name="cvvrsdatasentdt" id="cvvrsdatasentdt">
                 </div>
-                <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Whether Keeping Necessary Personal Store Items On Desk</label><br><br>
-                        <div class="container">
-                            <label for="YES" class="radio-inline">YES
-                                <input type="radio" id="yes" name="cvvrsps" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NO" class="radio-inline">NO
-                                <input type="radio" id="no" name="cvvrsps" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label>
-                           
+                <div class="form-outer">
+                    <label for="knowledge" style="color: red; font-weight: bold;">Whether Keeping Necessary Personal Store Items On Desk</label>
+                    <select name="cvvrsps" id="cvvrsps" onchange="handleSelectionChange(this)">
+                        <option value="select">-------Select Personal Store Of Crew-------</option>
+                        <option value="All Necessary P/S Of LP And ALP On Desk">All Necessary P/S Of LP And ALP On Desk</option>
+                        <option value="LP All Necessary P/S On Desk But ALP All Items Not On Desk">LP All Necessary P/S On Desk But ALP All Items Not On Desk</option>
+                        <option value="ALP All Necessary P/S On Desk But LP All Items Not On Desk">ALP All Necessary P/S On Desk But LP All Items Not On Desk</option>
+                        <option value="Both LP and ALP Necessary P/S Not On Desk">Both LP and ALP Necessary P/S Not On Desk</option>
+                        <option value="Not Visible In Camera">Not Visible In Camera</option>
+                    </select>
+                </div>
+                <div class="form-outer">
+                    <label for="knowledge" style="color: red; font-weight: bold;">Continuity Test</label>
+                    <select name="cvvrscont" id="cvvrscont" onchange="handleSelectionChange(this)">
+                        <option value="select">-------Select -------</option>
+                        <option value="YES">YES</option>
+                        <option value="NO">NO</option>
+                        <option value="N/A">N/A</option>
+                        <option value="Not Visible In Camera">Not Visible In Camera</option>
+                    </select>
+                </div>
+                <div class="form-outer">
+                    <label for="knowledge" style="color: red; font-weight: bold;">LP Signal Calling Out SIGNAL With Hand Gesture</label>
+                    <select name="cvvrslpsig" id="cvvrslpsig" onchange="handleSelectionChange(this)">
+                        <option value="select">-------Select -------</option>
+                        <option value="YES CALLING WITH HAND GESTURE">YES CALLING WITH HAND GESTURE</option>
+                        <option value="LP CALLING SIGNAL WITHOUT HAND GESTURE">LP CALLING SIGNAL WITHOUT HAND GESTURE</option>
+                        <option value="YES CALLING WITH HAND GESTURE ONLY SOMETIMES">YES CALLING WITH HAND GESTURE ONLY SOMETIMES</option>
+                        <option value="NOT CALLING OUT SIGNAL">NOT CALLING OUT SIGNAL</option>
+                        <option value="Not Visible In Camera">Not Visible In Camera</option>
+                    </select>
+                </div>
+                <div class="form-outer">
+                    <label for="knowledge" style="color: red; font-weight: bold;">ALP Signal Calling Out SIGNAL With Hand Gesture</label>
+                    <select name="cvvrsalpsig" id="cvvrsalpsig" onchange="handleSelectionChange(this)">
+                        <option value="select">-------Select -------</option>
+                        <option value="YES CALLING WITH HAND GESTURE">YES CALLING WITH HAND GESTURE</option>
+                        <option value="ALP CALLING SIGNAL WITHOUT HAND GESTURE">ALP CALLING SIGNAL WITHOUT HAND GESTURE</option>
+                        <option value="YES CALLING WITH HAND GESTURE ONLY SOMETIMES">YES CALLING WITH HAND GESTURE ONLY SOMETIMES</option>
+                        <option value="NOT CALLING OUT SIGNAL">NOT CALLING OUT SIGNAL</option>
+                        <option value="Not Visible In Camera">Not Visible In Camera</option>
+                    </select>
+                </div>
+                <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">BFT/BPT</label>
+                        <select name="cvvrsbft" id="cvvrsbft" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Continuity Test</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrscont" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrscont" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NA" class="radio-inline">NA
-                                <input type="radio" id="na" name="cvvrscont" value="NA"><br><br>
-                        </div>   
+                    <script>
+                        function handleSelectionChange(selectElement) {
+                            var value = selectElement.value;
+                            if (value === 'NO') {
+                                alert('You have selected option, it will be considered as irregularity.');
+                            } 
+                        }
+                    </script>
+                    <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">LP Reducing Speed With Respect To Signal Aspect</label>
+                        <select name="cvvrssp" id="cvvrssp" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">LP Signal Calling Out With Hand Gesture</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrslpsig" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrslpsig" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
+                    <script>
+                        function handleSelectionChange(selectElement) {
+                            var value = selectElement.value;
+                            if (value === 'NO') {
+                                alert('You have selected option, it will be considered as irregularity.');
+                            } 
+                        }
+                    </script>
+                    <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">ALP Kept Hand On RS Valve</label>
+                        <select name="cvvrsrs" id="cvvrsrs" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">ALP Signal Calling Out With Hand Gesture</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrsalpsig" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrsalpsig" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
+                   <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether Crew Not Using Walkie Talkie For Signal Aspect Or Other Operational Instructions From Station Staff During Train Operations</label>
+                        <select name="cvvrswt" id="cvvrswt" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES NOT USING">YES NOT USING</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">BFT/BPT</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrsbft" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrsbft" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NA" class="radio-inline">NA
-                                <input type="radio" id="na" name="cvvrsbft" value="NA"><br><br>
-                        </div>   
+                    <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whisteling At W/L Board</label>
+                        <select name="cvvrswl" id="cvvrswl" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">LP Reducing Speed With Respect To Signal Aspect</label><br><br>
-                        <div class="container">
-                        <label for="YES">YES
-                            <input type="radio" id="yes" name="cvvrssp" value="YES">
-                        </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                       <label for="NO">NO
-                            <input type="radio" id="no" name="cvvrssp" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                        </label><br><br>
-                        </div>   
+                   <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">Putting Reverser Or Throttle To Neutral At All Halts</label>
+                        <select name="cvvrsth" id="cvvrsth" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES AT ALL HALTS">YES AT ALL HALTS</option>
+                            <option value="YES BUT NOT AT ALL HALTS">YES BUT NOT AT ALL HALTS</option>
+                            <option value="AT DESTINATION ONLY">AT DESTINATION ONLY</option>
+                            <option value="NO">NO</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">ALP Kept Hand On RS Valve</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrsrs" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                           <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrsrs" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                            </div>  
+                    <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether Crew Vigilant And Not Indulge In Discussion</label>
+                        <select name="cvvrsdis" id="cvvrsdis" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Use Of Walkie Talkie For Signal Aspect Or Train Operations</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrswt" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            
-                            <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrswt" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                            </div>   
+                    <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">Ensure Proper Signal Taken Off Before Start</label>
+                        <select name="cvvrssigtoff" id="cvvrssigtoff" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
+                    </div>   
+                    <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether LP/ALP Using Mobile Phone</label>
+                        <select name="cvvrsmob" id="cvvrsmob" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="NO">NO</option>
+                            <option value="YES BOTH LP AND ALP USING MOBILE">YES BOTH LP AND ALP USING MOBILE</option>
+                            <option value="LP USING MOBILE">LP USING MOBILE</option>
+                            <option value="ALP USING MOBILE">ALP USING MOBILE</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Whisteling At W/L Board</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrswl" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                           <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrswl" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
+                    <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether VCD Not Isolated By Crew On Line/ Acknowledge Within Time</label>
+                        <select name="cvvrsvcd" id="cvvrsvcd" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Putting Reverser Or Throttle To Neutral At All Halts</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrsth" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                           <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrsth" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NA" class="radio-inline">AT DESTINATION ONLY 
-                                <input type="radio" id="dest" name="cvvrsth" value="AT DESTINATION ONLY"><br><br>
-                        </div>   
+                    <div class="form-outer">
+                        <label for="knowledge" style="color: red; font-weight: bold;">MP On Zero Before Braking</label>
+                        <select name="cvvrsmp" id="cvvrsmp" onchange="handleSelectionChange(this)">
+                            <option value="select">-------Select -------</option>
+                            <option value="YES">YES</option>
+                            <option value="NO">NO</option>
+                            <option value="N/A">N/A</option>
+                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        </select>
                     </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Whether Crew Vigilant And Not Indulge In Discussion</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrsdis" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                           <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrsdis" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
-                    </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Ensure Proper Signal Taken Off Before Start</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrssigtoff" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrssigtoff" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
-                    </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Whether LP/ALP Using Mobile Phone</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrsmob" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                            
-                            <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrsmob" value="NO">
-                            </label><br><br>
-                        </div>   
-                    </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Whether VCD Not Isolated By Crew On Line/ Acknowledge Within Time</label><br><br>
-                        <div class="container">
-                            <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrsvcd" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                           <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrsvcd" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
-                    </div>
-                    <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">MP On Zero Before Braking</label><br><br>
-                        <div class="container">
-                           <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrsmp" value="YES">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                           <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrsmp" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
-                    </div>
-                   <div class="justify-content">
-                        <label style="color: red; font-weight: bold;">Luggage Packing</label><br><br>
-                        <div class="container">
-                          <label for="NO">NO
-                                <input type="radio" id="no" name="cvvrslugg" value="NO">
-                            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                           <label for="YES">YES
-                                <input type="radio" id="yes" name="cvvrslugg" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
-                            </label><br><br>
-                        </div>   
-                    </div>
+                   <div class="form-outer">
+                    <label for="knowledge" style="color: red; font-weight: bold;">Luggage Packing</label>
+                    <select name="cvvrslugg" id="cvvrslugg" onchange="handleSelectionChange(this)">
+                        <option value="select">-------Select -------</option>
+                        <option value="NO">NO</option>
+                        <option value="YES BOTH LP AND ALP PACKING LUGGAGE">YES BOTH LP AND ALP PACKING LUGGAGE</option>
+                        <option value="LP PACKING LUGGAGE">LP PACKING LUGGAGE</option>
+                        <option value="ALP PACKING LUGGAGE">ALP PACKING LUGGAGE</option>
+                        <option value="N/A">N/A</option>
+                        <option value="Not Visible In Camera">Not Visible In Camera</option>
+                    </select>
+                </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">REMARK</label>
                 <input type="text" name="cvvrsremark" id="cvvrsremark">
             </div>
-            <br>
-            <!-- <div class="form-outer">
-                <label style="color: red; font-weight: bold;">RFERENCE NO</label>
-                <input type="text" name="cvvrsrefno" id="cvvrsrefno">
-            </div> -->
             <br>
             <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
             <div class="form-outer">
@@ -606,15 +651,26 @@
             });
         });
     
-        // Fetch sheet data on page load
-        fetchSheetDatacvvrs();
-         // Function to generate a 2 or 3 digit random reference number
-     function generateReferenceNumber() {
-            var referenceNumber = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
-            document.getElementById('cvvrsrefno').value = referenceNumber; // Set the input value to the generated number
-        }
+        function handleSelectionChange(selectElement) {
+        var irregularOptions = [
+            "LP All Necessary P/S On Desk But ALP All Items Not On Desk",
+            "ALP All Necessary P/S On Desk But LP All Items Not On Desk",
+            "Both LP and ALP Necessary P/S Not On Desk",
+            "NO",
+            "LP CALLING SIGNAL WITHOUT HAND GESTURE",
+            "NOT CALLING OUT SIGNAL",
+            "ALP CALLING SIGNAL WITHOUT HAND GESTURE",
+            "YES BOTH LP AND ALP USING MOBILE",
+            "LP USING MOBILE",
+            "ALP USING MOBILE",
+            "YES BOTH LP AND ALP PACKING LUGGAGE",
+            "LP PACKING LUGGAGE",
+            "ALP PACKING LUGGAGE"
+        ];
 
-        // Generate the reference number when the page loads
-        window.onload = generateReferenceNumber;
+        if (irregularOptions.includes(selectElement.value)) {
+            alert("You have selected an option that will be considered as irregularity.");
+        }
+    }
     </script>
 </html>

@@ -17,7 +17,7 @@
             padding: 8px;
             border: 1px solid #ddd;
             text-align: center;
-            max-width: 50px; /* Reduce the width of each column */
+            max-width: 80px; /* Reduce the width of each column */
             word-wrap: break-word;
         }
         th {
@@ -138,11 +138,15 @@
             console.log("Row date is after toDate");
         }
 
-        const condition1 =  row[20] === 'NO' || row[21] === 'NO' || row[22] === 'NO' || 
-                               row[23] === 'NO' || row[24] === 'NO' || row[25] === 'NO' ||
+        const condition1 =  ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(row[20]) || 
+        row[21] === 'NO' || ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[22]) || 
+                            ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[23]) || 
+                               row[24] === 'NO' || row[25] === 'NO' ||
                                row[26] === 'NO' || row[27] === 'NO' || row[28] === 'NO';
         const condition2 =  row[29] === 'NO' || row[30] === 'NO' || row[31] === 'NO' ||
-                               row[32] === 'YES' || row[33] === 'NO' || row[34] === 'NO' || row[35] ==='YES';
+                            ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(row[32]) || 
+                               row[33] === 'NO' || row[34] === 'NO' || 
+                            ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(row[35]);
 
         return isDateInRange && (condition1 || condition2);
     });
@@ -185,10 +189,10 @@
                     const td = document.createElement('td');
                     td.textContent = cell || '';
 
-                    if (index === 20 && cell === 'NO' ||   // Column W
+                    if ((index === 20 && ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(cell)) ||   // Column W
                         index === 21 && cell === 'NO' ||   // Column X
-                        index === 22 && cell === 'NO' ||     // Column Y
-                        index === 23 && cell === 'NO' ||     // Column Z
+                        (index === 22 && ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||     // Column Y
+                        (index === 23 && ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||     // Column Z
                         index === 24 && cell === 'NO' ||     // Column AA
                         index === 25 && cell === 'NO' ||   // Column AB
                         index === 26 && cell === 'NO' ||   // Column AC
@@ -198,10 +202,10 @@
                         index === 29 && cell === 'NO' ||     // Column AH
                         index === 30 && cell === 'NO' ||   // Column AE
                         index === 31 && cell === 'NO' ||     // Column AF
-                        index === 32 && cell === 'YES' ||   // Column AE
+                        (index === 32 && ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(cell)) ||   // Column AE
                         index === 33 && cell === 'NO' ||     // Column AF
                         index === 34 && cell === 'NO' ||     // Column AH
-                        index === 35 && cell === 'YES'    // Column AE
+                        (index === 35 && ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(cell))     // Column AE
                         
                         ) {
                             td.classList.add('highlight');
