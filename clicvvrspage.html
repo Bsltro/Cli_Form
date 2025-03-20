@@ -320,14 +320,6 @@ body {
                             <option value="Not Visible In Camera">Not Visible In Camera</option>
                         </select>
                     </div>
-                    <script>
-                        function handleSelectionChange(selectElement) {
-                            var value = selectElement.value;
-                            if (value === 'NO') {
-                                alert('You have selected option, it will be considered as irregularity.');
-                            } 
-                        }
-                    </script>
                     <div class="form-outer">
                         <label for="knowledge" style="color: red; font-weight: bold;">LP Reducing Speed With Respect To Signal Aspect</label>
                         <select name="cvvrssp" id="cvvrssp" onchange="handleSelectionChange(this)">
@@ -338,15 +330,7 @@ body {
                             <option value="Not Visible In Camera">Not Visible In Camera</option>
                         </select>
                     </div>
-                    <script>
-                        function handleSelectionChange(selectElement) {
-                            var value = selectElement.value;
-                            if (value === 'NO') {
-                                alert('You have selected option, it will be considered as irregularity.');
-                            } 
-                        }
-                    </script>
-                    <div class="form-outer">
+                   <div class="form-outer">
                         <label for="knowledge" style="color: red; font-weight: bold;">ALP Kept Hand On RS Valve</label>
                         <select name="cvvrsrs" id="cvvrsrs" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
@@ -411,7 +395,7 @@ body {
                         <label for="knowledge" style="color: red; font-weight: bold;">Whether LP/ALP Using Mobile Phone</label>
                         <select name="cvvrsmob" id="cvvrsmob" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
-                            <option value="NO">NO</option>
+                            <option value="NOT USING">NOT USING</option>
                             <option value="YES BOTH LP AND ALP USING MOBILE">YES BOTH LP AND ALP USING MOBILE</option>
                             <option value="LP USING MOBILE">LP USING MOBILE</option>
                             <option value="ALP USING MOBILE">ALP USING MOBILE</option>
@@ -572,5 +556,27 @@ form.addEventListener('paste', (e) => {
         alert('Insufficient data pasted. Please ensure the source has the correct number of columns.');
     }
 });
+
+function handleSelectionChange(selectElement) {
+        var irregularOptions = [
+            "LP All Necessary P/S On Desk But ALP All Items Not On Desk",
+            "ALP All Necessary P/S On Desk But LP All Items Not On Desk",
+            "Both LP and ALP Necessary P/S Not On Desk",
+            "NO",
+            "LP CALLING SIGNAL WITHOUT HAND GESTURE",
+            "NOT CALLING OUT SIGNAL",
+            "ALP CALLING SIGNAL WITHOUT HAND GESTURE",
+            "YES BOTH LP AND ALP USING MOBILE",
+            "LP USING MOBILE",
+            "ALP USING MOBILE",
+            "YES BOTH LP AND ALP PACKING LUGGAGE",
+            "LP PACKING LUGGAGE",
+            "ALP PACKING LUGGAGE"
+        ];
+
+        if (irregularOptions.includes(selectElement.value)) {
+            alert("You have selected an option that will be considered as irregularity.");
+        }
+    }
 </script>    
 </html>
