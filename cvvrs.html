@@ -257,7 +257,7 @@ body {
             </div><br>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP Designation</label>
-                <input type="text" name="cvvrsalpdesg" id="cvvrsalpdesg">
+                <input type="text" name="cvvrsalpdesg" id="cvvrsalpdesg" value="ALP">
             </div>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">ALP HQ</label>
@@ -510,7 +510,7 @@ body {
             if (matchingRow) {
                 document.getElementById('cvvrslpname').value = matchingRow[3]; // LP Name (column C)
                 document.getElementById('cvvrslptype').value = matchingRow[4]; // LP Type (column D)
-                document.getElementById('cvvrslpcat').value = matchingRow[5]; // LP Category (column E)
+                //document.getElementById('cvvrslpcat').value = matchingRow[5]; // LP Category (column E)
                 document.getElementById('cvvrslphq').value = matchingRow[6]; // LP HQ (column F)
             } else {
                 clearLPFields();
@@ -521,7 +521,7 @@ body {
         function clearLPFields() {
             document.getElementById('cvvrslpname').value = '';
             document.getElementById('cvvrslptype').value = '';
-            document.getElementById('cvvrslpcat').value = '';
+            //document.getElementById('cvvrslpcat').value = '';
             document.getElementById('cvvrslphq').value = '';
         }
     
@@ -534,7 +534,7 @@ body {
     
             if (matchingRow) {
                 document.getElementById('cvvrsalpname').value = matchingRow[8]; // ALP Name (column G)
-                document.getElementById('cvvrsalpdesg').value = matchingRow[9]; // ALP Designation (assuming it's in column K, index 10)
+                //document.getElementById('cvvrsalpdesg').value = matchingRow[9]; // ALP Designation (assuming it's in column K, index 10)
                 document.getElementById('cvvrsalphq').value = matchingRow[10]; // ALP HQ (column H)
             } else {
                 clearALPFields();
@@ -544,7 +544,7 @@ body {
         // Clear ALP fields
         function clearALPFields() {
             document.getElementById('cvvrsalpname').value = '';
-            document.getElementById('cvvrsalpdesg').value = '';
+            //document.getElementById('cvvrsalpdesg').value = '';
             document.getElementById('cvvrsalphq').value = '';
         }
     
@@ -565,50 +565,7 @@ body {
         }
     
         // Set radio buttons based on input values
-        function setRadioButtons() {
-            // Setting Train Number logic
-            const trainNumber = document.getElementById('cvvrsTrainNumber').value;
-            if (trainNumber) {
-                if (/\d/.test(trainNumber)) {
-                    document.getElementById('cvvrsco').checked = true; // Coaching
-                } else {
-                    document.getElementById('cvvrsgd').checked = true; // Goods
-                }
-            }
-    
-            // Setting Train Load logic
-            const trainLoad = parseInt(document.getElementById('cvvrsTrainLoad').value);
-            if (!isNaN(trainLoad)) { // Ensure it's a valid number
-                if (trainLoad > 1500) {
-                    document.getElementById('cvvrsld').checked = true; // Loaded
-                } else {
-                    document.getElementById('cvvrsemp').checked = true; // Empty
-                }
-            }
-    
-            // Setting Day/Night logic
-            const startTime = document.getElementById('cvvrsstarttime').value;
-            const endTime = document.getElementById('cvvrsendtime').value;
-    
-            const isNight = (time) => 
-                (time >= "22:00" && time <= "23:59") || 
-                (time >= "00:00" && time <= "06:00");
-    
-            if (
-                isNight(startTime) || isNight(endTime)
-            ) {
-                document.getElementById('cvvrsn').checked = true; // Night
-            } else {
-                document.getElementById('cvvrsd').checked = true; // Day
-            }
-        }
-    
-        // Add event listeners for the inputs to trigger radio button selection
-        document.getElementById('cvvrsTrainNumber').addEventListener('input', setRadioButtons);
-        document.getElementById('cvvrsTrainLoad').addEventListener('input', setRadioButtons);
-        document.getElementById('cvvrsstarttime').addEventListener('input', setRadioButtons);
-        document.getElementById('cvvrsendtime').addEventListener('input', setRadioButtons);
-    
+        
         // Initial load function
         window.onload = () => {
             fetchSheetDatacvvrs();
