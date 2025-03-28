@@ -3,77 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Irregularities</title>
+    <title>CVVRS Irregularities</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .filters, .buttons {
+            background-color: #e8f0fe;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .filters label, .filters select, .filters input {
+            margin-right: 10px;
+        }
+        select, input[type="date"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin: 10px 0;
         }
         th, td {
-            padding: 8px;
+            padding: 12px;
             border: 1px solid #ddd;
             text-align: center;
-            max-width: 80px; /* Reduce the width of each column */
+            max-width: 80px;
             word-wrap: break-word;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #007BFF;
+            color: white;
+            position: sticky;
+            top: 0;
         }
         #loading {
             font-size: 18px;
             color: #555;
+            text-align: center;
+            margin: 20px 0;
         }
         .highlight {
             background-color: red !important;
+            color: white;
         }
         #red-cell-count {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .column-header-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .column-header {
+            margin: 20px 0;
             text-align: center;
         }
         .red-cell-count {
-            margin-top: 5px;
             font-size: 14px;
             color: #555;
-        }
-        .filters {
-            margin-bottom: 20px;
-        }
-        .filters label, .filters input {
-            margin-right: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>CVVRS IRREGULARITIES DATA</h1>
+    <h1>CVVRS Irregularities Data</h1>
     
-    <!-- Filters for date range -->
+    <!-- Filters for date range and names -->
     <div class="filters">
+        <label for="cli-name">CLI Name:</label>
+        <select id="cli-name">
+            <option value="">Select CLI Name</option>
+            <!-- Unique CLI Names will be populated here -->
+        </select>
+        
+        <label for="LP-name">LP Name:</label>
+        <select id="LP-name">
+            <option value="">Select LP Name</option>
+            <!-- Unique LP Names will be populated here -->
+        </select>
+
+        <label for="ALP-name">ALP Name:</label>
+        <select id="ALP-name">
+            <option value="">Select ALP Name</option>
+            <!-- Unique ALP Names will be populated here -->
+        </select>
+        
         <label for="from-date">From:</label>
         <input type="date" id="from-date">
         
         <label for="to-date">To:</label>
         <input type="date" id="to-date">
-        
-        <button onclick="applyDateFilter()">Apply Date Filter</button>
+
+        <button onclick="applyDateFilter()">**GO**</button>
     </div>
+    
     <div class="buttons">
         <button onclick="printTable()">Print</button>
         <button onclick="downloadCSV()">Download CSV</button>
     </div>
+
     <div id="loading">Loading data...</div>
     <div id="red-cell-count">TOTAL RED CELLS: 0</div> 
     <table id="results">
@@ -89,9 +137,12 @@
 
     <script>
         const sheetID = '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk'; // Replace with your sheet ID
-        const range = 'Sheet1!A1:AP'; // Adjust the range if necessary, here we are fetching columns A to Z
+        const range = 'Sheet1!A1:AP'; // Adjust the range if necessary, here we are fetching columns A to AP
 
         let allRows = []; // Store the fetched rows to apply the date filter later
+        let uniqueCLINames = new Set();
+        let uniqueLPNames = new Set();
+        let uniqueALPNames = new Set();
 
         function fetchSheetData() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`;
@@ -101,6 +152,10 @@
                 .then(data => {
                     allRows = data.values; // Store the entire data set
                     const headers = allRows[0]; // Assuming first row contains headers
+
+                    // Populate unique names for filtering
+                    populateUniqueNames(allRows.slice(1));
+
                     const filteredRows = applyFilters(allRows.slice(1)); // Filter rows based on conditions
                     displayHeaders(headers);
                     displayFilteredRows(filteredRows);
@@ -111,46 +166,84 @@
                 });
         }
 
+        function populateUniqueNames(rows) {
+            rows.forEach(row => {
+                if (row[2]) uniqueCLINames.add(row[2]); // Assuming CLI Name is in column C (index 2)
+                if (row[11]) uniqueLPNames.add(row[11]); // Assuming LP Name is in column L (index 11)
+                if (row[16]) uniqueALPNames.add(row[16]); // Assuming ALP Name is in column Q (index 16)
+            });
+
+            // Populate CLI Name dropdown
+            const cliSelect = document.getElementById('cli-name');
+            uniqueCLINames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                cliSelect.appendChild(option);
+            });
+
+            // Populate LP Name dropdown
+            const lpSelect = document.getElementById('LP-name');
+            uniqueLPNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                lpSelect.appendChild(option);
+            });
+
+            // Populate ALP Name dropdown
+            const alpSelect = document.getElementById('ALP-name');
+            uniqueALPNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                alpSelect.appendChild(option);
+            });
+        }
+
         function applyFilters(rows) {
-    const fromDate = document.getElementById('from-date').value;
-    const toDate = document.getElementById('to-date').value;
-    
-    const fromDateObj = fromDate ? new Date(fromDate + 'T00:00:00') : null; 
-    const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
+            const fromDate = document.getElementById('from-date').value;
+            const toDate = document.getElementById('to-date').value;
+            const cliNameFilter = document.getElementById('cli-name').value.toLowerCase();
+            const LPNameFilter = document.getElementById('LP-name').value.toLowerCase();
+            const ALPNameFilter = document.getElementById('ALP-name').value.toLowerCase();
 
-    console.log("Filtering from:", fromDateObj);
-    console.log("Filtering to:", toDateObj);
+            const fromDateObj = fromDate ? new Date(fromDate + 'T00:00:00') : null; 
+            const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
 
-    return rows.filter(row => {
-        const rowDateString = row[1]; 
-        const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
+            return rows.filter(row => {
+                const rowDateString = row[1]; 
+                const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
 
-        console.log("Row date:", rowDateObj);
+                // Check if the date falls within the selected range (if any)
+                let isDateInRange = true;
+                if (fromDateObj && rowDateObj < fromDateObj) {
+                    isDateInRange = false;
+                }
+                if (toDateObj && rowDateObj > toDateObj) {
+                    isDateInRange = false;
+                }
 
-        // Check if the date falls within the selected range (if any)
-        let isDateInRange = true;
-        if (fromDateObj && rowDateObj < fromDateObj) {
-            isDateInRange = false;
-            console.log("Row date is before fromDate");
+                // Check if names match the selected filter values (or if not selected)
+                const cliNameMatches = cliNameFilter ? row[2].toLowerCase() === cliNameFilter : true; // CLI Name match
+                const LPNameMatches = LPNameFilter ? row[11].toLowerCase() === LPNameFilter : true; // LP Name match
+                const ALPNameMatches = ALPNameFilter ? row[16].toLowerCase() === ALPNameFilter : true; // ALP Name match
+
+                const condition1 =  ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(row[20]) || 
+                    row[21] === 'NO' || ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[22]) || 
+                    ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[23]) || 
+                    row[24] === 'NO' || row[25] === 'NO' ||
+                    row[26] === 'NO' || row[27] === 'NO' || row[28] === 'NO';
+
+                const condition2 =  row[29] === 'NO' || row[30] === 'NO' || row[31] === 'NO' ||
+                    ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(row[32]) || 
+                    row[33] === 'NO' || row[34] === 'NO' || 
+                    ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(row[35]);
+
+                return isDateInRange && cliNameMatches && LPNameMatches && ALPNameMatches && (condition1 || condition2);
+            });
         }
-        if (toDateObj && rowDateObj > toDateObj) {
-            isDateInRange = false;
-            console.log("Row date is after toDate");
-        }
 
-        const condition1 =  ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(row[20]) || 
-        row[21] === 'NO' || ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[22]) || 
-                            ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[23]) || 
-                               row[24] === 'NO' || row[25] === 'NO' ||
-                               row[26] === 'NO' || row[27] === 'NO' || row[28] === 'NO';
-        const condition2 =  row[29] === 'NO' || row[30] === 'NO' || row[31] === 'NO' ||
-                            ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(row[32]) || 
-                               row[33] === 'NO' || row[34] === 'NO' || 
-                            ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(row[35]);
-
-        return isDateInRange && (condition1 || condition2);
-    });
-}
         function displayHeaders(headers) {
             const tableHead = document.querySelector('#results thead tr');
             tableHead.innerHTML = ''; // Clear any existing headers
@@ -189,25 +282,23 @@
                     const td = document.createElement('td');
                     td.textContent = cell || '';
 
-                    if ((index === 20 && ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(cell)) ||   // Column W
-                        index === 21 && cell === 'NO' ||   // Column X
-                        (index === 22 && ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||     // Column Y
-                        (index === 23 && ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||     // Column Z
-                        index === 24 && cell === 'NO' ||     // Column AA
-                        index === 25 && cell === 'NO' ||   // Column AB
-                        index === 26 && cell === 'NO' ||   // Column AC
-                       
-                        index === 27 && cell === 'NO' ||   // Column AE
-                        index === 28 && cell === 'NO' ||     // Column AF
-                        index === 29 && cell === 'NO' ||     // Column AH
-                        index === 30 && cell === 'NO' ||   // Column AE
-                        index === 31 && cell === 'NO' ||     // Column AF
-                        (index === 32 && ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(cell)) ||   // Column AE
-                        index === 33 && cell === 'NO' ||     // Column AF
-                        index === 34 && cell === 'NO' ||     // Column AH
-                        (index === 35 && ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(cell))     // Column AE
+                    if ((index === 20 && ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(cell)) ||
+                        index === 21 && cell === 'NO' ||
+                        (index === 22 && ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||
+                        (index === 23 && ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||
+                        index === 24 && cell === 'NO' ||
+                        index === 25 && cell === 'NO' ||
+                        index === 26 && cell === 'NO' ||
+                        index === 27 && cell === 'NO' ||
+                        index === 28 && cell === 'NO' ||
+                        index === 29 && cell === 'NO' ||
+                        index === 30 && cell === 'NO' ||
+                        index === 31 && cell === 'NO' ||
+                        (index === 32 && ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(cell)) ||
+                        index === 33 && cell === 'NO' ||
+                        index === 34 && cell === 'NO' ||
+                        (index === 35 && ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(cell))) {
                         
-                        ) {
                             td.classList.add('highlight');
                             redCellCounts[index]++;
                             totalRedCells++;
@@ -227,7 +318,7 @@
             document.getElementById('loading').style.display = 'none';
         }
 
-        // Apply date filter on button click
+        // Apply filters on button click
         function applyDateFilter() {
             const filteredRows = applyFilters(allRows.slice(1)); // Apply filters based on date
             const headers = allRows[0]; // Get headers from stored data
@@ -266,7 +357,6 @@
         }
 
         window.onload = fetchSheetData;
-
     </script>
 
 </body>
