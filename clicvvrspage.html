@@ -187,10 +187,10 @@ body {
                 <label for="trainNumber">Train Number:</label>
                 <input type="text" name="cvvrsTrainNumber" id="cvvrsTrainNumber" placeholder="Enter train number" class="uppercase" required readonly>
             </div>
-            <div class="form-outer">
+            <!-- <div class="form-outer">
                 <label for="trainLoad">Train Load (in Tonn):</label>
                 <input type="number" name="cvvrsTrainLoad" id="cvvrsTrainLoad" placeholder="Enter train load" >
-            </div>
+            </div> -->
             <div class="form-outer">
                 <label for="trainNumber">LOCO Number:</label>
                 <input type="text" name="cvvrslocono" id="cvvrslocono" placeholder="Enter train number" class="uppercase" required readonly>
@@ -238,10 +238,10 @@ body {
                 <label style="color: red; font-weight: bold;">LP Designation</label>
                 <input type="text" name="cvvrslptype" id="cvvrslptype" readonly>
             </div>
-            <div class="form-outer">
+            <!-- <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP Category</label>
                 <input type="text" name="cvvrslpcat" id="cvvrslpcat"readonly >
-            </div>
+            </div> -->
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">LP HQ</label>
                 <input type="text" name="cvvrslphq" id="cvvrslphq" readonly>
@@ -524,34 +524,34 @@ form.addEventListener('paste', (e) => {
     };
 
     // Fill in the form fields based on the pasted data
-    if (rowData.length >= 18) { // updated to check for the total number of fields
+    if (rowData.length >= 17) { // updated to check for the total number of fields
         document.getElementById('cvvrsinspectionid').value = rowData[0] || ''; // CLI ID
         document.getElementById('cvvrsinspectiondate').value = rowData[1] || ''; // DATA SENT DT
         document.getElementById('cvvrscliname').value = rowData[2] || ''; // CLI Name
         document.getElementById('cvvrsTrainNumber').value = rowData[3] || ''; // Train Number
-        document.getElementById('cvvrsTrainLoad').value = rowData[4] || ''; // Train Load
-        document.getElementById('cvvrslocono').value = rowData[5] || ''; // Loco Number
-        document.getElementById('cvvrsfromstation').value = rowData[6] || ''; // From Station
+        //document.getElementById('cvvrsTrainLoad').value = rowData[4] || ''; // Train Load
+        document.getElementById('cvvrslocono').value = rowData[4] || ''; // Loco Number
+        document.getElementById('cvvrsfromstation').value = rowData[5] || ''; // From Station
 
         // Transform and set Train Departure Date and Time
-        const departureDateTime = transformDateTime(rowData[7]);
+        const departureDateTime = transformDateTime(rowData[6]);
         document.getElementById('cvvrsstarttime').value = departureDateTime;
 
-        document.getElementById('cvvrstostation').value = rowData[8] || ''; // To Station
+        document.getElementById('cvvrstostation').value = rowData[7] || ''; // To Station
 
         // Transform and set Train Arrival Date and Time
-        const arrivalDateTime = transformDateTime(rowData[9]);
+        const arrivalDateTime = transformDateTime(rowData[8]);
         document.getElementById('cvvrsendtime').value = arrivalDateTime;
 
-        document.getElementById('cvvrslpcmsid').value = rowData[10] || ''; // LP CMS ID
-        document.getElementById('cvvrslpname').value = rowData[11] || ''; // LP Name
-        document.getElementById('cvvrslptype').value = rowData[12] || ''; // LP Type
-        document.getElementById('cvvrslpcat').value = rowData[13] || ''; // LP CAT
-        document.getElementById('cvvrslphq').value = rowData[14] || ''; // LP HQ
-        document.getElementById('cvvrsalpcmsid').value = rowData[15] || ''; // ALP CMS ID
-        document.getElementById('cvvrsalpname').value = rowData[16] || ''; // ALP Name
-        document.getElementById('cvvrsalpdesg').value = rowData[17] || ''; // ALP Designation
-        document.getElementById('cvvrsalphq').value = rowData[18] || ''; // ALP HQ
+        document.getElementById('cvvrslpcmsid').value = rowData[9] || ''; // LP CMS ID
+        document.getElementById('cvvrslpname').value = rowData[10] || ''; // LP Name
+        document.getElementById('cvvrslptype').value = rowData[11] || ''; // LP Type
+        //document.getElementById('cvvrslpcat').value = rowData[13] || ''; // LP CAT
+        document.getElementById('cvvrslphq').value = rowData[12] || ''; // LP HQ
+        document.getElementById('cvvrsalpcmsid').value = rowData[13] || ''; // ALP CMS ID
+        document.getElementById('cvvrsalpname').value = rowData[14] || ''; // ALP Name
+        document.getElementById('cvvrsalpdesg').value = rowData[15] || ''; // ALP Designation
+        document.getElementById('cvvrsalphq').value = rowData[16] || ''; // ALP HQ
     } else {
         alert('Insufficient data pasted. Please ensure the source has the correct number of columns.');
     }

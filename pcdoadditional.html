@@ -14,15 +14,19 @@
         }
         th, td {
             padding: 8px;
-            text-align: left;
+            text-align: center;
             max-width: 57px; /* Allow more space */
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            max-width: 50px; /* Reduce the width of each column */
+            word-wrap: break-word;
         }
         th {
             word-wrap: break-word;
             white-space: normal;
+            position: sticky;
+            top: 0;
         }
         .button-container {
             margin-top: 20px;
@@ -43,7 +47,7 @@
     <input type="date" id="fromDate">
     <label for="toDate">To:</label>
     <input type="date" id="toDate">
-    <button onclick="fetchData()">Load Data</button>
+    <button onclick="fetchData()">*GO*</button>
 
     <table id="dataTable">
         <thead>
