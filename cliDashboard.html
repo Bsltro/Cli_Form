@@ -200,6 +200,11 @@
 
                     renderFilteredData(currentData, headers);
 
+                    // Highlight rows based on the value in column I for nominated tab
+                    if (sheetType === 'nominated') {
+                        highlightRowsBasedOnColumnValue(currentData);
+                    }
+
                     // Restore filters for the Footplate tab
                     if (currentTab === 'footplate') {
                         restoreFootplateFilters(headers, rows);
@@ -213,6 +218,23 @@
                 console.error('Error fetching Google Sheet data:', error);
                 alert('Error fetching data from Google Sheets.');
             });
+    }
+
+    // Function to highlight rows based on the value in column I
+    function highlightRowsBasedOnColumnValue(rows) {
+        const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+
+        rows.forEach((row, index) => {
+            let rowValue = Number(row[8]); // Assuming column I is the 9th column (0-based index)
+
+            if (rowValue <= 0) {
+                tableBody.rows[index].style.backgroundColor = 'red'; // Highlight in red
+            } else if (rowValue <= 3) {
+                tableBody.rows[index].style.backgroundColor = 'orange'; // Highlight in orange
+            } else if (rowValue <= 7) {
+                tableBody.rows[index].style.backgroundColor = 'yellow'; // Highlight in yellow
+            }
+        });
     }
 
     const checkboxContainer = document.getElementById('columnCheckboxes');
@@ -358,6 +380,18 @@
                 newCell.textContent = cell || '';
             });
 
+            // Highlight according to the logic for nominated tab
+            if (currentTab === 'nominated' && row.length > 8) {
+                let rowValue = Number(row[8]); // Column I
+                if (rowValue <= 0) {
+                    newRow.style.backgroundColor = 'red';
+                } else if (rowValue <= 3) {
+                    newRow.style.backgroundColor = 'orange';
+                } else if (rowValue <= 7) {
+                    newRow.style.backgroundColor = 'yellow';
+                }
+            }
+
             // Add Copy button for each row only if the current tab is "cvvrspending"
             if (currentTab === 'cvvrspending') {
                 const copyButtonCell = newRow.insertCell();
@@ -435,63 +469,63 @@
 
     // Function to copy table data to clipboard
     document.getElementById('copyData').addEventListener('click', () => {
-    const table = document.getElementById('dataTable');
-    let textToCopy = '';
+        const table = document.getElementById('dataTable');
+        let textToCopy = '';
 
-    // Get headers
-    const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+        // Get headers
+        const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
 
-    // Prepare the data based on headerOrder
-    const rows = table.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        const formData = headerOrder.map(header => {
-            const index = headers.indexOf(header);
-            if (index !== -1) {
-                let cellValue = row.cells[index].textContent;
+        // Prepare the data based on headerOrder
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const formData = headerOrder.map(header => {
+                const index = headers.indexOf(header);
+                if (index !== -1) {
+                    let cellValue = row.cells[index].textContent;
 
-                // Convert date format for "Train Arrival Date" and "Train Departure Date"
-                if (header === "Train Arrival Date" || header === "Train Departure Date") {
-                    // Ensure the date is in the correct format
-                    if (cellValue && cellValue.includes(' ')) {
-                        // Split into date and time parts
-                        const [datePart, timePart] = cellValue.split(' ');
+                    // Convert date format for "Train Arrival Date" and "Train Departure Date"
+                    if (header === "Train Arrival Date" || header === "Train Departure Date") {
+                        // Ensure the date is in the correct format
+                        if (cellValue && cellValue.includes(' ')) {
+                            // Split into date and time parts
+                            const [datePart, timePart] = cellValue.split(' ');
 
-                        // Ensure two-digit hour and minute
-                        const [hour, minute] = timePart.split(':');
-                        const formattedTime = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`; // Ensure two-digit hour and minute
-                        cellValue = `${datePart}T${formattedTime}`; // Combine with 'T' separator
+                            // Ensure two-digit hour and minute
+                            const [hour, minute] = timePart.split(':');
+                            const formattedTime = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`; // Ensure two-digit hour and minute
+                            cellValue = `${datePart}T${formattedTime}`; // Combine with 'T' separator
+                        }
                     }
-                }
 
-                return cellValue;
-            } else {
-                return ''; // Fill with empty string if header not found
-            }
+                    return cellValue;
+                } else {
+                    return ''; // Fill with empty string if header not found
+                }
+            });
+
+            textToCopy += formData.join('\t') + '\n'; // Join with tabs for separation
         });
 
-        textToCopy += formData.join('\t') + '\n'; // Join with tabs for separation
-    });
+        // Use a textarea to copy the data
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        document.body.appendChild(textarea);
+        textarea.select();
 
-    // Use a textarea to copy the data
-    const textarea = document.createElement('textarea');
-    textarea.value = textToCopy;
-    document.body.appendChild(textarea);
-    textarea.select();
-
-    try {
-        const successful = document.execCommand('copy');
-        if (successful) {
-            alert('Table data copied to clipboard! Please paste it into the form.');
-        } else {
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                alert('Table data copied to clipboard! Please paste it into the form.');
+            } else {
+                alert('Failed to copy data. Please manually copy the data.');
+            }
+        } catch (err) {
+            console.error('Failed to copy: ', err);
             alert('Failed to copy data. Please manually copy the data.');
+        } finally {
+            document.body.removeChild(textarea);
         }
-    } catch (err) {
-        console.error('Failed to copy: ', err);
-        alert('Failed to copy data. Please manually copy the data.');
-    } finally {
-        document.body.removeChild(textarea);
-    }
-});
+    });
 
     // Function to download filtered data as CSV
     document.getElementById('downloadTable').addEventListener('click', () => {
@@ -531,8 +565,8 @@
     });
 
     function redirectToPage(page) {
-            window.location.href = page; // Redirect to the specified page
-        }
+        window.location.href = page; // Redirect to the specified page
+    }
 
     const headerOrder = [
         "CMS ID",                    
