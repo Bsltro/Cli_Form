@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVVRS REPORT</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .print-button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-content, .print-content * {
+                visibility: visible;
+            }
+            .print-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>PRINT CVVRS REPORT</h1>
+    <table id="data-table">
+        <thead>
+            <tr id="table-headers">
+                <th>Print</th>
+                <th>Row No</th>
+                <!-- Google Sheets headers will be added dynamically -->
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Data from Google Sheets will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Replace with your actual Google Sheet ID and API Key
+        const SHEET_ID = '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk'; // Replace with your Google Sheet ID
+        const API_KEY = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';      // Replace with your Google API Key
+        let headers = [];
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`);
+                const data = await response.json();
+
+                if (!data.values || data.values.length === 0) {
+                    console.log('No data found in the sheet.');
+                    return;
+                }
+
+                // Ensure headers are taken from the first row (exact order)
+                headers = data.values[0];
+
+                // Clear any previous headers to avoid duplication
+                const tableHeaders = document.getElementById('table-headers');
+                tableHeaders.innerHTML = `<th>Print</th><th>Row No</th>`; // Keep fixed headers
+                
+                headers.forEach(header => {
+                    tableHeaders.insertAdjacentHTML('beforeend', `<th>${header}</th>`);
+                });
+
+                // Populate table body with data from Google Sheets
+                const tableBody = document.getElementById('table-body');
+                tableBody.innerHTML = ''; // Clear previous data to prevent repetition
+                
+                for (let i = 1; i < data.values.length; i++) {
+                    const row = data.values[i];
+
+                    // Create table row
+                    const rowElement = document.createElement("tr");
+
+                    // Create Print button cell
+                    const buttonCell = document.createElement("td");
+                    const printButton = document.createElement("button");
+                    printButton.innerText = "Print";
+                    printButton.className = "print-button";
+                    printButton.addEventListener("click", () => printRow(i, row));
+                    buttonCell.appendChild(printButton);
+                    rowElement.appendChild(buttonCell);
+
+                    // Add Row Number
+                    const rowNumberCell = document.createElement("td");
+                    rowNumberCell.innerText = i;
+                    rowElement.appendChild(rowNumberCell);
+
+                    // Ensure row data aligns with headers
+                    for (let j = 0; j < headers.length; j++) {
+                        const dataCell = document.createElement("td");
+                        dataCell.innerText = row[j] !== undefined ? row[j] : ''; // Handles missing values
+                        rowElement.appendChild(dataCell);
+                    }
+
+                    tableBody.appendChild(rowElement);
+                }
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+            }
+        };
+
+        const printRow = (rowNumber, rowData) => {
+            const printContent = document.createElement('div');
+            printContent.className = 'print-content';
+            
+            let printHTML = `
+                <h2>Row ${rowNumber} Details</h2>
+                <table border="1" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            // Print each header with its corresponding value
+            for (let i = 0; i < headers.length; i++) {
+                printHTML += `
+                    <tr>
+                        <td><strong>${headers[i]}</strong></td>
+                        <td>${rowData[i] !== undefined ? rowData[i] : ''}</td>
+                    </tr>`;
+            }
+            
+            printHTML += `
+                    </tbody>
+                </table>`;
+            
+            printContent.innerHTML = printHTML;
+            
+            // Add to body temporarily for printing
+            document.body.appendChild(printContent);
+            window.print();
+            document.body.removeChild(printContent);
+        };
+
+        // Fetch data when page loads
+        window.addEventListener('DOMContentLoaded', fetchData);
+    </script>
+</body>
+</html>
