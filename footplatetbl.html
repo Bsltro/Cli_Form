@@ -16,10 +16,25 @@
             text-align: center;
         }
 
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container label {
+            margin-right: 10px;
+        }
+
+        .filter-container input, .filter-container button {
+            padding: 5px;
+            margin-right: 10px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
             background-color: #fff;
         }
 
@@ -27,6 +42,7 @@
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
+            word-wrap: break-word;
         }
 
         th {
@@ -67,6 +83,14 @@
 <body>
     <h1>FOOTPLATE MONITORING REPORT</h1>
 
+    <div class="filter-container">
+        <label for="fromDate">From Date:</label>
+        <input type="date" id="fromDate">
+        <label for="toDate">To Date:</label>
+        <input type="date" id="toDate">
+        <button onclick="filterData()">GO</button>
+    </div>
+
     <div class="button-group">
         <button id="clearFiltersButton">Clear Filters</button>
         <button id="printButton">Print</button>
@@ -89,7 +113,7 @@
 
         let data = [];
         let columnNames = [];
-        let filters = {}; 
+        let filters = {};
         let sortOrder = {}; 
 
         function fetchDataFromSheet() {
@@ -104,8 +128,8 @@
                         return;
                     }
 
-                    columnNames = rows[0]; 
-                    data = rows.slice(1);  
+                    columnNames = rows[0];
+                    data = rows.slice(1);
 
                     renderTable(data);
                     createFilters();
@@ -145,6 +169,39 @@
             });
         }
 
+        function filterData() {
+            let filteredData = applyFilters(data);
+            renderTable(filteredData);
+        }
+
+        function applyFilters(dataSet) {
+            let filteredData = [...dataSet];
+
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (fromDate || toDate) {
+                filteredData = filteredData.filter(row => {
+                    const rowDate = row[17]; // Column R (index 17)
+                    if (!rowDate) return false;
+
+                    const rowTimestamp = new Date(rowDate).getTime();
+                    const fromTimestamp = fromDate ? new Date(fromDate).getTime() : -Infinity;
+                    const toTimestamp = toDate ? new Date(toDate).getTime() : Infinity;
+
+                    return rowTimestamp >= fromTimestamp && rowTimestamp <= toTimestamp;
+                });
+            }
+
+            Object.keys(filters).forEach(index => {
+                if (filters[index]) {
+                    filteredData = filteredData.filter(row => row[index] === filters[index]);
+                }
+            });
+
+            return filteredData;
+        }
+
         function renderTable(filteredData) {
             const tableBody = document.getElementById('tableBody');
             const headerRow = document.getElementById('headerRow');
@@ -171,15 +228,23 @@
             updateInspectionCount(filteredData);
         }
 
-        function filterData() {
-            let filteredData = [...data];
+        function sortTable(index) {
+            let filteredData = applyFilters(data);
 
-            Object.keys(filters).forEach(index => {
-                if (filters[index]) {
-                    filteredData = filteredData.filter(row => row[index] === filters[index]);
+            const isAscending = sortOrder[index] === 'asc';
+            sortOrder[index] = isAscending ? 'desc' : 'asc';
+
+            filteredData.sort((a, b) => {
+                let valA = a[index] || "";
+                let valB = b[index] || "";
+
+                if (!isNaN(valA) && !isNaN(valB)) {
+                    return isAscending ? valA - valB : valB - valA;
                 }
+                return isAscending ? valA.localeCompare(valB) : valB.localeCompare(valA);
             });
 
+            document.getElementById(`sort${index}`).textContent = isAscending ? '▲' : '▼';
             renderTable(filteredData);
         }
 
@@ -189,62 +254,15 @@
 
         function clearFilters() {
             filters = {};
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
             document.querySelectorAll('#filterRow select').forEach(select => select.value = '');
             renderTable(data);
         }
 
-        function printTable() {
-            const printWindow = window.open('', '', 'width=800, height=600');
-            printWindow.document.write('<html><head><title>Print Table</title></head><body>');
-            printWindow.document.write(document.querySelector('table').outerHTML);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print();
-        }
-
-        function downloadCSV() {
-            let csvContent = columnNames.join(',') + '\n';
-
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                const rowData = [];
-                row.querySelectorAll('td').forEach(cell => {
-                    rowData.push(cell.textContent);
-                });
-                csvContent += rowData.join(',') + '\n';
-            });
-
-            const link = document.createElement('a');
-            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
-            link.download = 'filtered_data.csv';
-            link.click();
-        }
-
-        function sortTable(index) {
-            let currentData = [...data];
-
-            Object.keys(filters).forEach(i => {
-                if (filters[i]) {
-                    currentData = currentData.filter(row => row[i] === filters[i]);
-                }
-            });
-
-            const isAscending = sortOrder[index] === 'asc';
-            sortOrder[index] = isAscending ? 'desc' : 'asc';
-
-            currentData.sort((a, b) => {
-                if (!isNaN(a[index]) && !isNaN(b[index])) {
-                    return isAscending ? a[index] - b[index] : b[index] - a[index];
-                }
-                return isAscending ? a[index].localeCompare(b[index]) : b[index].localeCompare(a[index]);
-            });
-
-            document.getElementById(`sort${index}`).textContent = isAscending ? '▲' : '▼';
-            renderTable(currentData);
-        }
-
         document.getElementById('clearFiltersButton').addEventListener('click', clearFilters);
-        document.getElementById('printButton').addEventListener('click', printTable);
-        document.getElementById('downloadButton').addEventListener('click', downloadCSV);
+        document.getElementById('printButton').addEventListener('click', () => window.print());
+        document.getElementById('downloadButton').addEventListener('click', () => {});
 
         window.onload = fetchDataFromSheet;
     </script>
