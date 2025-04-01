@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPM ANALYSIS REPORT</title>
+    <title>SPM REPORT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,162 +13,85 @@
         }
 
         h1 {
-            color: #333;
             text-align: center;
-        }
-
-        .filter-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
-
-        .filter-group {
-            margin: 10px 5px;
-            flex: 1 1 200px; /* Allows filters to shrink and grow */
-        }
-
-        select, input[type="date"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        button {
-            padding: 10px 15px;
-            margin: 0 5px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        #inspectionCountDisplay {
-            text-align: center;
-            margin-top: 10px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #fff;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 10px;
             text-align: center;
-            max-width: 50px; /* Reduce the width of each column */
-            word-wrap: break-word;
         }
 
         th {
             background-color: #f2f2f2;
-            font-weight: bold;
+            cursor: pointer;
             position: sticky;
             top: 0;
         }
 
-        @media (max-width: 768px) {
-            .filter-container {
-                flex-direction: column; /* Stack filters on mobile */
-            }
+        th:hover {
+            background-color: #ddd;
+        }
 
-            .filter-group {
-                margin-right: 0;
-                margin-bottom: 15px;
-            }
+        .filter-row select {
+            width: 100%;
+            padding: 5px;
+        }
 
-            button {
-                width: 100%; /* Full width buttons on mobile */
-                margin: 5px 0; /* Vertical margin between buttons */
-            }
+        .button-group {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>SPM ANALYSIS REPORT</h1>
-    
-    <div id="filterContainer" class="filter-container"></div>
-    
-    <div id="dateRangeContainer" class="filter-container">
-        <div class="filter-group">
-            <label for="fromDate">From Date:</label>
-            <input type="date" id="fromDate">
-        </div>
-
-        <div class="filter-group">
-            <label for="toDate">To Date:</label>
-            <input type="date" id="toDate">
-        </div>
-    </div>
-
-    <div id="monthYearContainer" class="filter-container">
-        <div class="filter-group">
-            <label for="monthFilter">Month:</label>
-            <select id="monthFilter">
-                <option value="">Select Month</option>
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
-        </div>
-
-        <div class="filter-group">
-            <label for="yearFilter">Year:</label>
-            <select id="yearFilter">
-                <option value="">Select Year</option>
-            </select>
-        </div>
-    </div>
+    <h1>SPM REPORT</h1>
 
     <div class="button-group">
         <button id="clearFiltersButton">Clear Filters</button>
         <button id="printButton">Print</button>
         <button id="downloadButton">Download CSV</button>
     </div>
-    
+
     <div id="inspectionCountDisplay"></div>
+
     <table>
         <thead>
             <tr id="headerRow"></tr>
+            <tr id="filterRow" class="filter-row"></tr>
         </thead>
         <tbody id="tableBody"></tbody>
     </table>
 
     <script>
-        const sheetId = '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI'; // Replace with your Google Sheet ID
-        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Replace with your Google API Key
+        const sheetId = '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI'; // Your Google Sheet ID
+        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Your API Key
 
         let data = [];
         let columnNames = [];
-        const filters = [];
-        
-        // Fetch data from Google Sheets API
+        let filters = {}; 
+        let sortOrder = {}; 
+
         function fetchDataFromSheet() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
 
@@ -176,92 +99,29 @@
                 .then(response => response.json())
                 .then(responseData => {
                     const rows = responseData.values;
-
                     if (!rows || rows.length === 0) {
-                        console.error("No data found in the sheet.");
+                        console.error("No data found.");
                         return;
                     }
 
-                    columnNames = rows[0]; // First row contains the column headers
-                    data = rows.slice(1);   // Remaining rows contain the actual data
+                    columnNames = rows[0]; 
+                    data = rows.slice(1);  
 
                     renderTable(data);
-                    populateFilters();
-                    updateInspectionCount(data);
-                    populateYearFilter();  // Populate Year Filter dynamically
+                    createFilters();
                 })
-                .catch(error => console.error('Error fetching data from Google Sheets API:', error));
+                .catch(error => console.error('Error fetching data:', error));
         }
 
-        // Populate Year Filter dynamically based on data
-        function populateYearFilter() {
-            const yearFilter = document.getElementById('yearFilter');
-            const years = new Set();
-
-            // Assuming the date is in the second column (adjust if needed)
-            data.forEach(row => {
-                const rowDate = row[1]; // Assuming date is in column 1 (adjust if needed)
-                const year = new Date(rowDate).getFullYear();
-                years.add(year);
-            });
-
-            years.forEach(year => {
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                yearFilter.appendChild(option);
-            });
-        }
-
-        // Render table based on data
-        function renderTable(dataToRender) {
-            const tableBody = document.getElementById('tableBody');
-            const headerRow = document.getElementById('headerRow');
-            tableBody.innerHTML = '';
-            headerRow.innerHTML = '';
-
-            columnNames.forEach(col => {
-                const th = document.createElement('th');
-                th.textContent = col;
-                headerRow.appendChild(th);
-            });
-
-            dataToRender.forEach(row => {
-                const tr = document.createElement('tr');
-                row.forEach(cell => {
-                    const td = document.createElement('td');
-                    td.textContent = cell;
-                    tr.appendChild(td);
-                });
-                tableBody.appendChild(tr);
-            });
-
-            updateInspectionCount(dataToRender);
-        }
-
-        // Update the count of inspections displayed
-        function updateInspectionCount(dataToRender) {
-            const inspectionCount = document.getElementById('inspectionCountDisplay');
-            inspectionCount.textContent = `Total Inspections: ${dataToRender.length}`;
-        }
-
-        // Populate dynamic filters
-        function populateFilters() {
-            const filterContainer = document.getElementById('filterContainer');
-            filterContainer.innerHTML = ''; // Clear existing filters
+        function createFilters() {
+            const filterRow = document.getElementById('filterRow');
+            filterRow.innerHTML = '';
 
             columnNames.forEach((colName, index) => {
-                const filterGroup = document.createElement('div');
-                filterGroup.classList.add('filter-group');
-
-                const label = document.createElement('label');
-                label.setAttribute('for', `filter${index}`);
-                label.textContent = colName;
-                filterGroup.appendChild(label);
+                const th = document.createElement('th');
 
                 const select = document.createElement('select');
-                select.id = `filter${index}`;
-                select.innerHTML = '<option value="">Select</option>';
+                select.innerHTML = '<option value="">All</option>';
 
                 const uniqueValues = new Set();
                 data.forEach(row => {
@@ -275,63 +135,64 @@
                     select.appendChild(option);
                 });
 
-                select.addEventListener('change', filterData);
-                filterGroup.appendChild(select);
-                filterContainer.appendChild(filterGroup);
-                filters.push(select);
+                select.addEventListener('change', () => {
+                    filters[index] = select.value;
+                    filterData();
+                });
+
+                th.appendChild(select);
+                filterRow.appendChild(th);
             });
         }
 
-        // Filter data based on selected filter values
+        function renderTable(filteredData) {
+            const tableBody = document.getElementById('tableBody');
+            const headerRow = document.getElementById('headerRow');
+            tableBody.innerHTML = '';
+            headerRow.innerHTML = '';
+
+            columnNames.forEach((col, index) => {
+                const th = document.createElement('th');
+                th.innerHTML = `${col} <span id="sort${index}">⇅</span>`;
+                th.addEventListener('click', () => sortTable(index));
+                headerRow.appendChild(th);
+            });
+
+            filteredData.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            updateInspectionCount(filteredData);
+        }
+
         function filterData() {
             let filteredData = [...data];
 
-            filters.forEach((filter, index) => {
-                const value = filter.value;
-                if (value) {
-                    filteredData = filteredData.filter(row => row[index] === value);
+            Object.keys(filters).forEach(index => {
+                if (filters[index]) {
+                    filteredData = filteredData.filter(row => row[index] === filters[index]);
                 }
             });
-
-            // Date Range Filter
-            const fromDate = new Date(document.getElementById('fromDate').value);
-            const toDate = new Date(document.getElementById('toDate').value);
-            const monthFilter = document.getElementById('monthFilter').value;
-            const yearFilter = document.getElementById('yearFilter').value;
-
-            if (fromDate || toDate || monthFilter || yearFilter) {
-                filteredData = filteredData.filter(row => {
-                    const rowDate = new Date(row[1]); // Assuming date is in the second column
-                    const monthMatch = monthFilter ? (rowDate.getMonth() + 1 === parseInt(monthFilter)) : true;
-                    const yearMatch = yearFilter ? (rowDate.getFullYear() === parseInt(yearFilter)) : true;
-
-                    // Check if the rowDate falls within the From and To Date range
-                    let dateMatch = true;
-                    if (fromDate && rowDate < fromDate) {
-                        dateMatch = false;
-                    }
-                    if (toDate && rowDate > toDate) {
-                        dateMatch = false;
-                    }
-
-                    return dateMatch && monthMatch && yearMatch;
-                });
-            }
 
             renderTable(filteredData);
         }
 
-        // Clear all filters
+        function updateInspectionCount(filteredData) {
+            document.getElementById('inspectionCountDisplay').textContent = `Total Records: ${filteredData.length}`;
+        }
+
         function clearFilters() {
-            filters.forEach(filter => filter.value = "");
-            document.getElementById('fromDate').value = '';
-            document.getElementById('toDate').value = '';
-            document.getElementById('monthFilter').value = '';
-            document.getElementById('yearFilter').value = '';
+            filters = {};
+            document.querySelectorAll('#filterRow select').forEach(select => select.value = '');
             renderTable(data);
         }
 
-        // Print the table
         function printTable() {
             const printWindow = window.open('', '', 'width=800, height=600');
             printWindow.document.write('<html><head><title>Print Table</title></head><body>');
@@ -341,25 +202,50 @@
             printWindow.print();
         }
 
-        // Download table data as CSV
         function downloadCSV() {
-            let csv = columnNames.join(',') + '\n';
-            data.forEach(row => {
-                csv += row.join(',') + '\n';
+            let csvContent = columnNames.join(',') + '\n';
+
+            document.querySelectorAll('#tableBody tr').forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                csvContent += rowData.join(',') + '\n';
             });
 
             const link = document.createElement('a');
-            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-            link.download = 'inspections.csv';
+            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+            link.download = 'filtered_data.csv';
             link.click();
         }
 
-        // Attach event listeners to buttons
+        function sortTable(index) {
+            let currentData = [...data];
+
+            Object.keys(filters).forEach(i => {
+                if (filters[i]) {
+                    currentData = currentData.filter(row => row[i] === filters[i]);
+                }
+            });
+
+            const isAscending = sortOrder[index] === 'asc';
+            sortOrder[index] = isAscending ? 'desc' : 'asc';
+
+            currentData.sort((a, b) => {
+                if (!isNaN(a[index]) && !isNaN(b[index])) {
+                    return isAscending ? a[index] - b[index] : b[index] - a[index];
+                }
+                return isAscending ? a[index].localeCompare(b[index]) : b[index].localeCompare(a[index]);
+            });
+
+            document.getElementById(`sort${index}`).textContent = isAscending ? '▲' : '▼';
+            renderTable(currentData);
+        }
+
         document.getElementById('clearFiltersButton').addEventListener('click', clearFilters);
         document.getElementById('printButton').addEventListener('click', printTable);
         document.getElementById('downloadButton').addEventListener('click', downloadCSV);
 
-        // Fetch the data from the Google Sheets API when the page loads
         window.onload = fetchDataFromSheet;
     </script>
 </body>
