@@ -184,7 +184,7 @@
 
             if (fromDate || toDate) {
                 filteredData = filteredData.filter(row => {
-                    const rowDate = row[17]; // Column R (index 17)
+                    const rowDate = row[1]; // Column R (index 17)
                     if (!rowDate) return false;
 
                     try {

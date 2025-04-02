@@ -169,8 +169,8 @@
         function populateUniqueNames(rows) {
             rows.forEach(row => {
                 if (row[2]) uniqueCLINames.add(row[2]); // Assuming CLI Name is in column C (index 2)
-                if (row[11]) uniqueLPNames.add(row[11]); // Assuming LP Name is in column L (index 11)
-                if (row[16]) uniqueALPNames.add(row[16]); // Assuming ALP Name is in column Q (index 16)
+                if (row[10]) uniqueLPNames.add(row[10]); // Assuming LP Name is in column L (index 11)
+                if (row[14]) uniqueALPNames.add(row[14]); // Assuming ALP Name is in column Q (index 16)
             });
 
             // Populate CLI Name dropdown
@@ -226,19 +226,19 @@
 
                 // Check if names match the selected filter values (or if not selected)
                 const cliNameMatches = cliNameFilter ? row[2].toLowerCase() === cliNameFilter : true; // CLI Name match
-                const LPNameMatches = LPNameFilter ? row[11].toLowerCase() === LPNameFilter : true; // LP Name match
-                const ALPNameMatches = ALPNameFilter ? row[16].toLowerCase() === ALPNameFilter : true; // ALP Name match
+                const LPNameMatches = LPNameFilter ? row[10].toLowerCase() === LPNameFilter : true; // LP Name match
+                const ALPNameMatches = ALPNameFilter ? row[14].toLowerCase() === ALPNameFilter : true; // ALP Name match
 
-                const condition1 =  ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(row[20]) || 
-                    row[21] === 'NO' || ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[22]) || 
-                    ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[23]) || 
-                    row[24] === 'NO' || row[25] === 'NO' ||
-                    row[26] === 'NO' || row[27] === 'NO' || row[28] === 'NO';
+                const condition1 =  ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(row[18]) || 
+                    row[19] === 'NO' || ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[20]) || 
+                    ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[21]) || 
+                    row[22] === 'NO' || row[23] === 'NO' ||
+                    row[24] === 'NO' || row[25] === 'NO' || row[26] === 'NO';
 
-                const condition2 =  row[29] === 'NO' || row[30] === 'NO' || row[31] === 'NO' ||
+                const condition2 =  row[27] === 'NO' || row[28] === 'NO' || row[29] === 'NO' ||
                     ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(row[32]) || 
-                    row[33] === 'NO' || row[34] === 'NO' || 
-                    ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(row[35]);
+                    row[31] === 'NO' || row[32] === 'NO' || 
+                    ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(row[33]);
 
                 return isDateInRange && cliNameMatches && LPNameMatches && ALPNameMatches && (condition1 || condition2);
             });
@@ -282,22 +282,22 @@
                     const td = document.createElement('td');
                     td.textContent = cell || '';
 
-                    if ((index === 20 && ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(cell)) ||
-                        index === 21 && cell === 'NO' ||
-                        (index === 22 && ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||
-                        (index === 23 && ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||
+                    if ((index === 18 && ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(cell)) ||
+                        index === 19 && cell === 'NO' ||
+                        (index === 20 && ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||
+                        (index === 21 && ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||
+                        index === 22 && cell === 'NO' ||
+                        index === 23 && cell === 'NO' ||
                         index === 24 && cell === 'NO' ||
                         index === 25 && cell === 'NO' ||
                         index === 26 && cell === 'NO' ||
                         index === 27 && cell === 'NO' ||
                         index === 28 && cell === 'NO' ||
                         index === 29 && cell === 'NO' ||
-                        index === 30 && cell === 'NO' ||
+                        (index === 30 && ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(cell)) ||
                         index === 31 && cell === 'NO' ||
-                        (index === 32 && ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(cell)) ||
-                        index === 33 && cell === 'NO' ||
-                        index === 34 && cell === 'NO' ||
-                        (index === 35 && ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(cell))) {
+                        index === 32 && cell === 'NO' ||
+                        (index === 33 && ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(cell))) {
                         
                             td.classList.add('highlight');
                             redCellCounts[index]++;
