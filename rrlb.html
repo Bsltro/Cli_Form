@@ -167,9 +167,34 @@
             </div>
         </div>
         <div class="form-outer">
-            <label>On Duty Staff And Other Details</label>
-            <input type="text" name="rrondutystaff" id="rrondutystaff" oninput="upperCase()" class="uppercase" required>
+            <label>JONITER NAME</label>
+            <input type="text" name="rrjon" id="rrjon" oninput="upperCase()" class="uppercase" >
         </div>
+        <div class="form-outer">
+            <label>SUPERVISOR NAME</label>
+            <input type="text" name="rrsup" id="rrsup" oninput="upperCase()" class="uppercase" >
+        </div>
+        <div class="form-outer">
+            <label>COOK NAME</label>
+            <input type="text" name="rrcook" id="rrcook" oninput="upperCase()" class="uppercase" >
+        </div>
+        <div class="form-outer">
+            <label>BEARER NAME</label>
+            <input type="text" name="rrbr" id="rrbr" oninput="upperCase()" class="uppercase" >
+        </div>
+        <div class="form-outer">
+            <label>SECURITY NAME</label>
+            <input type="text" name="rrsec" id="rrsec" oninput="upperCase()" class="uppercase" >
+        </div>
+        <div class="form-outer">
+            <label>CLEANING STAFF NAME</label>
+            <input type="text" name="rrcln" id="rrcln" oninput="upperCase()" class="uppercase" >
+        </div>
+        <div class="form-outer">
+            <label>CALL BOY NAME</label>
+            <input type="text" name="rrcb" id="rrcb" oninput="upperCase()" class="uppercase" >
+        </div>
+        
         <div class="form-outer">
             <label>Remark Or Irregularity</label>
             <input type="text" name="rrirregular" id="rrirregular" oninput="upperCase()" class="uppercase">
@@ -308,7 +333,7 @@
         });
 
         // Send the data to the server
-        fetch('https://script.google.com/macros/s/AKfycbzTr4Yp5x6Fj8jslWnYiPnQyjF6nb8EM3f90fWKVuOLfrCUVomXcfSfJCZL4XGfqnHJOA/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbw9Sfx3JZThOLVub21MX6YvtEdlhRguAsIFujnDIFg3E5Nopp5Z1EkVvPfkWLFh1ZlT/exec', {
             method: "POST",
             body: data
         })

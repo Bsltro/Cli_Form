@@ -167,12 +167,28 @@
             </div>
         </div>
         <div class="form-outer">
-            <label>On Duty Staff And Other Details</label>
-            <input type="text" name="lbondutystaff" id="lbondutystaff" oninput="upperCase()" class="uppercase" required>
+            <label>IN DOOR CRC-NAME</label>
+            <input type="text" name="lbincrc" id="lbincrc" oninput="upperCase()" class="uppercase" required>
         </div>
         <div class="form-outer">
-            <label>Remark Or Irregularity</label>
-            <input type="text" name="lbirregular" id="lbirregular" oninput="upperCase()" class="uppercase">
+            <label>OUT DOOR CRC-NAME</label>
+            <input type="text" name="lboutcrc" id="lboutcrc" oninput="upperCase()" class="uppercase" required>
+        </div>
+        <div class="form-outer">
+            <label>CMS OP-NAME</label>
+            <input type="text" name="lbcmsop" id="lbcmsop" oninput="upperCase()" class="uppercase" required>
+        </div>
+        <div class="form-outer">
+            <label>TIME LOG</label>
+            <input type="text" name="lbtimelog" id="lbtimelog" oninput="upperCase()" class="uppercase" required>
+        </div>
+        <div class="form-outer">
+            <label>SAND</label>
+            <input type="text" name="lbsand" id="lbsand" oninput="upperCase()" class="uppercase" required>
+        </div>
+        <div class="form-outer">
+            <label>REMARK OR IRREGULARITY</label>
+            <input type="text" name="lbrem" id="lbrem" oninput="upperCase()" class="uppercase" required>
         </div>
         <div class="justify-content">
             <label style="color: red; font-weight: bold;">Day Or Night</label><br><br>
@@ -308,7 +324,7 @@
         });
 
         // Send the data to the server
-        fetch('https://script.google.com/macros/s/AKfycbzTr4Yp5x6Fj8jslWnYiPnQyjF6nb8EM3f90fWKVuOLfrCUVomXcfSfJCZL4XGfqnHJOA/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbwKXAsicf5LuGQ5-e83sxQKJMrpmd1ld3NjWXzAw1kUfc537B6f3qawCdGVNIsSDz6D/exec', {
             method: "POST",
             body: data
         })

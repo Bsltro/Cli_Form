@@ -167,8 +167,16 @@
             </div>
         </div>
         <div class="form-outer">
-            <label>On Duty Staff And Other Details</label>
-            <input type="text" name="stbondutystaff" id="stbondutystaff" oninput="upperCase()" class="uppercase" required>
+            <label>LOCO NO</label>
+            <input type="text" name="lno" id="lno" oninput="upperCase()" class="uppercase" >
+        </div>
+        <div class="form-outer">
+            <label>BLOCKER</label>
+            <input type="text" name="bloc" id="bloc" oninput="upperCase()" class="uppercase">
+        </div>
+        <div class="form-outer">
+            <label>SHUNTER</label>
+            <input type="text" name="sht" id="sht" oninput="upperCase()" class="uppercase">
         </div>
         <div class="form-outer">
             <label>Remark Or Irregularity</label>
@@ -308,7 +316,7 @@
         });
 
         // Send the data to the server
-        fetch('https://script.google.com/macros/s/AKfycbzTr4Yp5x6Fj8jslWnYiPnQyjF6nb8EM3f90fWKVuOLfrCUVomXcfSfJCZL4XGfqnHJOA/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbzBr1RSefOa2a04fouC_0GStdzVrcW__S4YrI1IQogCqaMS4gkvsX3k6eSKDvPoeFl7/exec', {
             method: "POST",
             body: data
         })
