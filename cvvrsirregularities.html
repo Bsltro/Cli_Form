@@ -212,7 +212,7 @@
             const toDateObj = toDate ? new Date(toDate + 'T23:59:59') : null;
 
             return rows.filter(row => {
-                const rowDateString = row[1]; 
+                const rowDateString = row[17]; 
                 const rowDateObj = new Date(rowDateString + 'T00:00:00'); 
 
                 // Check if the date falls within the selected range (if any)
