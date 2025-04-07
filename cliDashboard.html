@@ -3,153 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLI Dashboard</title>
+    <title>CLI Data Portal</title>
     <style>
-        /* Basic styling for tabs */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        header {
+            background-color: #003366;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
         .tabs {
             display: flex;
-            cursor: pointer;
-            margin-top: 20px;
-            font-weight: bold;
-            flex-wrap: wrap; /* Allows tabs to stack on smaller screens */
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            gap: 5px;
         }
         .tab {
-            padding: 10px 20px;
-            margin-right: 10px;
-            background-color: #f2f2f2;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 8px 12px;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            font-size: 14px;
+            white-space: nowrap;
         }
         .tab.active {
-            background-color: #d3d3d3;
+            background-color: #003366;
+            color: white;
         }
-
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            max-width: 50px; /* Reduce the width of each column */
-            word-wrap: break-word;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-
-        /* Filter and button styling */
-        .filters {
-            margin-top: 20px;
+        .controls {
             display: flex;
-            flex-direction: column; /* Stack filters vertically */
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        button {
+            padding: 8px 12px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #004080;
+        }
+        #filters {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
         }
         .filter-label {
-            margin-top: 10px; /* Spacing before each label */
+            margin-right: 5px;
+            font-size: 14px;
         }
-        .filter-select,
-        .filter-date {
-            padding: 5px;
-            margin: 5px 0 10px 0; /* Margin for spacing around selects */
-            width: 100%; /* Full width for responsive design */
-            box-sizing: border-box; /* Include padding in width calculations */
+        .filter-date, .filter-select {
+            padding: 6px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
         }
-        .button-container {
-            margin-top: 20px;
+        #dataTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
-        @media (max-width: 600px) {
+        #dataTable th, #dataTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+        #dataTable th {
+            background-color: #003366;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        #dataTable tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        #dataTable tr:hover {
+            background-color: #e6f2ff;
+        }
+        #rowCount {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        #columnCheckboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #columnCheckboxes label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .copyButton {
+            background-color: #4CAF50;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+        .copyButton:hover {
+            background-color: #45a049;
+        }
+        @media (max-width: 768px) {
             .tabs {
-                flex-direction: column; /* Stack tabs vertically on smaller screens */
+                overflow-x: auto;
+                white-space: nowrap;
+                display: block;
+                padding-bottom: 5px;
+            }
+            .tab {
+                display: inline-block;
+                margin-right: 5px;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            #filters {
+                display: flex;
+                flex-direction: column;
+            }
+            .filter-label, .filter-date, .filter-select {
+                margin-right: 0;
+                margin-bottom: 5px;
+                width: 100%;
+            }
+            #dataTable {
+                font-size: 12px;
+            }
+            #dataTable th, #dataTable td {
+                padding: 6px 4px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>**WELCOME**</h1>
+            <div id="usernameDisplay"></div>
+        </header>
 
-<div class="container">
-    <h1>Welcome, <span id="usernameDisplay"></span></h1>
+        <div class="tabs">
+            <div id="footplateTab" class="tab active">Footplate</div>
+            <div id="cvvrsTab" class="tab">CVVRS</div>
+            <div id="spmTab" class="tab">SPM</div>
+            <div id="rrTab" class="tab">RR</div>
+            <div id="lobbyTab" class="tab">Lobby</div>
+            <div id="stablingTab" class="tab">Stabling</div>
+            <div id="nominatedTab" class="tab">Nominated</div>
+            <div id="cvvrspendingTab" class="tab">Pending CVVRS</div>
+        </div>
 
-    <!-- Tab navigation -->
-    <div class="tabs">
-        <div id="footplateTab" class="tab active">Footplate</div><br>
-        <div id="cvvrsTab" class="tab">CVVRS</div>
-        <div id="spmTab" class="tab">SPM</div>
-        <div id="rrTab" class="tab">RR</div>
-        <div id="lobbyTab" class="tab">Lobby</div>
-        <div id="stablingTab" class="tab">Stabling</div>
-        <div id="nominatedTab" class="tab">Nominated</div>
-        <div id="cvvrspendingTab" class="tab">VIEW PENDING CVVRS</div>
-        <div class="tab" onclick="redirectToPage('clicvvrspage.html')">FILL CVVRS DETAILS</div><br><br>
+        <div class="controls">
+            <button id="clearFilters">Clear Filters</button>
+            <button id="copyData">Copy Data</button>
+            <button id="downloadTable">Download CSV</button>
+            <button id="printTable">Print Table</button>
+            <div id="rowCount">Rows: 0</div>
+        </div>
+
+        <div id="filters"></div>
+        <div id="columnCheckboxes"></div>
+
+        <table id="dataTable">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
     </div>
-
-    <!-- Table filters -->
-    <div id="filters" class="filters" style="display: none;">
-        <!-- Filters will be dynamically inserted here -->
-    </div>
-    <div id="columnCheckboxes"></div>
-    <!-- Row count display -->
-    <div id="rowCount">Rows: 0</div>
-
-    <!-- Table to display data -->
-    <h3>Data:</h3>
-    <table id="dataTable">
-        <thead>
-            <!-- Columns will be dynamically inserted here -->
-        </thead>
-        <tbody>
-            <!-- Data will be dynamically inserted here -->
-        </tbody>
-    </table>
-
-    <!-- Action buttons -->
-    <div class="button-container">
-        <button id="clearFilters">Clear Filters</button>
-        <button id="copyData">Copy Data</button>
-        <button id="printTable">Print Table</button>
-        <button id="downloadTable">Download CSV</button>
-    </div>
-</div>
 
 <script>
     // Define Google Sheet URLs for each tab
     const sheetURLs = {
         footplate: {
             sheetID: '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM',
-            range: 'Sheet1!A1:AM4000',
+            range: 'Sheet1!A1:AM8000',
+            dateColumn: 1 // Column B (0-based index)
         },
         cvvrs: {
             sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
             range: 'Sheet1!A1:AP2000',
+            dateColumn: 17 // Column R (0-based index)
         },
         spm: {
             sheetID: '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI',
             range: 'Sheet1!A1:AD2000',
+            dateColumn: 1 // Column B (0-based index)
         },
         rr: {
             sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
             range: 'Sheet1!A1:Z2000',
+            dateColumn: 1 // Column B (0-based index)
         },
         lobby: {
             sheetID: '1YSWVlZ-cN4R3fKrT0OOc8Vm7PqKimyfuRoS4ZLUU2eM',
             range: 'Sheet1!A1:Z2000',
+            dateColumn: 1 // Column B (0-based index)
         },
         stabling: {
             sheetID: '1w0YUowbIImh-W1OOtGg3Tpsf_nir6mhZ6004FUlahKU',
             range: 'Sheet1!A1:AA2000',
+            dateColumn: 1 // Column B (0-based index)
         },
         nominated: {
             sheetID: '1MFtqC6Gq17KN6-afXXH1I8oIT3JfJ1qRiOh0dOj-S58',
             range: 'Sheet1!A1:I1000',
+            dateColumn: null // No date filter for this tab
         },
         cvvrspending: {
             sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
             range: 'Sheet3!A1:S1000',
+            dateColumn: null // No date filter for this tab
         }
     };
 
@@ -160,18 +259,52 @@
 
     let currentTab = 'footplate'; // Default tab is footplate
     let currentData = [];
+    let currentHeaders = [];
+
+    // Function to get current month date range
+    function getCurrentMonthRange() {
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        
+        return {
+            from: formatDate(firstDay),
+            to: formatDate(lastDay)
+        };
+    }
+
+    // Function to format date as yyyy-mm-dd
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Function to parse date from string (handles different formats)
+    function parseDate(dateStr) {
+        if (!dateStr) return null;
+        
+        // Try ISO format (yyyy-mm-dd)
+        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            return new Date(dateStr);
+        }
+        
+        // Try other formats if needed
+        return new Date(dateStr);
+    }
 
     // Function to fetch data from a given Google Sheet based on the tab
     function fetchDataFromGoogleSheet(sheetType) {
         const sheet = sheetURLs[sheetType];
-        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${sheet.range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`; // Replace with your actual API key
+        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${sheet.range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`;
 
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 if (data.values) {
                     const rows = data.values;
-                    console.log("Fetched Rows:", rows); // Log the fetched rows for debugging
+                    console.log("Fetched Rows:", rows);
                     const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
                     const tableHead = document.getElementById('dataTable').getElementsByTagName('thead')[0];
 
@@ -180,12 +313,12 @@
                     tableHead.innerHTML = '';
 
                     // Get column headers from the first row
-                    const headers = rows[0];
-                    console.log("Headers:", headers); // Log headers for debugging
+                    currentHeaders = rows[0];
+                    console.log("Headers:", currentHeaders);
 
                     // Insert table headers dynamically
                     let headerRow = tableHead.insertRow();
-                    headers.forEach(header => {
+                    currentHeaders.forEach(header => {
                         let th = document.createElement('th');
                         th.textContent = header;
                         headerRow.appendChild(th);
@@ -198,17 +331,35 @@
                         currentData = rows.filter(row => row[2] === username);
                     }
 
-                    renderFilteredData(currentData, headers);
+                    // Set up date filters for applicable tabs
+                    const filtersDiv = document.getElementById('filters');
+                    if (sheet.dateColumn !== null && sheetType !== 'nominated' && sheetType !== 'cvvrspending') {
+                        filtersDiv.style.display = 'block';
+                        setupDateFilters(sheet.dateColumn);
+                    } else {
+                        filtersDiv.style.display = 'none';
+                    }
+
+                    // Apply current month filter by default for tabs with date column
+                    if (sheet.dateColumn !== null && sheetType !== 'nominated' && sheetType !== 'cvvrspending') {
+                        const currentMonth = getCurrentMonthRange();
+                        document.getElementById('fromDate').value = currentMonth.from;
+                        document.getElementById('toDate').value = currentMonth.to;
+                        applyFilters();
+                    } else {
+                        renderFilteredData(currentData, currentHeaders);
+                    }
 
                     // Highlight rows based on the value in column I for nominated tab
                     if (sheetType === 'nominated') {
                         highlightRowsBasedOnColumnValue(currentData);
                     }
 
-                    // Restore filters for the Footplate tab
+                    // Create column checkboxes for the Footplate tab
                     if (currentTab === 'footplate') {
-                        restoreFootplateFilters(headers, rows);
-                        createColumnCheckboxes(headers);
+                        createColumnCheckboxes(currentHeaders);
+                    } else {
+                        document.getElementById('columnCheckboxes').innerHTML = '';
                     }
                 } else {
                     alert('No data found.');
@@ -218,6 +369,70 @@
                 console.error('Error fetching Google Sheet data:', error);
                 alert('Error fetching data from Google Sheets.');
             });
+    }
+
+    // Function to set up date filters
+    function setupDateFilters(dateColumnIndex) {
+        const filterContainer = document.getElementById('filters');
+        filterContainer.innerHTML = '';
+
+        // Date filters
+        const fromDateLabel = document.createElement('label');
+        fromDateLabel.classList.add('filter-label');
+        fromDateLabel.textContent = "From Date:";
+        const fromDateInput = document.createElement('input');
+        fromDateInput.type = 'date';
+        fromDateInput.id = 'fromDate';
+        fromDateInput.classList.add('filter-date');
+        filterContainer.appendChild(fromDateLabel);
+        filterContainer.appendChild(fromDateInput);
+
+        const toDateLabel = document.createElement('label');
+        toDateLabel.classList.add('filter-label');
+        toDateLabel.textContent = "To Date:";
+        const toDateInput = document.createElement('input');
+        toDateInput.type = 'date';
+        toDateInput.id = 'toDate';
+        toDateInput.classList.add('filter-date');
+        filterContainer.appendChild(toDateLabel);
+        filterContainer.appendChild(toDateInput);
+
+        // Add event listeners
+        fromDateInput.addEventListener('change', applyFilters);
+        toDateInput.addEventListener('change', applyFilters);
+    }
+
+    // Function to apply filters
+    function applyFilters() {
+        const fromDateInput = document.getElementById('fromDate');
+        const toDateInput = document.getElementById('toDate');
+        
+        let filteredData = [...currentData];
+        const sheet = sheetURLs[currentTab];
+
+        // Apply date filter if date column exists and dates are selected
+        if (sheet.dateColumn !== null && fromDateInput && toDateInput) {
+            const fromDate = fromDateInput.value ? new Date(fromDateInput.value) : null;
+            const toDate = toDateInput.value ? new Date(toDateInput.value) : null;
+
+            filteredData = filteredData.filter(row => {
+                const rowDateStr = row[sheet.dateColumn];
+                if (!rowDateStr) return false;
+                
+                const rowDate = parseDate(rowDateStr);
+                if (!rowDate) return false;
+                
+                // Set time to midnight for proper date comparison
+                rowDate.setHours(0, 0, 0, 0);
+                
+                if (fromDate && rowDate < fromDate) return false;
+                if (toDate && rowDate > toDate) return false;
+                
+                return true;
+            });
+        }
+
+        renderFilteredData(filteredData, currentHeaders);
     }
 
     // Function to highlight rows based on the value in column I
@@ -279,95 +494,6 @@
         }
     }
 
-    // Function to restore filters for the Footplate tab
-    function restoreFootplateFilters(headers, rows) {
-        const filterContainer = document.getElementById('filters');
-        filterContainer.innerHTML = '';
-
-        // Columns as per your previous logic
-        const filterColumns = [36, 37, 38];
-
-        // Date filters
-        const fromDateLabel = document.createElement('label');
-        fromDateLabel.classList.add('filter-label');
-        fromDateLabel.textContent = "From Date:";
-        const fromDateInput = document.createElement('input');
-        fromDateInput.type = 'date';
-        fromDateInput.classList.add('filter-date');
-        filterContainer.appendChild(fromDateLabel);
-        filterContainer.appendChild(fromDateInput);
-
-        const toDateLabel = document.createElement('label');
-        toDateLabel.classList.add('filter-label');
-        toDateLabel.textContent = "To Date:";
-        const toDateInput = document.createElement('input');
-        toDateInput.type = 'date';
-        toDateInput.classList.add('filter-date');
-        filterContainer.appendChild(toDateLabel);
-        filterContainer.appendChild(toDateInput);
-
-        // Filter Date Range
-        fromDateInput.addEventListener('change', applyFilters);
-        toDateInput.addEventListener('change', applyFilters);
-
-        filterColumns.forEach(colIndex => {
-            const filterLabel = document.createElement('label');
-            filterLabel.classList.add('filter-label');
-            filterLabel.textContent = `Filter by ${headers[colIndex]}:`;
-
-            const filterSelect = document.createElement('select');
-            filterSelect.classList.add('filter-select');
-
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = 'Select';
-            filterSelect.appendChild(defaultOption);
-
-            const uniqueValues = Array.from(new Set(rows.slice(1).map(row => row[colIndex])));
-            uniqueValues.forEach(value => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = value || 'N/A';
-                filterSelect.appendChild(option);
-            });
-
-            filterSelect.addEventListener('change', applyFilters);
-
-            filterContainer.appendChild(filterLabel);
-            filterContainer.appendChild(filterSelect);
-        });
-
-        filterContainer.style.display = 'block';
-        
-        // Function to apply filters
-        function applyFilters() {
-            const fromDate = new Date(fromDateInput.value);
-            const toDate = new Date(toDateInput.value);
-            let filteredData = currentData;
-
-            // Filter by date
-            if (!isNaN(fromDate.getTime()) || !isNaN(toDate.getTime())) {
-                filteredData = filteredData.filter(row => {
-                    const rowDate = new Date(row[1]); // Assuming date is in column B
-                    return (!isNaN(rowDate.getTime()) &&
-                            (!isNaN(fromDate.getTime()) ? rowDate >= fromDate : true) &&
-                            (!isNaN(toDate.getTime()) ? rowDate <= toDate : true));
-                });
-            }
-
-            // Filter by selected values
-            const selects = filterContainer.getElementsByTagName('select');
-            for (let i = 0; i < selects.length; i++) {
-                const selectedValue = selects[i].value;
-                if (selectedValue) {
-                    filteredData = filteredData.filter(row => row[filterColumns[i]] === selectedValue);
-                }
-            }
-
-            renderFilteredData(filteredData, headers);
-        }
-    }
-
     // Function to render filtered data
     function renderFilteredData(data, headers) {
         const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
@@ -416,24 +542,21 @@
 
     // Function to clear all filters
     function clearAllFilters() {
-        const filterContainer = document.getElementById('filters');
-        const filters = filterContainer.getElementsByTagName('select');
-
-        for (let filter of filters) {
-            filter.selectedIndex = 0;
+        const filtersDiv = document.getElementById('filters');
+        
+        // Reset date filters if they exist
+        const fromDateInput = document.getElementById('fromDate');
+        const toDateInput = document.getElementById('toDate');
+        
+        if (fromDateInput && toDateInput) {
+            // Set to current month by default
+            const currentMonth = getCurrentMonthRange();
+            fromDateInput.value = currentMonth.from;
+            toDateInput.value = currentMonth.to;
         }
 
-        // Reset date inputs
-        const dateInputs = filterContainer.getElementsByTagName('input');
-        for (let dateInput of dateInputs) {
-            dateInput.value = '';
-        }
-
-        renderFilteredData(currentData, currentData[0]);
+        applyFilters();
     }
-
-    // Event listeners for action buttons
-    document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
 
     // Function to switch tabs
     function switchTab(tabId) {
@@ -444,14 +567,7 @@
         tabElement.classList.add('active');
         currentTab = tabId.replace('Tab', '').toLowerCase();
 
-        const filtersDiv = document.getElementById('filters');
-        if (currentTab === 'footplate') {
-            fetchDataFromGoogleSheet(currentTab);
-        } else {
-            filtersDiv.style.display = 'none';
-            checkboxContainer.innerHTML = '';
-            fetchDataFromGoogleSheet(currentTab);
-        }
+        fetchDataFromGoogleSheet(currentTab);
     }
 
     // Event listeners for tab clicks
@@ -464,8 +580,8 @@
     document.getElementById('nominatedTab').addEventListener('click', () => switchTab('nominatedTab'));
     document.getElementById('cvvrspendingTab').addEventListener('click', () => switchTab('cvvrspendingTab'));
 
-    // Initial load - fetch data for Footplate tab by default
-    fetchDataFromGoogleSheet('footplate');
+    // Event listeners for action buttons
+    document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
 
     // Function to copy table data to clipboard
     document.getElementById('copyData').addEventListener('click', () => {
@@ -492,8 +608,8 @@
 
                             // Ensure two-digit hour and minute
                             const [hour, minute] = timePart.split(':');
-                            const formattedTime = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`; // Ensure two-digit hour and minute
-                            cellValue = `${datePart}T${formattedTime}`; // Combine with 'T' separator
+                            const formattedTime = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
+                            cellValue = `${datePart}T${formattedTime}`;
                         }
                     }
 
@@ -503,7 +619,7 @@
                 }
             });
 
-            textToCopy += formData.join('\t') + '\n'; // Join with tabs for separation
+            textToCopy += formData.join('\t') + '\n';
         });
 
         // Use a textarea to copy the data
@@ -564,10 +680,6 @@
         printWindow.print();
     });
 
-    function redirectToPage(page) {
-        window.location.href = page; // Redirect to the specified page
-    }
-
     const headerOrder = [
         "CMS ID",                    
         "CVVRS Inspection Date",      
@@ -588,6 +700,9 @@
         "ALP Name",                  
         "ALP DESG", "ALP HQ"          
     ];
+
+    // Initial load - fetch data for Footplate tab by default
+    fetchDataFromGoogleSheet('footplate');
 </script>
 </body>
 </html>
