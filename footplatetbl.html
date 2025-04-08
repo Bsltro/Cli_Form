@@ -176,31 +176,62 @@
         }
 
         function applyFilters() {
-            filteredData = [...allData]; // Start with all data
+    filteredData = [...allData]; // Start with all data
 
-            // Apply date filter first
-            const fromDate = document.getElementById('fromDate').value;
-            const toDate = document.getElementById('toDate').value;
+    // Apply date filter first
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
 
-            if (fromDate || toDate) {
-                filteredData = filteredData.filter(row => {
-                    const rowDate = row[1]; // Column R (index 17)
-                    if (!rowDate) return false;
+    if (fromDate || toDate) {
+        filteredData = filteredData.filter(row => {
+            const rowDate = row[1]; // Column B (index 1, since indexing starts at 0)
+            if (!rowDate) return false;
 
-                    try {
-                        const rowDateObj = new Date(rowDate);
-                        if (isNaN(rowDateObj.getTime())) return false;
-                        
-                        const rowTimestamp = rowDateObj.getTime();
-                        const fromTimestamp = fromDate ? new Date(fromDate).getTime() : -Infinity;
-                        const toTimestamp = toDate ? new Date(toDate).getTime() + 86400000 : Infinity; // Add 1 day to include the end date
+            try {
+                // Convert the row date (which is in yyyy-mm-dd format) to a Date object
+                const rowDateObj = new Date(rowDate);
+                if (isNaN(rowDateObj.getTime())) return false; // If the date is invalid
 
-                        return rowTimestamp >= fromTimestamp && rowTimestamp <= toTimestamp;
-                    } catch (e) {
-                        return false;
-                    }
-                });
+                // Convert the input dates to Date objects
+                const fromDateObj = fromDate ? new Date(fromDate) : null;
+                const toDateObj = toDate ? new Date(toDate) : null;
+
+                // Ensure time is set to midnight for comparison
+                rowDateObj.setHours(0, 0, 0, 0);
+                if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
+                if (toDateObj) toDateObj.setHours(0, 0, 0, 0);
+
+                // Check if the rowDate falls within the specified range
+                if (
+                    (fromDateObj && rowDateObj < fromDateObj) || // before the start date
+                    (toDateObj && rowDateObj > toDateObj) // after the end date
+                ) {
+                    return false;
+                }
+
+                return true; // Date is within the range
+            } catch (e) {
+                return false; // In case of any errors in date parsing
             }
+        });
+    }
+
+    // Apply column filters (if any)
+    Object.keys(filters).forEach(index => {
+        if (filters[index]) {
+            filteredData = filteredData.filter(row => row[index] === filters[index]);
+        }
+    });
+
+    // Apply sorting if any column is sorted
+    const sortedColumn = Object.keys(sortOrder).find(key => sortOrder[key] !== undefined);
+    if (sortedColumn !== undefined) {
+        sortTable(parseInt(sortedColumn), true);
+    } else {
+        renderTable();
+    }
+}
+
 
             // Apply column filters
             Object.keys(filters).forEach(index => {
@@ -216,7 +247,7 @@
             } else {
                 renderTable();
             }
-        }
+        
 
         function renderTable() {
             const tableBody = document.getElementById('tableBody');
