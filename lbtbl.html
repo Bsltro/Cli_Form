@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPM REPORT</title>
+    <title>LOBBY REPORT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,10 +16,25 @@
             text-align: center;
         }
 
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-container label {
+            margin-right: 10px;
+        }
+
+        .filter-container input, .filter-container button {
+            padding: 5px;
+            margin-right: 10px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
             background-color: #fff;
         }
 
@@ -27,6 +42,7 @@
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
+            word-wrap: break-word;
         }
 
         th {
@@ -65,7 +81,15 @@
     </style>
 </head>
 <body>
-    <h1>SPM REPORT</h1>
+    <h1>LOBBY REPORT</h1>
+
+    <div class="filter-container">
+        <label for="fromDate">From Date:</label>
+        <input type="date" id="fromDate">
+        <label for="toDate">To Date:</label>
+        <input type="date" id="toDate">
+        <button onclick="filterData()">GO</button>
+    </div>
 
     <div class="button-group">
         <button id="clearFiltersButton">Clear Filters</button>
@@ -84,12 +108,13 @@
     </table>
 
     <script>
-        const sheetId = '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA'; // Your Google Sheet ID
+        const sheetId = '1YSWVlZ-cN4R3fKrT0OOc8Vm7PqKimyfuRoS4ZLUU2eM'; // Your Google Sheet ID
         const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Your API Key
 
-        let data = [];
+        let allData = []; // Store all data from the sheet
+        let filteredData = []; // Store currently filtered data
         let columnNames = [];
-        let filters = {}; 
+        let filters = {};
         let sortOrder = {}; 
 
         function fetchDataFromSheet() {
@@ -104,10 +129,11 @@
                         return;
                     }
 
-                    columnNames = rows[0]; 
-                    data = rows.slice(1);  
+                    columnNames = rows[0];
+                    allData = rows.slice(1);
+                    filteredData = [...allData]; // Initialize filteredData with all data
 
-                    renderTable(data);
+                    renderTable();
                     createFilters();
                 })
                 .catch(error => console.error('Error fetching data:', error));
@@ -124,11 +150,11 @@
                 select.innerHTML = '<option value="">All</option>';
 
                 const uniqueValues = new Set();
-                data.forEach(row => {
+                allData.forEach(row => {
                     if (row[index]) uniqueValues.add(row[index]);
                 });
 
-                [...uniqueValues].forEach(value => {
+                [...uniqueValues].sort().forEach(value => {
                     const option = document.createElement('option');
                     option.value = value;
                     option.textContent = value;
@@ -137,7 +163,7 @@
 
                 select.addEventListener('change', () => {
                     filters[index] = select.value;
-                    filterData();
+                    applyFilters();
                 });
 
                 th.appendChild(select);
@@ -145,7 +171,68 @@
             });
         }
 
-        function renderTable(filteredData) {
+        function filterData() {
+            applyFilters();
+        }
+
+        function applyFilters() {
+    filteredData = [...allData]; // Start with all data
+
+    // Apply date filter first
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+
+    if (fromDate || toDate) {
+        filteredData = filteredData.filter(row => {
+            const rowDate = row[1]; // Column B (index 1, since indexing starts at 0)
+            if (!rowDate) return false;
+
+            try {
+                // Convert the row date (which is in yyyy-mm-dd format) to a Date object
+                const rowDateObj = new Date(rowDate);
+                if (isNaN(rowDateObj.getTime())) return false; // If the date is invalid
+
+                // Convert the input dates to Date objects
+                const fromDateObj = fromDate ? new Date(fromDate) : null;
+                const toDateObj = toDate ? new Date(toDate) : null;
+
+                // Ensure time is set to midnight for comparison
+                rowDateObj.setHours(0, 0, 0, 0);
+                if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
+                if (toDateObj) toDateObj.setHours(0, 0, 0, 0);
+
+                // Check if the rowDate falls within the specified range
+                if (
+                    (fromDateObj && rowDateObj < fromDateObj) || // before the start date
+                    (toDateObj && rowDateObj > toDateObj) // after the end date
+                ) {
+                    return false;
+                }
+
+                return true; // Date is within the range
+            } catch (e) {
+                return false; // In case of any errors in date parsing
+            }
+        });
+    }
+
+    // Apply column filters (if any)
+    Object.keys(filters).forEach(index => {
+        if (filters[index]) {
+            filteredData = filteredData.filter(row => row[index] === filters[index]);
+        }
+    });
+
+    // Apply sorting if any column is sorted
+    const sortedColumn = Object.keys(sortOrder).find(key => sortOrder[key] !== undefined);
+    if (sortedColumn !== undefined) {
+        sortTable(parseInt(sortedColumn), true);
+    } else {
+        renderTable();
+    }
+}
+
+        function renderTable() {
             const tableBody = document.getElementById('tableBody');
             const headerRow = document.getElementById('headerRow');
             tableBody.innerHTML = '';
@@ -153,97 +240,98 @@
 
             columnNames.forEach((col, index) => {
                 const th = document.createElement('th');
-                th.innerHTML = `${col} <span id="sort${index}">⇅</span>`;
+                const sortIndicator = sortOrder[index] === 'asc' ? '▲' : 
+                                    sortOrder[index] === 'desc' ? '▼' : '⇅';
+                th.innerHTML = `${col} <span id="sort${index}">${sortIndicator}</span>`;
                 th.addEventListener('click', () => sortTable(index));
                 headerRow.appendChild(th);
             });
 
             filteredData.forEach(row => {
                 const tr = document.createElement('tr');
-                row.forEach(cell => {
+                row.forEach((cell, index) => {
                     const td = document.createElement('td');
                     td.textContent = cell;
+                    // Highlight the sorted column
+                    if (sortOrder[index]) {
+                        td.style.backgroundColor = '#f0f8ff';
+                    }
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
             });
 
-            updateInspectionCount(filteredData);
+            updateInspectionCount();
         }
 
-        function filterData() {
-            let filteredData = [...data];
+        function sortTable(index, fromFilter = false) {
+            if (!fromFilter) {
+                // Toggle sort order if not called from filter
+                sortOrder = {}; // Reset other sort orders
+                sortOrder[index] = sortOrder[index] === 'asc' ? 'desc' : 'asc';
+            }
 
-            Object.keys(filters).forEach(index => {
-                if (filters[index]) {
-                    filteredData = filteredData.filter(row => row[index] === filters[index]);
+            filteredData.sort((a, b) => {
+                let valA = a[index] || "";
+                let valB = b[index] || "";
+
+                // Try to compare as numbers first
+                const numA = parseFloat(valA);
+                const numB = parseFloat(valB);
+                if (!isNaN(numA) && !isNaN(numB)) {
+                    return sortOrder[index] === 'asc' ? numA - numB : numB - numA;
                 }
+
+                // Try to compare as dates
+                const dateA = new Date(valA);
+                const dateB = new Date(valB);
+                if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
+                    return sortOrder[index] === 'asc' ? dateA - dateB : dateB - dateA;
+                }
+
+                // Fall back to string comparison
+                return sortOrder[index] === 'asc' 
+                    ? valA.toString().localeCompare(valB.toString()) 
+                    : valB.toString().localeCompare(valA.toString());
             });
 
-            renderTable(filteredData);
+            renderTable();
         }
 
-        function updateInspectionCount(filteredData) {
+        function updateInspectionCount() {
             document.getElementById('inspectionCountDisplay').textContent = `Total Records: ${filteredData.length}`;
         }
 
         function clearFilters() {
             filters = {};
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
             document.querySelectorAll('#filterRow select').forEach(select => select.value = '');
-            renderTable(data);
-        }
-
-        function printTable() {
-            const printWindow = window.open('', '', 'width=800, height=600');
-            printWindow.document.write('<html><head><title>Print Table</title></head><body>');
-            printWindow.document.write(document.querySelector('table').outerHTML);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print();
+            filteredData = [...allData];
+            renderTable();
         }
 
         function downloadCSV() {
+            if (filteredData.length === 0) return;
+            
             let csvContent = columnNames.join(',') + '\n';
-
-            document.querySelectorAll('#tableBody tr').forEach(row => {
-                const rowData = [];
-                row.querySelectorAll('td').forEach(cell => {
-                    rowData.push(cell.textContent);
-                });
-                csvContent += rowData.join(',') + '\n';
+            filteredData.forEach(row => {
+                csvContent += row.map(cell => `"${cell ? cell.toString().replace(/"/g, '""') : ''}"`).join(',') + '\n';
             });
-
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
-            link.download = 'filtered_data.csv';
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'footplate_monitoring_report.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
             link.click();
-        }
-
-        function sortTable(index) {
-            let currentData = [...data];
-
-            Object.keys(filters).forEach(i => {
-                if (filters[i]) {
-                    currentData = currentData.filter(row => row[i] === filters[i]);
-                }
-            });
-
-            const isAscending = sortOrder[index] === 'asc';
-            sortOrder[index] = isAscending ? 'desc' : 'asc';
-
-            currentData.sort((a, b) => {
-                if (!isNaN(a[index]) && !isNaN(b[index])) {
-                    return isAscending ? a[index] - b[index] : b[index] - a[index];
-                }
-                return isAscending ? a[index].localeCompare(b[index]) : b[index].localeCompare(a[index]);
-            });
-
-            document.getElementById(`sort${index}`).textContent = isAscending ? '▲' : '▼';
-            renderTable(currentData);
+            document.body.removeChild(link);
         }
 
         document.getElementById('clearFiltersButton').addEventListener('click', clearFilters);
-        document.getElementById('printButton').addEventListener('click', printTable);
+        document.getElementById('printButton').addEventListener('click', () => window.print());
         document.getElementById('downloadButton').addEventListener('click', downloadCSV);
 
         window.onload = fetchDataFromSheet;
