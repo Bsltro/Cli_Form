@@ -157,7 +157,7 @@
 
         <!-- Select whether BMBS% Less Than 50% -->
         <div class="justify-content">
-            <label style="color: red; font-weight: bold;">Select Whether BMBS% Less Than 50%</label><br><br>
+            <label style="color: red; font-weight: bold;">Select Whether BMBS% GREATER Than 50%</label><br><br>
             <div class="container">
                 <label for="YES" class="radio-inline">YES
                     <input type="radio" id="yes" name="spmselectbmbs" value="YES">
@@ -252,8 +252,8 @@
         <select name="spmbft" id="spmbft">
             <option value="select">-------SELECT-------</option>
             <option value="YES">YES</option>
-            <option value="CONDUCTED BUT NOT PROPER">CONDUCTED BUT NOT PROPER</option>
             <option value="NO">NO</option>
+            <option value="NOT APPLICABLE">NOT APPLICABLE</option>
         </select>
     </div>
 
@@ -272,16 +272,13 @@
             });
         });
     </script>
-
-
-
         <div class="form-outer">
             <label for="spmbpt" style="color: red; font-weight: bold;">BPT</label>
             <select name="spmbpt" id="spmbpt" onchange="handleSelectionChange(this)">
                 <option value="select">-------SELECT-------</option>
                 <option value="YES">YES</option>
-                <option value="CONDUCTED BUT NOT PROPER">CONDUCTED BUT NOT PROPER</option>
-                <option value="NO">NO</option>
+                 <option value="NO">NO</option>
+                 <option value="NOT APPLICABLE">NOT APPLICABLE</option>
             </select>
         </div>
         <script>
