@@ -1,694 +1,109 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CVVRS Form</title>
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: 'Times New Roman', Times, serif;
+<!-- <html>
+    <form id="tab7" class="tabcontent" method="post">
+        <h3>Safety Dive</h3><br><br>
+        <a href="https://drive.google.com/file/d/1910pGUE-32eLllF8T6aec7aI1vrGM5ns/view?usp=sharing">***Click Here For Safety Drive-01/2025***</a><br><br>
+        <a href="https://drive.google.com/file/d/1Waujj07R4BWt7YY7nc9DlHS_GQ2cjDgW/view?usp=sharing">***Click Here For Safety Drive-02/2025***</a>
+                </form>
+    </html> -->
+
+
+    <!-- <html>
+    <form id="tab8" class="tabcontent">
+        <h3>Important Links</h3>
+        <a href="https://docs.google.com/spreadsheets/d/1Y-dxvY1ZVjAujeKbaUJow1o-d3sAmVAAsKqUIn4-xfY/edit?gid=0#gid=0">***Click Here To Fill Google Sheet For Safety Drive-02/2025***</a>
+      </form>
+    </html> -->
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Drive</title>
+
+    <style>
+        /* General Reset and Basic Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tabs Styles */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1 1 calc(33.33% - 10px);  /* 3 buttons per row with some space */
+            padding: 12px;
+            margin: 5px;
+            font-size: 16px;
+            text-align: center;
+            background-color: #337ab7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background-color: #23527c;
+        }
+
+        .tab-btn:focus {
+            outline: none;
+        }
+
+        /* Responsive Styles for Mobile */
+        @media (max-width: 768px) {
+            .tab-btn {
+                flex: 1 1 calc(50% - 10px); /* 2 buttons per row */
+                font-size: 14px;
+                padding: 10px;
             }
-        
-            /* body {
-                background-color: aqua;
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background-repeat: no-repeat;
-                padding: 20px;
-            } */
-            body {
-    font-family: Arial, sans-serif;
-    background-color: aqua;
-    padding: 20px;
-    justify-content: center;
-    align-items: center;
-}
-.main {
-                width: 100%;
-                max-width: 400px;
-                background: rgb(245, 242, 242);
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                text-align: center;
-            }
-        
-            .main h3 {
-                padding-bottom: 20px;
-                font-size: 30px;
-                color: #333;
-            }
-        
-            .main form {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-        
-            /* .form-outer {
-                width: 100%;
-                margin-bottom: 20px;
-            } *//* Form Outer Container */
-.form-outer {
-    margin-bottom: 15px;
-}
-        
-.form-outer label {
-    display: block;
-    font-size: 16px;
-    margin-bottom: 5px;
-}
-        
-            .form-outer input {
-                width: 100%;
-                height: 40px;
+        }
+
+        @media (max-width: 480px) {
+            .tab-btn {
+                flex: 1 1 100%; /* 1 button per row */
+                font-size: 12px;
                 padding: 8px;
-                background-color: rgb(203, 218, 223);
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 16px;
-            }
-        
-            .form-outer button {
-                width: 100%;
-                padding: 12px;
-                background-color: blueviolet;
-                color: white;
-                font-size: 18px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-        
-            .form-outer button:hover {
-                background-color: darkviolet;
-            }
-        
-            /* For mobile responsiveness */
-            @media (max-width: 600px) {
-                .main {
-                    padding: 15px;
-                    width: 100%;
-                    max-width: 100%;
-                }
-        
-                .form-outer input,
-                .form-outer button {
-                    height: 45px;
-                    font-size: 16px;
-                }
-        
-                .main h3 {
-                    font-size: 26px;
-                }
-        
-                .form-outer label {
-                    font-size: 14px;
-                }
-            }
-        
-            .dropbtn {
-                background-color: #04AA6D;
-                color: white;
-                padding: 16px;
-                font-size: 16px;
-                border: none;
-                cursor: pointer;
-            }  /* General Styling */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    padding: 20px;
-}
-
-/* Form Outer Container */
-.form-outer {
-    margin-bottom: 15px;
-}
-
-/* Label Styling */
-.form-outer label {
-    display: block;
-    font-size: 16px;
-    margin-bottom: 5px;
-}
-
-/* Dropdown Styling */
-.form-outer select {
-    width: 100%;
-    max-width: 500px;  /* Adjust for large screens */
-    padding: 12px;
-    font-size: 16px;
-    border: 2px solid #4CAF50;
-    border-radius: 6px;
-    background-color: #fff;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-
-/* Hover & Focus Effects */
-.form-outer select:hover, 
-.form-outer select:focus {
-    border-color: #2E7D32;
-    background-color: #f0fff0;
-}
-
-/* Mobile Friendly */
-@media (max-width: 600px) {
-    .form-outer select {
-        font-size: 14px;
-        padding: 10px;
-    }
-}
-
-        </style>
-      </head>
-    <form id="tab2" class="tabcontent">
-        <div id="res" style="color: brown;font-size: 14px;" class="tabcontent">
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">CLI ID<b style="color: blue;">**Enter last digits of CLI CMS ID Only,ex if CLI CMS ID is BSL0048 enter only 48,ex if CLI CMS ID is BSL0106 enter only 106**</b></p></label>
-                <input type="number" name="cvvrsinspectionid" id="cvvrsinspectionid" required>
-            </div>
-            <div class="form-outer">
-                <label>CVVRS DATA SENT DATE</label>
-                <input type="date" name="cvvrsinspectiondate" id="cvvrsinspectiondate" >
-            </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">CLI Name</label>
-                <input type="text" name="cvvrscliname" id="cvvrscliname"  >
-            </div>
-            <div class="form-outer">
-                <label for="trainNumber">Train Number:</label>
-                <input type="text" name="cvvrsTrainNumber" id="cvvrsTrainNumber" placeholder="Enter train number" class="uppercase">
-            </div>
-            <!-- <div class="form-outer">
-                <label for="trainLoad">Train Load (in Tonn):</label>
-                <input type="number" name="cvvrsTrainLoad" id="cvvrsTrainLoad" placeholder="Enter train load" >
-            </div> -->
-            <div class="form-outer">
-                <label for="trainNumber">LOCO Number:</label>
-                <input type="text" name="cvvrslocono" id="cvvrslocono" placeholder="Enter train number" class="uppercase">
-            </div>
-            
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
-                <input type="text" name="cvvrsfromstation" id="cvvrsfromstation" oninput="upperCase()" class="uppercase">
-            </div>
-            <div class="form-outer">
-                <label>Train Date and CVVRS START Time</label>
-                <input type="datetime-local" name="cvvrsstarttime" id="cvvrsstarttime">
-            </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
-                <input type="text" name="cvvrstostation" id="cvvrstostation"  class="uppercase">
-            </div>
-            <div class="form-outer">
-                <label>Train Date and CVVRS END Time</label>
-                <input type="datetime-local" name="cvvrsendtime" id="cvvrsendtime">
-            </div>
-            <script>
-                const startTimeInput = document.getElementById('cvvrsstarttime');
-                const endTimeInput = document.getElementById('cvvrsendtime');
-                
-                endTimeInput.addEventListener('change', function() {
-                    const startTime = new Date(startTimeInput.value);
-                    const endTime = new Date(endTimeInput.value);
-                    
-                    if (startTime && endTime && endTime <= startTime) {
-                        alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
-                        endTimeInput.value = ''; // Clear the invalid end time input
-                    }
-                });
-            </script>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP CMS ID</label>
-                <input type="text" name="cvvrslpcmsid" id="cvvrslpcmsid">
-            </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP Name</label>
-                <input type="text" name="cvvrslpname" id="cvvrslpname">
-            </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP Designation</label>
-                <input type="text" name="cvvrslptype" id="cvvrslptype">
-            </div>
-            <!-- <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP Category</label>
-                <input type="text" name="cvvrslpcat" id="cvvrslpcat">
-            </div> -->
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP HQ</label>
-                <input type="text" name="cvvrslphq" id="cvvrslphq">
-            </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">ALP CMS ID</label>
-                <input type="text" name="cvvrsalpcmsid" id="cvvrsalpcmsid">
-            </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">ALP Name</label>
-                <input type="text" name="cvvrsalpname" id="cvvrsalpname">
-            </div><br>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">ALP Designation</label>
-                <input type="text" name="cvvrsalpdesg" id="cvvrsalpdesg" value="ALP">
-            </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">ALP HQ</label>
-                <input type="text" name="cvvrsalphq" id="cvvrsalphq">
-            </div>
-            <div class="form-outer">
-                <label>CVVRS INSPECTION DATE</label>
-                <input type="date" name="cvvrsdatasentdt" id="cvvrsdatasentdt">
-                </div>
-                <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">Whether Keeping Necessary Personal Store Items On Desk</label>
-                    <select name="cvvrsps" id="cvvrsps" onchange="handleSelectionChange(this)">
-                        <option value="select">-------Select Personal Store Of Crew-------</option>
-                        <option value="All Necessary P/S Of LP And ALP On Desk">All Necessary P/S Of LP And ALP On Desk</option>
-                        <option value="LP All Necessary P/S On Desk But ALP All Items Not On Desk">LP All Necessary P/S On Desk But ALP All Items Not On Desk</option>
-                        <option value="ALP All Necessary P/S On Desk But LP All Items Not On Desk">ALP All Necessary P/S On Desk But LP All Items Not On Desk</option>
-                        <option value="Both LP and ALP Necessary P/S Not On Desk">Both LP and ALP Necessary P/S Not On Desk</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
-                    </select>
-                </div>
-                <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">Continuity Test</label>
-                    <select name="cvvrscont" id="cvvrscont" onchange="handleSelectionChange(this)">
-                        <option value="select">-------Select -------</option>
-                        <option value="YES">YES</option>
-                        <option value="NO">NO</option>
-                        <option value="N/A">N/A</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
-                    </select>
-                </div>
-                <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">LP Signal Calling Out SIGNAL With Hand Gesture</label>
-                    <select name="cvvrslpsig" id="cvvrslpsig" onchange="handleSelectionChange(this)">
-                        <option value="select">-------Select -------</option>
-                        <option value="YES CALLING WITH HAND GESTURE">YES CALLING WITH HAND GESTURE</option>
-                        <option value="LP CALLING SIGNAL WITHOUT HAND GESTURE">LP CALLING SIGNAL WITHOUT HAND GESTURE</option>
-                        <option value="YES CALLING WITH HAND GESTURE ONLY SOMETIMES">YES CALLING WITH HAND GESTURE ONLY SOMETIMES</option>
-                        <option value="NOT CALLING OUT SIGNAL">NOT CALLING OUT SIGNAL</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
-                    </select>
-                </div>
-                <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">ALP Signal Calling Out SIGNAL With Hand Gesture</label>
-                    <select name="cvvrsalpsig" id="cvvrsalpsig" onchange="handleSelectionChange(this)">
-                        <option value="select">-------Select -------</option>
-                        <option value="YES CALLING WITH HAND GESTURE">YES CALLING WITH HAND GESTURE</option>
-                        <option value="ALP CALLING SIGNAL WITHOUT HAND GESTURE">ALP CALLING SIGNAL WITHOUT HAND GESTURE</option>
-                        <option value="YES CALLING WITH HAND GESTURE ONLY SOMETIMES">YES CALLING WITH HAND GESTURE ONLY SOMETIMES</option>
-                        <option value="NOT CALLING OUT SIGNAL">NOT CALLING OUT SIGNAL</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
-                    </select>
-                </div>
-                <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">BFT/BPT</label>
-                        <select name="cvvrsbft" id="cvvrsbft" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                    <script>
-                        function handleSelectionChange(selectElement) {
-                            var value = selectElement.value;
-                            if (value === 'NO') {
-                                alert('You have selected option, it will be considered as irregularity.');
-                            } 
-                        }
-                    </script>
-                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">LP Reducing Speed With Respect To Signal Aspect</label>
-                        <select name="cvvrssp" id="cvvrssp" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                    <script>
-                        function handleSelectionChange(selectElement) {
-                            var value = selectElement.value;
-                            if (value === 'NO') {
-                                alert('You have selected option, it will be considered as irregularity.');
-                            } 
-                        }
-                    </script>
-                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">ALP Kept Hand On RS Valve</label>
-                        <select name="cvvrsrs" id="cvvrsrs" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                   <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whether Crew Not Using Walkie Talkie For Signal Aspect Or Other Operational Instructions From Station Staff During Train Operations</label>
-                        <select name="cvvrswt" id="cvvrswt" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES NOT USING">YES NOT USING</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whisteling At W/L Board</label>
-                        <select name="cvvrswl" id="cvvrswl" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                   <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Putting Reverser Or Throttle To Neutral At All Halts</label>
-                        <select name="cvvrsth" id="cvvrsth" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES AT ALL HALTS">YES AT ALL HALTS</option>
-                            <option value="YES BUT NOT AT ALL HALTS">YES BUT NOT AT ALL HALTS</option>
-                            <option value="AT DESTINATION ONLY">AT DESTINATION ONLY</option>
-                            <option value="NO">NO</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whether Crew Vigilant And Not Indulge In Discussion</label>
-                        <select name="cvvrsdis" id="cvvrsdis" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Ensure Proper Signal Taken Off Before Start</label>
-                        <select name="cvvrssigtoff" id="cvvrssigtoff" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>   
-                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whether LP/ALP Using Mobile Phone</label>
-                        <select name="cvvrsmob" id="cvvrsmob" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="NOT USING">NOT USING</option>
-                            <option value="YES BOTH LP AND ALP USING MOBILE">YES BOTH LP AND ALP USING MOBILE</option>
-                            <option value="LP USING MOBILE">LP USING MOBILE</option>
-                            <option value="ALP USING MOBILE">ALP USING MOBILE</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whether VCD Not Isolated By Crew On Line/ Acknowledge Within Time</label>
-                        <select name="cvvrsvcd" id="cvvrsvcd" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">MP On Zero Before Braking</label>
-                        <select name="cvvrsmp" id="cvvrsmp" onchange="handleSelectionChange(this)">
-                            <option value="select">-------Select -------</option>
-                            <option value="YES">YES</option>
-                            <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
-                    </div>
-                   <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">Luggage Packing</label>
-                    <select name="cvvrslugg" id="cvvrslugg" onchange="handleSelectionChange(this)">
-                        <option value="select">-------Select -------</option>
-                        <option value="NOT PACKING">NO PACKING</option>
-                        <option value="YES BOTH LP AND ALP PACKING LUGGAGE">YES BOTH LP AND ALP PACKING LUGGAGE</option>
-                        <option value="LP PACKING LUGGAGE">LP PACKING LUGGAGE</option>
-                        <option value="ALP PACKING LUGGAGE">ALP PACKING LUGGAGE</option>
-                        <option value="N/A">N/A</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
-                    </select>
-                </div>
-            <div class="form-outer">
-                <label style="color: red; font-weight: bold;">REMARK</label>
-                <input type="text" name="cvvrsremark" id="cvvrsremark">
-            </div>
-            <br>
-            <p style="text-align: center; font-weight: bolder;">---------------------------------------------------</p><br>
-            <div class="form-outer">
-                <input type="submit" id="sub2" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
-            </div>
-        </div>
-    </form>
-
-    <script>
-        // Configuration
-        const sheetIDcvvrs = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
-        const apiKeycvvrs = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
-        const dataRangecvvrs = 'Sheet1!A2:K900';
-        const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetIDcvvrs}/values/${dataRangecvvrs}?key=${apiKeycvvrs}`;
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwO3kKzULPEbUbWOSLstItvrKUlaNO81IjzHD1vjzhelN63mo1BSzWiBthemnxcjDhAGg/exec';
-    
-        // Main initialization when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load data from Google Sheets
-            fetchSheetData();
-            
-            // Initialize form event listeners
-            setupForm();
-            
-            // Setup auto-fill functionality
-            setupAutoFill();
-        });
-    
-        // Fetch data from Google Sheets
-        function fetchSheetData() {
-            fetch(sheetURL)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response failed');
-                    return response.json();
-                })
-                .then(data => {
-                    if (!data.values) throw new Error('No data returned');
-                    window.sheetData = data.values;
-                    populateDropdowns();
-                })
-                .catch(error => {
-                    console.error('Error loading sheet data:', error);
-                    alert('Error loading crew data. Please refresh the page.');
-                });
-        }
-    
-        // Populate dropdown menus
-        function populateDropdowns() {
-            try {
-                const lpDropdown = document.getElementById('cvvrslpnames');
-                const alpDropdown = document.getElementById('cvvrsalpnames');
-                
-                if (!lpDropdown || !alpDropdown) {
-                    console.warn('Dropdown elements not found');
-                    return;
-                }
-    
-                // Clear and add default options
-                lpDropdown.innerHTML = '<option value="">Select LP</option>';
-                alpDropdown.innerHTML = '<option value="">Select ALP</option>';
-    
-                // Add options from sheet data
-                window.sheetData.forEach(row => {
-                    if (row[2]) { // LP Name
-                        const option = document.createElement('option');
-                        option.value = row[2];
-                        option.textContent = row[2];
-                        lpDropdown.appendChild(option);
-                    }
-                    if (row[6]) { // ALP Name
-                        const option = document.createElement('option');
-                        option.value = row[6];
-                        option.textContent = row[6];
-                        alpDropdown.appendChild(option);
-                    }
-                });
-            } catch (error) {
-                console.error('Error populating dropdowns:', error);
             }
         }
+
+    </style>
     
-        // Setup form submission
-        function setupForm() {
-            const form = document.getElementById('tab2');
-            if (!form) {
-                console.error('Form not found');
-                return;
-            }
-    
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                if (!form.checkValidity()) {
-                    alert("Please fill all required fields correctly.");
-                    return;
-                }
-    
-                const submitBtn = form.querySelector("#sub2");
-                submitBtn.disabled = true;
-                submitBtn.value = "Submitting...";
-    
-                try {
-                    // Prepare form data
-                    const formData = new FormData(form);
-                    const data = {};
-                    formData.forEach((value, key) => {
-                        data[key] = typeof value === 'string' ? value.toUpperCase() : value;
-                    });
-    
-                    // Add timestamps
-                    const now = new Date();
-                    data.cvvrsinspectiondate = now.toISOString().split('T')[0];
-                    data.cvvrsstarttime = now.toTimeString().split(' ')[0];
-    
-                    // Solution 1: Direct fetch with CORS (requires proper headers in Apps Script)
-                    const response = await fetch(scriptUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    });
-    
-                    // Solution 2: If CORS issues persist, use a proxy
-                    /*
-                    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-                    const response = await fetch(proxyUrl + scriptUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: JSON.stringify(data)
-                    });
-                    */
-    
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`Server error: ${response.status} - ${errorText}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.status !== "success") {
-                        throw new Error(result.message || 'Submission failed');
-                    }
-    
-                    alert(`Data saved successfully! Reference: ${result.reference_number}`);
-                    form.reset();
-                } catch (error) {
-                    console.error('Submission error:', error);
-                    alert('Error saving data: ' + error.message);
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.value = "Submit";
-                }
-            });
-        }
-    
-        // Setup auto-fill functionality
-        function setupAutoFill() {
-            // LP CMS ID autofill
-            document.getElementById('cvvrslpcmsid')?.addEventListener('input', function() {
-                const lpcmsid = this.value;
-                if (!lpcmsid || !window.sheetData) return;
-                
-                const matchingRow = window.sheetData.find(row => row[2] === lpcmsid);
-                if (matchingRow) {
-                    document.getElementById('cvvrslpname').value = matchingRow[3] || '';
-                    document.getElementById('cvvrslptype').value = matchingRow[4] || '';
-                    document.getElementById('cvvrslphq').value = matchingRow[6] || '';
-                } else {
-                    clearLPFields();
-                }
-            });
-    
-            // ALP CMS ID autofill
-            document.getElementById('cvvrsalpcmsid')?.addEventListener('input', function() {
-                const alpcmsid = this.value;
-                if (!alpcmsid || !window.sheetData) return;
-                
-                const matchingRow = window.sheetData.find(row => row[7] === alpcmsid);
-                if (matchingRow) {
-                    document.getElementById('cvvrsalpname').value = matchingRow[8] || '';
-                    document.getElementById('cvvrsalphq').value = matchingRow[10] || '';
-                } else {
-                    clearALPFields();
-                }
-            });
-    
-            // Inspection ID autofill
-            document.getElementById('cvvrsinspectionid')?.addEventListener('input', function() {
-                const inspectionID = this.value;
-                if (!inspectionID || !window.sheetData) return;
-                
-                const matchingRow = window.sheetData.find(row => row[0] == inspectionID);
-                if (matchingRow) {
-                    document.getElementById('cvvrscliname').value = matchingRow[1] || '';
-                }
-            });
-        }
-    
-        // Helper functions
-        function clearLPFields() {
-            document.getElementById('cvvrslpname').value = '';
-            document.getElementById('cvvrslptype').value = '';
-            document.getElementById('cvvrslphq').value = '';
-        }
-    
-        function clearALPFields() {
-            document.getElementById('cvvrsalpname').value = '';
-            document.getElementById('cvvrsalphq').value = '';
-        }
-    
-        function handleSelectionChange(selectElement) {
-            const irregularOptions = [
-                "LP All Necessary P/S On Desk But ALP All Items Not On Desk",
-                "ALP All Necessary P/S On Desk But LP All Items Not On Desk",
-                "Both LP and ALP Necessary P/S Not On Desk",
-                "NO",
-                "LP CALLING SIGNAL WITHOUT HAND GESTURE",
-                "NOT CALLING OUT SIGNAL",
-                "ALP CALLING SIGNAL WITHOUT HAND GESTURE",
-                "YES BOTH LP AND ALP USING MOBILE",
-                "LP USING MOBILE",
-                "ALP USING MOBILE",
-                "YES BOTH LP AND ALP PACKING LUGGAGE",
-                "LP PACKING LUGGAGE",
-                "ALP PACKING LUGGAGE"
-            ];
-    
-            if (selectElement && irregularOptions.includes(selectElement.value)) {
-                alert("You have selected an option that will be considered as irregularity.");
-            }
-        }
-    </script>
+</head>
+<body>
+
+    <div class="container">
+      <form id="tab7" class="tabcontent" method="post">
+        <h3>Safety Dive Google Sheet Link</h3><br><br>
+        <a href="https://docs.google.com/spreadsheets/d/1rs1qo1CbY-IelOBbyDkaqrJLVtLbROtSNIGmHneNxGU/edit?gid=0#gid=0">***Click Here To fill Safety Drive-10/2025***</a><br><br>
+       
+      </form>
+    </div>
+
+</body>
 </html>
