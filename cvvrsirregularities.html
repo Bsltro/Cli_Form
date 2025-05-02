@@ -107,7 +107,7 @@
             <option value="">Select ALP Name</option>
             <!-- Unique ALP Names will be populated here -->
         </select>
-        
+        <p>Date Filter is applicable According to Inspection date</p>
         <label for="from-date">From:</label>
         <input type="date" id="from-date">
         
@@ -229,16 +229,23 @@
                 const LPNameMatches = LPNameFilter ? row[10].toLowerCase() === LPNameFilter : true; // LP Name match
                 const ALPNameMatches = ALPNameFilter ? row[14].toLowerCase() === ALPNameFilter : true; // ALP Name match
 
-                const condition1 =  ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(row[18]) || 
-                    row[19] === 'NO' || ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[20]) || 
-                    ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(row[21]) || 
-                    row[22] === 'NO' || row[23] === 'NO' ||
-                    row[24] === 'NO' || row[25] === 'NO' || row[26] === 'NO';
+                const condition1 =  row[18] === 'NO' || //PS
+                    row[19] === 'NO' || //CONT
+                    row[20] === 'NO' || //SIG CALL
+                    row[21] === 'NO' || //BFT,BPT
+                    row[22] === 'NO' || //SPD RED
+                    row[23] === 'NO' || //RS
+                    row[24] === 'NO' || //WT
+                    row[25] === 'NO' || //W
+                    row[26] === 'NO'; //REV
 
-                const condition2 =  row[27] === 'NO' || row[28] === 'NO' || row[29] === 'NO' ||
-                    ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(row[32]) || 
-                    row[31] === 'NO' || row[32] === 'NO' || 
-                    ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(row[33]);
+                const condition2 =  row[27] === 'NO' || //VIG
+                row[28] === 'NO' || //SIG OFF
+                row[29] === 'NO' || //MOBILE
+                row[30] === 'NO' || //VCD
+                row[31] === 'NO' || //MP
+                row[32] === 'NO' || //PS
+                row[33] === 'YES' ;
 
                 return isDateInRange && cliNameMatches && LPNameMatches && ALPNameMatches && (condition1 || condition2);
             });
@@ -282,10 +289,10 @@
                     const td = document.createElement('td');
                     td.textContent = cell || '';
 
-                    if ((index === 18 && ['LP All Necessary P/S On Desk But ALP All Items Not On Desk', 'ALP All Necessary P/S On Desk But LP All Items Not On Desk', 'Both LP and ALP Necessary P/S Not On Desk'].includes(cell)) ||
+                    if (index === 18 && cell === 'NO' ||
                         index === 19 && cell === 'NO' ||
-                        (index === 20 && ['LP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||
-                        (index === 21 && ['ALP CALLING SIGNAL WITHOUT HAND GESTURE', 'NOT CALLING OUT SIGNAL'].includes(cell)) ||
+                        index === 20 && cell === 'NO' ||
+                        index === 21 && cell === 'NO' ||
                         index === 22 && cell === 'NO' ||
                         index === 23 && cell === 'NO' ||
                         index === 24 && cell === 'NO' ||
@@ -294,10 +301,11 @@
                         index === 27 && cell === 'NO' ||
                         index === 28 && cell === 'NO' ||
                         index === 29 && cell === 'NO' ||
-                        (index === 30 && ['YES BOTH LP AND ALP USING MOBILE', 'LP USING MOBILEL','ALP USING MOBILE'].includes(cell)) ||
+                        index === 30 && cell === 'NO' ||
                         index === 31 && cell === 'NO' ||
                         index === 32 && cell === 'NO' ||
-                        (index === 33 && ['YES BOTH LP AND ALP PACKING LUGGAGE', 'LP PACKING LUGGAGE','ALP PACKING LUGGAGE'].includes(cell))) {
+                        index === 33 && cell === 'YES'
+                       ) {
                         
                             td.classList.add('highlight');
                             redCellCounts[index]++;

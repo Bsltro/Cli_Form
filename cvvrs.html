@@ -271,53 +271,43 @@ body {
                     <label for="knowledge" style="color: red; font-weight: bold;">Whether Keeping Necessary Personal Store Items On Desk</label>
                     <select name="cvvrsps" id="cvvrsps" onchange="handleSelectionChange(this)">
                         <option value="select">-------Select Personal Store Of Crew-------</option>
-                        <option value="All Necessary P/S Of LP And ALP On Desk">All Necessary P/S Of LP And ALP On Desk</option>
-                        <option value="LP All Necessary P/S On Desk But ALP All Items Not On Desk">LP All Necessary P/S On Desk But ALP All Items Not On Desk</option>
-                        <option value="ALP All Necessary P/S On Desk But LP All Items Not On Desk">ALP All Necessary P/S On Desk But LP All Items Not On Desk</option>
-                        <option value="Both LP and ALP Necessary P/S Not On Desk">Both LP and ALP Necessary P/S Not On Desk</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
-                    </select>
+                        <option value="YES">YES</option>
+                        <option value="NO">NO</option>
+                     </select>
                 </div>
                 <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">Continuity Test</label>
+                    <label for="knowledge" style="color: red; font-weight: bold;">Whether conducted brake continuity test before starting from initial station and after attatchment or detatchment of vehicles</label>
                     <select name="cvvrscont" id="cvvrscont" onchange="handleSelectionChange(this)">
                         <option value="select">-------Select -------</option>
                         <option value="YES">YES</option>
                         <option value="NO">NO</option>
                         <option value="N/A">N/A</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
                     </select>
                 </div>
                 <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">LP Signal Calling Out SIGNAL With Hand Gesture</label>
+                    <label for="knowledge" style="color: red; font-weight: bold;">Whether LP Signal Calling Out SIGNAL With Hand Gesture</label>
                     <select name="cvvrslpsig" id="cvvrslpsig" onchange="handleSelectionChange(this)">
                         <option value="select">-------Select -------</option>
-                        <option value="YES CALLING WITH HAND GESTURE">YES CALLING WITH HAND GESTURE</option>
-                        <option value="LP CALLING SIGNAL WITHOUT HAND GESTURE">LP CALLING SIGNAL WITHOUT HAND GESTURE</option>
-                        <option value="YES CALLING WITH HAND GESTURE ONLY SOMETIMES">YES CALLING WITH HAND GESTURE ONLY SOMETIMES</option>
-                        <option value="NOT CALLING OUT SIGNAL">NOT CALLING OUT SIGNAL</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
-                    </select>
+                        <option value="YES">YES</option>
+                        <option value="NO">NO</option>
+                     </select>
                 </div>
                 <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">ALP Signal Calling Out SIGNAL With Hand Gesture</label>
+                    <label for="knowledge" style="color: red; font-weight: bold;">Whether ALP calling out the correct aspect of signals with hand gesture along with signal name/number and train speed loudly and LP acknowledging the same. Also calling out acknowledging next halts.TSR/PSR/Neutral section locations enroute</label>
                     <select name="cvvrsalpsig" id="cvvrsalpsig" onchange="handleSelectionChange(this)">
                         <option value="select">-------Select -------</option>
-                        <option value="YES CALLING WITH HAND GESTURE">YES CALLING WITH HAND GESTURE</option>
-                        <option value="ALP CALLING SIGNAL WITHOUT HAND GESTURE">ALP CALLING SIGNAL WITHOUT HAND GESTURE</option>
-                        <option value="YES CALLING WITH HAND GESTURE ONLY SOMETIMES">YES CALLING WITH HAND GESTURE ONLY SOMETIMES</option>
-                        <option value="NOT CALLING OUT SIGNAL">NOT CALLING OUT SIGNAL</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        <option value="YES">YES</option>
+                        <option value="NO">NO</option>
+                        <option value="N/A">NOT APPLICABLE</option>
                     </select>
                 </div>
                 <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">BFT/BPT</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether conducted Brake feel test/Brake power test at first opportunity</label>
                         <select name="cvvrsbft" id="cvvrsbft" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                            <option value="N/A">NOT APPLICABLE</option>
                         </select>
                     </div>
                     <script>
@@ -329,14 +319,13 @@ body {
                         }
                     </script>
                     <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">LP Reducing Speed With Respect To Signal Aspect</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether LP reducing speed proportionately in case signal aspect is restrictive and not presuming the aspect of next signal</label>
                         <select name="cvvrssp" id="cvvrssp" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
+                            <option value="N/A">NOT APPLICABLE</option>
+                       </select>
                     </div>
                     <script>
                         function handleSelectionChange(selectElement) {
@@ -347,110 +336,96 @@ body {
                         }
                     </script>
                     <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">ALP Kept Hand On RS Valve</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether ALP keeping hand on emergency brakes D-1 pilot/RS valve when passing yellow signal and opening D-1 pilot/RS valve in case LP no vigilant</label>
                         <select name="cvvrsrs" id="cvvrsrs" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                            <option value="N/A">NOT APPLICABLE</option>
                         </select>
                     </div>
                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whether Crew Not Using Walkie Talkie For Signal Aspect Or Other Operational Instructions From Station Staff During Train Operations</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether crew not using walkie-talkie to get information about signal aspect or other operational instructions from station staff during train operation</label>
                         <select name="cvvrswt" id="cvvrswt" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES NOT USING">YES NOT USING</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
-                        </select>
+                         </select>
                     </div>
                     <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whisteling At W/L Board</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether whistling at W and WL board, while running through stations & at trespassing location</label>
                         <select name="cvvrswl" id="cvvrswl" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                            <option value="N/A">NOT APPLICABLE</option>
                         </select>
                     </div>
                    <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Putting Reverser Or Throttle To Neutral At All Halts</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether putting Reverser/Direction Switch & PBC/Throttle in neutral position when halted bat Red Signal</label>
                         <select name="cvvrsth" id="cvvrsth" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
-                            <option value="YES AT ALL HALTS">YES AT ALL HALTS</option>
-                            <option value="YES BUT NOT AT ALL HALTS">YES BUT NOT AT ALL HALTS</option>
-                            <option value="AT DESTINATION ONLY">AT DESTINATION ONLY</option>
+                            <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
                         </select>
                     </div>
                     <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whether Crew Vigilant And Not Indulge In Discussion</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether crew being vigilant and focussing only on safe operation and not discussing personal problems/Un-necessary talk during train operation</label>
                         <select name="cvvrsdis" id="cvvrsdis" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
                         </select>
                     </div>
                     <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Ensure Proper Signal Taken Off Before Start</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether crew ensuring proper signal for their trains OFF/authority received before starting train and observing the aspect till passing the signal </label>
                         <select name="cvvrssigtoff" id="cvvrssigtoff" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
                         </select>
                     </div>   
                     <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whether LP/ALP Using Mobile Phone</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether LP/ALP NOT using mobile phones for while on run. Footplating officers/Supervisors should also not using mobile phone </label>
                         <select name="cvvrsmob" id="cvvrsmob" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
-                            <option value="NOT USING">NOT USING</option>
-                            <option value="YES BOTH LP AND ALP USING MOBILE">YES BOTH LP AND ALP USING MOBILE</option>
-                            <option value="LP USING MOBILE">LP USING MOBILE</option>
-                            <option value="ALP USING MOBILE">ALP USING MOBILE</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                            <option value="YES">YES NOT USING</option>
+                            <option value="NO">NO</option>
                         </select>
                     </div>
                     <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">Whether VCD Not Isolated By Crew On Line/ Acknowledge Within Time</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether safety devise like VCD not isolated on line by CREW and acknowledge VCD warning in time</label>
                         <select name="cvvrsvcd" id="cvvrsvcd" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
                         </select>
                     </div>
                     <div class="form-outer">
-                        <label for="knowledge" style="color: red; font-weight: bold;">MP On Zero Before Braking</label>
+                        <label for="knowledge" style="color: red; font-weight: bold;">Whether LP bringing MP to '0'(ZERO) notch before applying of A-9 & SA-9</label>
                         <select name="cvvrsmp" id="cvvrsmp" onchange="handleSelectionChange(this)">
                             <option value="select">-------Select -------</option>
                             <option value="YES">YES</option>
                             <option value="NO">NO</option>
-                            <option value="N/A">N/A</option>
-                            <option value="Not Visible In Camera">Not Visible In Camera</option>
+                            
                         </select>
                     </div>
                    <div class="form-outer">
-                    <label for="knowledge" style="color: red; font-weight: bold;">Luggage Packing</label>
-                    <select name="cvvrslugg" id="cvvrslugg" onchange="handleSelectionChange(this)">
+                    <label for="knowledge" style="color: red; font-weight: bold;">Whether collecting personal store items before reaching destination</label>
+                    <select name="cvvrslugg" id="cvvrslugg" onchange="handleSelectionChangeps(this)">
                         <option value="select">-------Select -------</option>
-                        <option value="NOT PACKING">NO PACKING</option>
-                        <option value="YES BOTH LP AND ALP PACKING LUGGAGE">YES BOTH LP AND ALP PACKING LUGGAGE</option>
-                        <option value="LP PACKING LUGGAGE">LP PACKING LUGGAGE</option>
-                        <option value="ALP PACKING LUGGAGE">ALP PACKING LUGGAGE</option>
-                        <option value="N/A">N/A</option>
-                        <option value="Not Visible In Camera">Not Visible In Camera</option>
+                        <option value="NO">NO</option>
+                        <option value="YES">YES</option>
                     </select>
                 </div>
+                <script>
+                    function handleSelectionChangeps(selectElement) {
+                        var value = selectElement.value;
+                        if (value === 'YES') {
+                            alert('You have selected option, it will be considered as irregularity.');
+                        } 
+                    }
+                </script>
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">REMARK</label>
                 <input type="text" name="cvvrsremark" id="cvvrsremark">
@@ -608,26 +583,29 @@ body {
             });
         });
     
-        function handleSelectionChange(selectElement) {
-        var irregularOptions = [
-            "LP All Necessary P/S On Desk But ALP All Items Not On Desk",
-            "ALP All Necessary P/S On Desk But LP All Items Not On Desk",
-            "Both LP and ALP Necessary P/S Not On Desk",
-            "NO",
-            "LP CALLING SIGNAL WITHOUT HAND GESTURE",
-            "NOT CALLING OUT SIGNAL",
-            "ALP CALLING SIGNAL WITHOUT HAND GESTURE",
-            "YES BOTH LP AND ALP USING MOBILE",
-            "LP USING MOBILE",
-            "ALP USING MOBILE",
-            "YES BOTH LP AND ALP PACKING LUGGAGE",
-            "LP PACKING LUGGAGE",
-            "ALP PACKING LUGGAGE"
-        ];
+    //     function handleSelectionChange(selectElement) {
+    //     var irregularOptions = [
+    //         "NO", //PS
+    //         "NO", //CONT
+    //         "NO",//SIG
+    //         "NO",//BFT,BPT
+    //         "NO",//RED SPD AT 1Y
+    //         "NO",//HAND ON RS
+    //         "NO",//WT
+    //         "NO",//W
+    //         "NO",//REV
+    //         "NO",//VIG
+    //         "NO",//SIG OFF
+    //         "NO",//MOBILE
+    //         "NO",//VCD
+    //         "NO",//MP
+    //         "YES"//PS
+            
+    //     ];
 
-        if (irregularOptions.includes(selectElement.value)) {
-            alert("You have selected an option that will be considered as irregularity.");
-        }
-    }
+    //     if (irregularOptions.includes(selectElement.value)) {
+    //         alert("You have selected an option that will be considered as irregularity.");
+    //     }
+    // }
     </script>
 </html>
