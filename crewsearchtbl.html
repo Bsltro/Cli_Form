@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>SEARCH LP OR ALP BY THEIR NAME OR ID</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  #searchBox {
+    margin-bottom: 20px;
+    padding: 8px;
+    width: 300px;
+    font-size: 16px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+</style>
+</head>
+<body>
+
+<h2>SEARCH LP OR ALP BY THEIR NAME OR ID</h2>
+
+<input type="text" id="searchBox" placeholder="Search by ID or Name..." onkeyup="filterTable()" />
+
+<table id="dataTable">
+  <thead>
+    <tr id="headerRow">
+      <!-- Headers will be populated here dynamically -->
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Data rows will be inserted here -->
+  </tbody>
+</table>
+
+<script>
+  const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+  const spreadsheetId = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
+  const sheetName = 'Sheet1'; // change as needed
+
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}!C2:K?key=${apiKey}`;
+
+  // Define the functions to populate headers and table
+  function populateHeaders({ headers }) {
+    const headerRow = document.getElementById('headerRow');
+    headerRow.innerHTML = ''; // clear previous headers
+    headers.forEach(header => {
+      const th = document.createElement('th');
+      th.textContent = header;
+      headerRow.appendChild(th);
+    });
+  }
+
+  function populateTable({ data }) {
+    const tbody = document.querySelector('#dataTable tbody');
+    tbody.innerHTML = ''; // clear previous data
+    data.forEach(item => {
+      const row = document.createElement('tr');
+      Object.values(item).forEach(value => {
+        const td = document.createElement('td');
+        td.textContent = value;
+        row.appendChild(td);
+      });
+      tbody.appendChild(row);
+    });
+  }
+
+  function filterTable() {
+    const input = document.getElementById('searchBox');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('dataTable');
+    const tr = table.getElementsByTagName('tr');
+
+    // Skip header row (index 0)
+    for (let i = 1; i < tr.length; i++) {
+      const row = tr[i];
+      let match = false;
+      const tds = row.getElementsByTagName('td');
+      for (let j = 0; j < tds.length; j++) {
+        const cellText = tds[j].textContent.toLowerCase();
+        if (cellText.indexOf(filter) > -1) {
+          match = true;
+          break;
+        }
+      }
+      row.style.display = match ? '' : 'none';
+    }
+  }
+
+  // Fetch data from Google Sheets API
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data.values) {
+        const headers = data.values[0];
+        const rows = data.values.slice(1);
+        const result = rows.map(row => {
+          const obj = {};
+          headers.forEach((header, index) => {
+            obj[header] = row[index] || '';
+          });
+          return obj;
+        });
+        populateHeaders({ headers });
+        populateTable({ data: result });
+      }
+    })
+    .catch(error => console.error('Error fetching data:', error));
+</script>
+
+</body>
+</html>

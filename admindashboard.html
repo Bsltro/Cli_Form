@@ -47,6 +47,8 @@
         .spm { background-color: #27ae60; } /* Green */
         .rr-lb-stb { background-color: #f39c12; } /* Orange */
         .pcdo { background-color: #8e44ad; } /* Purple */
+        .crewtbl { background-color: #44a9ad; } /* Purple */
+        .oth { background-color: #abad44; } /* Purple */
         .search-btn { background-color: #34495e; } /* Dark Blue */
 
         .tab:hover {
@@ -102,11 +104,12 @@
 <body>
 
     <h1>Admin Dashboard</h1><br><br>
-
-    <!-- Search Button -->
-    <button class="tab search-btn" onclick="window.location.href='https://script.google.com/macros/s/AKfycbyv744jJ7Rs7xCxZ70R7mPvs9JV5hZDvO49v4x89kdILe56qqUiFXLsaDKx4sPnksBy/exec'">
-        Search LP or ALP By Their Name Or CMS ID
-    </button>
+    <div class="dropdown">
+        <div class="tab crewtbl">SEARCH CREW BY ID OR NAME</div>
+        <div class="dropdown-content">
+            <div onclick="redirectToPage('crewsearchtbl.html')">EARCH CREW BY ID OR NAME</div>
+        </div>
+    </div>
     <br><br>
 
     <!-- Footplate Tab -->
@@ -152,7 +155,7 @@
         </div>
     </div>
     <div class="dropdown">
-        <div class="tab pcdo">OTHER DEPT IRREGULARITIES</div>
+        <div class="tab oth">OTHER DEPT IRREGULARITIES</div>
         <div class="dropdown-content">
             <div onclick="redirectToPage('othrdeptirregularitiesreport.html')">OTHER DEPT IRREGULARITY</div>
         </div>

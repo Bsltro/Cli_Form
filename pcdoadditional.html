@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>ADDITIONAL DATA</title>
     <style>
         table {
@@ -49,9 +49,9 @@
     <h1>MONITORING COUNT OF DATA</h1>
 
     <label for="fromDate">From:</label>
-    <input type="date" id="fromDate">
+    <input type="date" id="fromDate" />
     <label for="toDate">To:</label>
-    <input type="date" id="toDate">
+    <input type="date" id="toDate" />
     <button onclick="fetchData()">*GO*</button>
 
     <table id="dataTable">
@@ -69,7 +69,7 @@
         const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
         const sheetName = 'Sheet1';
 
-        const relevantColumns = [1, 123, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 31, 33, 37, 38, 41, 43, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 69, 71, 73, 75, 77, 79, 81, 82, 84, 86, 88, 85, 87, 89, 91, 93, 94, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120];
+        const relevantColumns = [1, 123, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 31, 33, 37, 38, 41, 43, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 69, 71, 73, 75, 77, 79, 81, 82, 84, 86, 88, 85, 87, 89, 91, 93, 94, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120,136,100,97];
         const redColumns = [48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 69, 71, 73, 75, 77, 79, 81, 82];
 
         let today = new Date().toISOString().split('T')[0];
@@ -91,12 +91,14 @@
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
 
+            // Filter rows based on date range
             const filteredRows = rows.slice(1).filter(row => {
                 if (!row[1]) return false;
                 const rowDate = formatDate(row[1].trim());
                 return rowDate >= fromDate && rowDate <= toDate;
             });
 
+            // Get unique rows based on date
             const uniqueRows = [];
             const dateSet = new Set();
             filteredRows.forEach(row => {
@@ -117,8 +119,9 @@
 
         function formatDate(dateString) {
             if (dateString && typeof dateString === 'string') {
-                const [day, month, year] = dateString.split('/');
-                if (day && month && year) {
+                const parts = dateString.split('/');
+                if (parts.length === 3) {
+                    const [day, month, year] = parts;
                     return `20${year.padStart(2, '0')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
                 }
             }
@@ -129,7 +132,6 @@
             const tableHead = document.querySelector("#dataTable thead");
             tableHead.innerHTML = '';
             const tr = document.createElement("tr");
-
             relevantColumns.forEach((colIndex, index) => {
                 const th = document.createElement("th");
                 th.textContent = headers[colIndex] || '';
@@ -138,7 +140,6 @@
                 }
                 tr.appendChild(th);
             });
-
             tableHead.appendChild(tr);
         }
 
@@ -151,37 +152,31 @@
 
             rows.forEach(row => {
                 const tr = document.createElement("tr");
-
                 relevantColumns.forEach((colIndex, index) => {
                     const td = document.createElement("td");
                     td.textContent = row[colIndex] || '';
                     if (redColumns.includes(relevantColumns[index])) {
                         td.classList.add('red-column');
                     }
-                    
                     let value = parseFloat(row[colIndex]);
                     if (!isNaN(value)) {
                         totals[index] += value;
                     } else {
                         isNumericColumn[index] = false;
                     }
-                    
                     tr.appendChild(td);
                 });
-
                 tableBody.appendChild(tr);
             });
 
             if (showTotal) {
                 const totalRow = document.createElement("tr");
                 totalRow.classList.add("total-row");
-
                 relevantColumns.forEach((_, index) => {
                     const td = document.createElement("td");
                     td.textContent = isNumericColumn[index] ? totals[index] : '';
                     totalRow.appendChild(td);
                 });
-
                 tableBody.insertBefore(totalRow, tableBody.firstChild);
             }
         }
@@ -190,6 +185,36 @@
             window.print();
         }
 
+        function downloadCSV() {
+            const table = document.getElementById('dataTable');
+            const rows = table.querySelectorAll('tr');
+            const csv = [];
+
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('th, td');
+                const rowData = [];
+                cols.forEach(col => {
+                    let data = col.innerText.replace(/"/g, '""');
+                    if (data.search(/("|,|\n)/g) >= 0) {
+                        data = `"${data}"`;
+                    }
+                    rowData.push(data);
+                });
+                csv.push(rowData.join(','));
+            });
+
+            const csvBlob = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(csvBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Fetch data on page load
         fetchData();
     </script>
 </body>
