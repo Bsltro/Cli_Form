@@ -37,6 +37,11 @@
   <thead>
     <tr id="headerRow">
       <!-- Headers will be populated here dynamically -->
+       <!-- <th>CREW CMS ID</th>
+       <th>CREW NAME</th>
+       <th>CREW DESIGNATION</th>
+       <th>CREW CAT</th>
+       <th>CREW HQ</th> -->
     </tr>
   </thead>
   <tbody>
@@ -49,7 +54,7 @@
   const spreadsheetId = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
   const sheetName = 'Sheet1'; // change as needed
 
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}!C2:K?key=${apiKey}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}!C:G?key=${apiKey}`;
 
   // Define the functions to populate headers and table
   function populateHeaders({ headers }) {
