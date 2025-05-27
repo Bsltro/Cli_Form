@@ -39,12 +39,6 @@
       background-color: #f2f2f2;
       word-wrap: break-word;
     }
-    .column-checkboxes {
-      margin: 10px 0;
-    }
-    .column-checkboxes label {
-      margin-right: 10px;
-    }
     .btn-container {
       margin-top: 20px;
     }
@@ -57,6 +51,27 @@
       border: none;
       border-radius: 5px;
     }
+    .date-filter {
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+    }
+    .date-filter label {
+      margin-right: 10px;
+    }
+    .date-filter input {
+      padding: 5px;
+      margin-right: 15px;
+    }
+    .date-filter button {
+      padding: 5px 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -68,13 +83,21 @@
   <button id="tab1" class="tab-button active" onclick="switchTab(0)">Footplate count</button>
   <button id="tab2" class="tab-button" onclick="switchTab(1)">CVVRS count</button>
   <button id="tab3" class="tab-button" onclick="switchTab(2)">SPM count</button>
-  <button id="tab4" class="tab-button" onclick="switchTab(3)">RR/Lobby count</button>
+  <button id="tab4" class="tab-button" onclick="switchTab(3)">RR</button>
   <button id="tab5" class="tab-button" onclick="switchTab(4)">Loco Stabling count</button>
-  <button id="tab6" class="tab-button" onclick="switchTab(5)">SUMMARY</button>
+  <button id="tab6" class="tab-button" onclick="switchTab(5)">Lobby count</button>
+  <button id="tab7" class="tab-button" onclick="switchTab(6)">SUMMARY</button>
 </div>
 
-<!-- Column Checkbox -->
-<div id="column-checkboxes" class="column-checkboxes"></div>
+<!-- Date Filter -->
+<div id="date-filter" class="date-filter">
+  <label for="from-date">From:</label>
+  <input type="date" id="from-date">
+  <label for="to-date">To:</label>
+  <input type="date" id="to-date">
+  <button onclick="applyDateFilter()">Apply Filter</button>
+  <button onclick="resetDateFilter()">Reset</button>
+</div>
 
 <!-- Data Table -->
 <table id="sheet-data">
@@ -97,20 +120,33 @@
   // Google Sheets API configuration
   const sheetId = '1C6cXq3L-0cQY6YOv1fnQ1pCptqqy1TWxqNTBYVF636s';
   const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
-  const range = 'Sheet1!A1:BQ1000';  // Adjust the range if needed
+  const range = 'Sheet2!A1:AZ1000';  // Adjust the range if needed
   const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
   let data = [];
   let currentTab = 0; // Default tab (Footplate count)
-
+  let filteredData = [];
+  
   // Tab-specific columns
-  const tabColumns = [
-    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS','BQ'],
-    ['A', 'AT', 'AU', 'AV', 'AW', 'AX'],
-    ['A', 'AY', 'AZ', 'BA', 'BB', 'BC'],
-    ['A', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI'],
-    ['A', 'BJ', 'BK', 'BL'],
-    ['BM', 'BN', 'BO', 'BP']
+ const tabColumns = [
+    [ 'C',  'G', 'H', 'I', 'J'],  //FP
+    ['AK', 'AL'],   //CVVRS
+    ['AO', 'AP'],   //SPM
+    ['AC','AF','AG','AH'],  //RR
+    ['U', 'X','Y','Z'],    //STB
+    ['M','P','Q', 'R'],   //LB
+    ['AS', 'AT' ,'AU' ,'AV'],   //SUM
+  ];
+  
+  // Date column for each tab (sheet column letters)
+  const tabDateColumns = [
+    'C',  // Footplate count - Column B
+    'AK', // CVVRS count - Column AT
+    'AO', // SPM count - Column AY
+    'AC', // RR/Lobby count - Column BD
+    'U', // Loco Stabling count - Column BJ
+    'M',  // SUMMARY - Column BM
+   null //'AS'
   ];
 
   // Fetch the Google Sheets data
@@ -118,16 +154,20 @@
     .then(response => response.json())  // Parse the response as JSON
     .then(responseData => {
       data = responseData.values;
+      filteredData = data.slice(1); // Skip header row
       loadTabData(currentTab);  // Load the first tab (Footplate count)
+      
+      // Set default date range to cover all dates
+      updateDateRange();
     })
     .catch(error => {
-      console.error('Error fetching data :', error);
+      console.error('Error fetching data:', error);
     });
 
   // Load data for the current tab
   function loadTabData(tabIndex) {
     const columnsToDisplay = tabColumns[tabIndex];
-    const rows = data.slice(1); // Skip the first row (header)
+    const rows = (tabIndex === 6) ? data.slice(0, 16) : filteredData; // For SUMMARY tab, show first 16 rows (header + 15 rows)
 
     const table = document.getElementById('sheet-data');
     const tbody = table.querySelector('tbody');
@@ -135,50 +175,46 @@
 
     const headers = data[0]; // First row is header
     const headerRow = document.createElement('tr');
-    const checkboxesDiv = document.getElementById('column-checkboxes');
-    checkboxesDiv.innerHTML = '';  // Clear existing checkboxes
 
-    columnsToDisplay.forEach((col, index) => {
+    columnsToDisplay.forEach(col => {
       const th = document.createElement('th');
-      th.innerText = headers[parseColumnLetterToIndex(col)] || `Column ${col}`;
+      const colIndex = parseColumnLetterToIndex(col);
+      th.innerText = headers[colIndex] || `Column ${col}`;
       headerRow.appendChild(th);
-
-      // Add a checkbox to toggle column visibility
-      const checkboxLabel = document.createElement('label');
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = true;
-      checkbox.dataset.columnIndex = index;
-      checkboxLabel.appendChild(checkbox);
-      checkboxLabel.appendChild(document.createTextNode(` ${headers[parseColumnLetterToIndex(col)]}`));
-      checkboxesDiv.appendChild(checkboxLabel);
     });
 
     table.querySelector('thead').innerHTML = '';  // Clear existing header
     table.querySelector('thead').appendChild(headerRow);
 
     // Add rows
-    rows.forEach(row => {
+    const rowsToShow = (tabIndex === 6) ? rows.slice(1, 16) : rows; // For SUMMARY tab, show rows 1-15
+    rowsToShow.forEach(row => {
       const tr = document.createElement('tr');
-      columnsToDisplay.forEach((col, colIndex) => {
+      columnsToDisplay.forEach(col => {
         const td = document.createElement('td');
-        const colIndexParsed = parseColumnLetterToIndex(col);
-        td.innerText = row[colIndexParsed] || '';  // If cell is empty, show blank
+        const colIndex = parseColumnLetterToIndex(col);
+        td.innerText = row[colIndex] || '';  // If cell is empty, show blank
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
-    });
-
-    // Attach event listeners to checkboxes
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', toggleColumnVisibility);
     });
   }
 
   // Switch between tabs
   function switchTab(tabIndex) {
     currentTab = tabIndex;
-    loadTabData(tabIndex);
+    // Hide date filter for SUMMARY tab (tabIndex 6)
+    document.getElementById('date-filter').style.display = (tabIndex === 6) ? 'none' : 'block';
+    
+    if (tabIndex !== 6) {
+      updateDateRange();
+      applyDateFilter();
+    } else {
+      // For SUMMARY tab, just load the data without filtering
+      filteredData = data.slice(1);
+      loadTabData(tabIndex);
+    }
+    
     document.querySelectorAll('.tab-button').forEach(button => {
       button.classList.remove('active');
     });
@@ -195,22 +231,6 @@
     return index - 1;
   }
 
-  // Toggle column visibility
-  function toggleColumnVisibility(event) {
-    const columnIndex = event.target.dataset.columnIndex;
-    const isChecked = event.target.checked;
-    const cells = document.querySelectorAll(`#sheet-data tr td:nth-child(${parseInt(columnIndex) + 1})`);
-    const headerCells = document.querySelectorAll(`#sheet-data thead th:nth-child(${parseInt(columnIndex) + 1})`);
-
-    // Hide or show columns based on checkbox state
-    cells.forEach(cell => {
-      cell.style.display = isChecked ? '' : 'none';
-    });
-    headerCells.forEach(cell => {
-      cell.style.display = isChecked ? '' : 'none';
-    });
-  }
-
   // Print the table
   function printTable() {
     window.print();
@@ -219,13 +239,19 @@
   // Download the table data as a CSV file
   function downloadCSV() {
     const columnsToDisplay = tabColumns[currentTab];
-    const rows = data.slice(1); // Skip the first row (header)
+    const rows = (currentTab === 6) ? data.slice(0, 16) : filteredData;
 
     const csvRows = [];
-    const headers = data[0].slice(0, columnsToDisplay.length); // Limit headers to selected columns
+    const headers = [];
+    
+    // Get headers from the first row of data
+    columnsToDisplay.forEach(col => {
+      headers.push(data[0][parseColumnLetterToIndex(col)]);
+    });
     csvRows.push(headers.join(','));
 
-    rows.forEach(row => {
+    const rowsToShow = (currentTab === 6) ? rows.slice(1, 16) : rows;
+    rowsToShow.forEach(row => {
       const rowData = columnsToDisplay.map(col => row[parseColumnLetterToIndex(col)] || '');
       csvRows.push(rowData.join(','));
     });
@@ -235,9 +261,116 @@
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'google_sheet_data.csv';
+    link.download = `cli_inspection_${currentTab + 1}.csv`;
     link.click();
     URL.revokeObjectURL(url);
+  }
+  
+  // Update the date range inputs based on available data
+  function updateDateRange() {
+    if (data.length === 0 || currentTab === 6) return;
+    
+    const dateColumn = tabDateColumns[currentTab];
+    if (!dateColumn) return;
+    
+    const dateColumnIndex = parseColumnLetterToIndex(dateColumn);
+    const dates = data.slice(1).map(row => row[dateColumnIndex]).filter(date => date);
+    
+    if (dates.length === 0) {
+      document.getElementById('date-filter').style.display = 'none';
+      return;
+    }
+    
+    document.getElementById('date-filter').style.display = 'block';
+    
+    // Parse dates and find min/max
+    const parsedDates = dates.map(dateStr => {
+      // Handle different date formats (YYYY-MM-DD or other formats)
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        // Assume YYYY-MM-DD format
+        return new Date(dateStr);
+      } else {
+        // Try to parse as is (might need adjustment based on your actual date format)
+        return new Date(dateStr);
+      }
+    }).filter(date => !isNaN(date.getTime())); // Filter out invalid dates
+    
+    if (parsedDates.length === 0) {
+      document.getElementById('date-filter').style.display = 'none';
+      return;
+    }
+    
+    // Sort dates
+    parsedDates.sort((a, b) => a - b);
+    const minDate = parsedDates[0];
+    const maxDate = parsedDates[parsedDates.length - 1];
+    
+    // Format dates as YYYY-MM-DD for date inputs
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+    
+    // Set date inputs
+    document.getElementById('from-date').min = formatDate(minDate);
+    document.getElementById('from-date').max = formatDate(maxDate);
+    document.getElementById('to-date').min = formatDate(minDate);
+    document.getElementById('to-date').max = formatDate(maxDate);
+    
+    document.getElementById('from-date').value = formatDate(minDate);
+    document.getElementById('to-date').value = formatDate(maxDate);
+  }
+  
+  // Apply date filter
+  function applyDateFilter() {
+    if (currentTab === 6) return; // Skip for SUMMARY tab
+    
+    const fromDate = document.getElementById('from-date').value;
+    const toDate = document.getElementById('to-date').value;
+    
+    if (!fromDate || !toDate) {
+      alert('Please select both from and to dates');
+      return;
+    }
+    
+    const dateColumn = tabDateColumns[currentTab];
+    const dateColumnIndex = parseColumnLetterToIndex(dateColumn);
+    
+    filteredData = data.slice(1).filter(row => {
+      const rowDateStr = row[dateColumnIndex];
+      if (!rowDateStr) return false;
+      
+      // Parse the row date
+      let rowDate;
+      const parts = rowDateStr.split('-');
+      if (parts.length === 3) {
+        // Assume YYYY-MM-DD format
+        rowDate = new Date(rowDateStr);
+      } else {
+        // Try to parse as is
+        rowDate = new Date(rowDateStr);
+      }
+      
+      if (isNaN(rowDate.getTime())) return false;
+      
+      // Format as YYYY-MM-DD for comparison
+      const rowDateFormatted = rowDate.toISOString().split('T')[0];
+      
+      return rowDateFormatted >= fromDate && rowDateFormatted <= toDate;
+    });
+    
+    loadTabData(currentTab);
+  }
+  
+  // Reset date filter
+  function resetDateFilter() {
+    if (currentTab === 6) return; // Skip for SUMMARY tab
+    filteredData = data.slice(1);
+    updateDateRange();
+    loadTabData(currentTab);
   }
 </script>
 
