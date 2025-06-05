@@ -1,122 +1,51 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Footplate Inspection Form</title>
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: 'Times New Roman', Times, serif;
-            }
-        
-            body {
-                background-color: aqua;
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background-repeat: no-repeat;
-                padding: 20px;
-            }
-        
-            .main {
-                width: 100%;
-                max-width: 400px;
-                background: rgb(245, 242, 242);
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                text-align: center;
-            }
-        
-            .main h3 {
-                padding-bottom: 20px;
-                font-size: 30px;
-                color: #333;
-            }
-        
-            .main form {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-        
-            .form-outer {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-        
-            .form-outer label {
-                display: block;
-                color: red;
-                font-weight: bold;
-                margin-bottom: 8px;
-                text-align: left;
-            }
-        
-            .form-outer input {
-                width: 100%;
-                height: 40px;
-                padding: 8px;
-                background-color: rgb(203, 218, 223);
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 16px;
-            }
-        
-            .form-outer button {
-                width: 100%;
-                padding: 12px;
-                background-color: blueviolet;
-                color: white;
-                font-size: 18px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-        
-            .form-outer button:hover {
-                background-color: darkviolet;
-            }
-        
-            /* For mobile responsiveness */
-            @media (max-width: 600px) {
-                .main {
-                    padding: 15px;
-                    width: 100%;
-                    max-width: 100%;
-                }
-        
-                .form-outer input,
-                .form-outer button {
-                    height: 45px;
-                    font-size: 16px;
-                }
-        
-                .main h3 {
-                    font-size: 26px;
-                }
-        
-                .form-outer label {
-                    font-size: 14px;
-                }
-            }
-        
-            .dropbtn {
-                background-color: #04AA6D;
-                color: white;
-                padding: 16px;
-                font-size: 16px;
-                border: none;
-                cursor: pointer;
-            }
-        </style>
-        
-        
+<head>
+    <title>Footplate Inspection Form</title>
+    <style>
+        /* Your existing CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-outer {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="datetime-local"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .radio-inline {
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .uppercase {
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -137,7 +66,7 @@
                        
             </div>
             
-            <script>
+            <!-- <script>
                 // Set today's date as the max value
                 let today = new Date();
                 let yesterday = new Date(today);
@@ -151,7 +80,7 @@
                 // Set the min and max attributes
                 document.getElementById('inspectiondate').min = formatDate(yesterday);
                 document.getElementById('inspectiondate').max = formatDate(today);
-            </script>
+            </script> -->
             
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">CLI Name</label>
@@ -228,6 +157,7 @@
                         <option value="JL">JL</option>
                         <option value="JM">JM</option>
                         <option value="AK">AK</option>
+                        <option value="CSN">CSN</option>
                     </select> 
                 </div>
             </div>
@@ -294,6 +224,7 @@
                         <option value="JL">JL</option>
                         <option value="JM">JM</option>
                         <option value="AK">AK</option>
+                        <option value="CSN">CSN</option>
                     </select> 
                 </div>
             </div>
@@ -739,361 +670,313 @@
                 <a href="https://drive.google.com/file/d/1vQ2pfLqJDKCmXiCaj3XIhQEkXXgTvhzr/view?usp=sharing">***Click Here To View PDF Case Study-05/2025***</a><br><br>
                 <a href="https://drive.google.com/file/d/1tfGUioSCeXzl3E6cgp8Qcd_U4bHH2pFO/view?usp=sharing">***Click Here To View PDF Case Study-06/2025***</a><br>
                 
-            </div> <br>  
-            <div class ="form-outer">
+            </div> <br>
+            <div class="form-outer">
                 <input type="submit" id="sub" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
             </div>
-            
         </form>
     </div>
-    
+
     <script>
-        const sheetID = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08'; // Your sheet ID
-        const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Your API key
-        const dataRange = 'Sheet1!A2:K3000'; // Range for Inspection ID, CLI Name, LP Name, ALP Name, LP Type, LP Category, LP HQ, ALP HQ
-        
-        // Construct the URL for the Google Sheets API
-        const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${dataRange}?key=${apiKey}`;
-        
-        // Function to fetch data from Google Sheets
-        function fetchSheetData() {
-            fetch(sheetURL)
-                .then(response => response.json())
-                .then(data => {
-                    const rows = data.values;
-                    // Store the sheet data for later use
-                    window.sheetData = rows;
-                    populateNames(); // Populate LP and ALP names after data is fetched
-                })
-                .catch(error => console.error('Error fetching data from Google Sheets:', error));
-        }
-        
-        // Function to populate the LP and ALP names into the datalist
-        // function populateNames() {
-        //     const lpNames = document.getElementById('lpnames');
-        //     const alpNames = document.getElementById('alpnames');
-        
-        //     // Clear existing options
-        //     lpNames.innerHTML = '';
-        //     alpNames.innerHTML = '';
-        
-        //     // Loop through the rows and add LP and ALP names to the datalists
-        //     window.sheetData.forEach(row => {
-        //         const lpOption = document.createElement('option');
-        //         lpOption.value = row[2]; // LP Name is in the 3rd column (C)
-        //         lpNames.appendChild(lpOption);
-        
-        //         const alpOption = document.createElement('option');
-        //         alpOption.value = row[6]; // ALP Name is in the 7th column (G)
-        //         alpNames.appendChild(alpOption);
-        //     });
-        // }
-        
-        // Function to auto-fill details based on the entered LP CMS ID
-        function autoFillLPDetails() {
-    const lpcmsid = document.getElementById('lpcmsid').value;
-    if (!lpcmsid) return; // Exit if no LP CMS ID is entered
-
-    // Find the row that matches the LP CMS ID (assumed to be in the first column)
-    const matchingRow = window.sheetData?.find(row => row[2] == lpcmsid);
-
-    if (matchingRow) {
-        // Auto-fill LP Name (third column in Google Sheet)
-        document.getElementById('lpname').value = matchingRow[3];
-
-        // Auto-select LP Type (fourth column in Google Sheet)
-        const lpType = matchingRow[4];
-        const lpTypeSelect = document.getElementById('lptype');
-        for (let i = 0; i < lpTypeSelect.options.length; i++) {
-            if (lpTypeSelect.options[i].value === lpType) {
-                lpTypeSelect.selectedIndex = i;
-                break;
-            }
-        }
-
-        // Auto-select LP Category (fifth column in Google Sheet)
-        const lpCategory = matchingRow[5];
-        const lpCatSelect = document.getElementById('lpcat');
-        for (let i = 0; i < lpCatSelect.options.length; i++) {
-            if (lpCatSelect.options[i].value === lpCategory) {
-                lpCatSelect.selectedIndex = i;
-                break;
-            }
-        }
-
-
-        // Auto-select LP HQ (fifth column in Google Sheet)
-        const lpHQ = matchingRow[6];
-        const lpHQSelect = document.getElementById('lphq');
-        for (let i = 0; i < lpHQSelect.options.length; i++) {
-            if (lpHQSelect.options[i].value === lpHQ) {
-                lpHQSelect.selectedIndex = i;
-                break;
-            }
-        }
-        // Auto-fill LP HQ (sixth column in Google Sheet)
-       // document.getElementById('lphq').value = matchingRow[6];
-
-        // Automatically update the due date if LP Category is available
-        setDueDate();
-    } else {
-        clearLPFields(); // Clear fields if no match
-    }
-}
-
-// Function to auto-fill ALP details based on the entered ALP CMS ID
-function autoFillALPDetails() {
-    const alpcmsid = document.getElementById('alpcmsid').value;
-    if (!alpcmsid) return; // Exit if no ALP CMS ID is entered
-
-    // Find the row that matches the ALP CMS ID (assumed to be in the seventh column)
-    const matchingRow = window.sheetData?.find(row => row[2] == alpcmsid);
-
-    if (matchingRow) {
-        // Auto-fill ALP Name (eighth column in Google Sheet)
-        document.getElementById('alpname').value = matchingRow[3];
-
-        // Auto-select ALP Designation (ninth column in Google Sheet)
-        const alpDesg = matchingRow[4];
-        const alpDesgSelect = document.getElementById('alpdesg');
-        for (let i = 0; i < alpDesgSelect.options.length; i++) {
-            if (alpDesgSelect.options[i].value === alpDesg) {
-                alpDesgSelect.selectedIndex = i;
-                break;
-            }
-        }
-
-         // Auto-select ALP Designation (ninth column in Google Sheet)
-         const alpHQ = matchingRow[6];
-        const alpHQSelect = document.getElementById('alphq');
-        for (let i = 0; i < alpHQSelect.options.length; i++) {
-            if (alpHQSelect.options[i].value === alpHQ) {
-                alpHQSelect.selectedIndex = i;
-                break;
-            }
-        }
-        // Auto-fill ALP HQ (tenth column in Google Sheet)
-        //document.getElementById('alphq').value = matchingRow[10];
-    } else {
-        clearALPFields(); // Clear fields if no match
-    }
-}
-        
-        // Clear LP fields
-        function clearLPFields() {
-            document.getElementById('lpname').value = '';
-            document.getElementById('lptype').value = '';
-            document.getElementById('lpcat').value = '';
-            document.getElementById('lphq').value = '';
-        }
-        
-        // Clear ALP fields
-        function clearALPFields() {
-            document.getElementById('alpname').value = '';
-            document.getElementById('alpdesg').value = '';
-            document.getElementById('alphq').value = '';
-        }
-        
-        // Function to auto-fill CLI Name and today's date based on the entered Inspection ID
-        function autoFillDetails() {
-            const inspectionID = document.getElementById('inspectionid').value;
-            if (!inspectionID) return; // Exit if no Inspection ID is entered
-        
-            // Find the row that matches the Inspection ID
-            const matchingRow = window.sheetData?.find(row => row[0] == inspectionID); // Inspection ID is in the first column
-        
-            if (matchingRow) {
-                // Auto-fill CLI Name (second column in Google Sheet)
-                document.getElementById('cliname').value = matchingRow[1];
-        
-                // Set today's date in the Inspection Date field
-                // const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-                // document.getElementById('inspectiondate').value = today;
-            } else {
-                // Optional: alert('Inspection ID not found!');
-                // Or clear relevant fields if needed
-            }
-        }
-        
-        // Event listeners to auto-fill data when relevant IDs are entered
-        document.getElementById('lpcmsid').addEventListener('input', autoFillLPDetails);
-        document.getElementById('alpcmsid').addEventListener('input', autoFillALPDetails);
-        document.getElementById('inspectionid').addEventListener('input', autoFillDetails);
-        
-        // Auto-check Coaching or Goods based on train number
-        document.getElementById('trainNumber').addEventListener('input', function() {
-            const trainNumber = document.getElementById('trainNumber').value;
-            const isNumeric = /^[0-9]+$/.test(trainNumber);
+        // Wait for DOM to be fully loaded before executing scripts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Constants for Google Sheets API
+            const sheetID = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
+            const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+            const dataRange = 'Sheet1!A2:K2000';
+            const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${dataRange}?key=${apiKey}`;
             
-            if (isNumeric) {
-                document.getElementById('coach').checked = true;  // Auto-check COACHING
-                document.getElementById('goods').checked = false;
-            } else {
-                document.getElementById('goods').checked = true;  // Auto-check GOODS
-                document.getElementById('coach').checked = false;
-            }
-        });
-        
-        // Auto-check Loaded or Empty based on train load
-        document.getElementById('trainLoad').addEventListener('input', function() {
-            const trainLoad = parseFloat(document.getElementById('trainLoad').value);
+            // Initialize date restrictions
+            setupDateRestrictions();
             
-            if (trainLoad > 1500) {
-                document.getElementById('load').checked = true;  // Auto-check LOADED
-                document.getElementById('empty').checked = false;
-            } else {
-                document.getElementById('empty').checked = true;  // Auto-check EMPTY
-                document.getElementById('load').checked = false;
-            }
-        });
-        
-        // Function to calculate and set due date based on inspection date and LP category
-        function setDueDate() {
-            const inspectionDate = document.getElementById('inspectiondate').value;
-            const nominated = document.getElementById('nomi').checked;
-            const lpCategory = document.getElementById('lpcat').value;
-        
-            console.log('Inspection Date:', inspectionDate);  // Log inspection date
-            console.log('LP Category:', lpCategory);  // Log LP category
-            console.log('Is Nominated:', nominated);  // Log nominated status
-        
-            // Ensure the inspection date is valid
-            if (!inspectionDate) {
-                console.log('Inspection Date is empty. Cannot set due date.');
-                return;  // If inspection date is empty, do nothing
-            }
-        
-            if (!lpCategory) {
-                console.log('LP Category is not selected.');
-                return;  // If LP category is not selected, do nothing
-            }
-        
-            const date = new Date(inspectionDate);
-        
-            if (nominated) {
-                // Apply logic based on LP category
-                if (lpCategory === 'A') {
-                    console.log('LP Category A: Adding 2 months');
-                    date.setMonth(date.getMonth() + 2);  // Set due date 2 months after inspection date
-                } else if (lpCategory === 'B') {
-                    console.log('LP Category B: Adding 1 month');
-                    date.setMonth(date.getMonth() + 1);  // Set due date 1 month after inspection date
-                } else if (lpCategory === 'C') {
-                    console.log('LP Category C: Adding 15 days');
-                    date.setDate(date.getDate() + 15);  // Set due date 15 days after inspection date
-                }
-        
-                // Format date to YYYY-MM-DD
-                const dueDate = date.toISOString().split('T')[0];
-                console.log('Calculated Due Date:', dueDate);  // Log the due date
-        
-                document.getElementById('lpduedate').value = dueDate;  // Set the due date in the field
-            }
-        }
-        
-        // Event listeners for LP selection and LP category
-        document.querySelectorAll('input[name="selectlp"]').forEach(function(radio) {
-            radio.addEventListener('change', function() {
-                console.log('LP Selection Changed');
-                setDueDate();  // Update due date when LP is selected
-            });
-        });
-        
-        // Event listener for LP category selection change
-        document.getElementById('lpcat').addEventListener('input', function() {
-            console.log('LP Category Changed');
-            setDueDate();  // Update due date when LP category is changed
-        });
-        
-        // Event listener for inspection date change
-        document.getElementById('inspectiondate').addEventListener('change', function() {
-            console.log('Inspection Date Changed');
-            setDueDate();  // Update due date when inspection date is changed
-        });
-        
-        // Auto-check Day or Night based on time input
-        const startTimeInput = document.getElementById('startTime');
-    const endTimeInput = document.getElementById('endTime');
-    
-    endTimeInput.addEventListener('change', function() {
-        const startTime = new Date(startTimeInput.value);
-        const endTime = new Date(endTimeInput.value);
-        
-        if (startTime && endTime && endTime <= startTime) {
-            alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
-            endTimeInput.value = ''; // Clear the invalid end time input
-        }
-
-        // Call the auto-checking function when end time changes
-        checkDayNight();
-    });
-
-    document.querySelectorAll('input[type="datetime-local"]').forEach(function(input) {
-        input.addEventListener('input', checkDayNight);
-    });
-
-    function checkDayNight() {
-        const startTime = startTimeInput.value;
-        const endTime = endTimeInput.value;
-
-        const isNight = (time) => {
-            const [datePart, timePart] = time.split('T');
-            const [hours] = timePart.split(':').map(n => parseInt(n, 10));
-            return hours >= 22 || hours < 6;
-        };
-
-        if (startTime && isNight(startTime)) {
-            document.getElementById('night').checked = true;  // Auto-check NIGHT
-            document.getElementById('day').checked = false;
-        } else {
-            document.getElementById('day').checked = true;    // Auto-check DAY
-            document.getElementById('night').checked = false;
-        }
-
-        // Check end time if start time is not selected
-        if (endTime && isNight(endTime)) {
-            document.getElementById('night').checked = true;
-            document.getElementById('day').checked = false;
-        } else {
-            document.getElementById('day').checked = true;
-            document.getElementById('night').checked = false;
-        }
-    }
-
-        
-        // Fetch sheet data when the page loads
-        window.onload = () => {
+            // Fetch sheet data when page loads
             fetchSheetData();
-        };
-        // Add event listeners to the form submission
-let form = document.querySelector('#inspectionForm');
-form.addEventListener('submit', (e) => {
-    e.preventDefault();  // Prevent the form from submitting immediately
-
-    // Convert all input data to uppercase
-    const inputs = form.querySelectorAll('input[type="text"], input[type="number"], textarea, select');
-    inputs.forEach(input => {
-        if (input.value) {
-            input.value = input.value.toUpperCase();
-        }
-    });
-
-    document.querySelector("#sub").value = "Submitting.........";
-    
-    // Create FormData object and submit the form data
-    let data = new FormData(form);
-    fetch('https://script.google.com/macros/s/AKfycbyCxim6E9lm4v8bfX2ItlVA8IPQb1s1v4kTUqTjAqiAfGmtT2nhb243pPLXVCUl8cU/exec', {
-        method: "POST",
-        body: data
-    })
-    .then(res => res.text())
-    .then(data => {
-        document.querySelector("#sub").value = "Submit";
-        form.reset();
-        alert("Footplating Data Saved Successfully...");
-    });
-});
-
-        </script>     
+            
+            // Set up all event listeners
+            setupEventListeners();
+            
+            // Function to set up date restrictions
+            function setupDateRestrictions() {
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1);
+                
+                document.getElementById('inspectiondate').min = formatDate(yesterday);
+                document.getElementById('inspectiondate').max = formatDate(today);
+            }
+            
+            // Helper function to format date as YYYY-MM-DD
+            function formatDate(date) {
+                return date.toISOString().split('T')[0];
+            }
+            
+            // Fetch data from Google Sheets
+            function fetchSheetData() {
+                fetch(sheetURL)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        window.sheetData = data.values;
+                        console.log('Data loaded successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data from Google Sheets:', error);
+                        alert('Error loading data. Please refresh the page.');
+                    });
+            }
+            
+            // Set up all event listeners
+            function setupEventListeners() {
+                // Form submission
+                const form = document.getElementById('inspectionForm');
+                if (form) {
+                    form.addEventListener('submit', handleFormSubmit);
+                }
+                
+                // Input fields
+                const lpcmsid = document.getElementById('lpcmsid');
+                const alpcmsid = document.getElementById('alpcmsid');
+                const inspectionid = document.getElementById('inspectionid');
+                const trainNumber = document.getElementById('trainNumber');
+                const trainLoad = document.getElementById('trainLoad');
+                const lpcat = document.getElementById('lpcat');
+                const inspectiondate = document.getElementById('inspectiondate');
+                const startTimeInput = document.getElementById('startTime');
+                const endTimeInput = document.getElementById('endTime');
+                
+                if (lpcmsid) lpcmsid.addEventListener('input', autoFillLPDetails);
+                if (alpcmsid) alpcmsid.addEventListener('input', autoFillALPDetails);
+                if (inspectionid) inspectionid.addEventListener('input', autoFillDetails);
+                if (trainNumber) trainNumber.addEventListener('input', checkTrainType);
+                if (trainLoad) trainLoad.addEventListener('input', checkTrainLoad);
+                if (lpcat) lpcat.addEventListener('change', setDueDate);
+                if (inspectiondate) inspectiondate.addEventListener('change', setDueDate);
+                
+                // Radio buttons for LP selection
+                document.querySelectorAll('input[name="selectlp"]').forEach(radio => {
+                    radio.addEventListener('change', setDueDate);
+                });
+                
+                // Time inputs for day/night check
+                if (startTimeInput && endTimeInput) {
+                    startTimeInput.addEventListener('change', checkDayNight);
+                    endTimeInput.addEventListener('change', function() {
+                        const startTime = new Date(startTimeInput.value);
+                        const endTime = new Date(this.value);
+                        
+                        if (startTime && endTime && endTime <= startTime) {
+                            alert('End time cannot be less than or equal to start time. Please select a NEXT date.');
+                            this.value = '';
+                        }
+                        checkDayNight();
+                    });
+                }
+            }
+            
+            // Auto-fill LP details based on CMS ID
+            function autoFillLPDetails() {
+                const lpcmsid = document.getElementById('lpcmsid').value;
+                if (!lpcmsid || !window.sheetData) return;
+                
+                const matchingRow = window.sheetData.find(row => row[2] == lpcmsid);
+                if (matchingRow) {
+                    document.getElementById('lpname').value = matchingRow[3] || '';
+                    
+                    // Set LP Type
+                    const lpTypeSelect = document.getElementById('lptype');
+                    if (lpTypeSelect) {
+                        lpTypeSelect.value = matchingRow[4] || '';
+                    }
+                    
+                    // Set LP Category
+                    const lpCatSelect = document.getElementById('lpcat');
+                    if (lpCatSelect) {
+                        lpCatSelect.value = matchingRow[5] || '';
+                    }
+                    
+                    // Set LP HQ
+                    const lpHQSelect = document.getElementById('lphq');
+                    if (lpHQSelect) {
+                        lpHQSelect.value = matchingRow[6] || '';
+                    }
+                    
+                    setDueDate();
+                } else {
+                    clearLPFields();
+                }
+            }
+            
+            // Auto-fill ALP details based on CMS ID
+            function autoFillALPDetails() {
+                const alpcmsid = document.getElementById('alpcmsid').value;
+                if (!alpcmsid || !window.sheetData) return;
+                
+                const matchingRow = window.sheetData.find(row => row[2] == alpcmsid);
+                if (matchingRow) {
+                    document.getElementById('alpname').value = matchingRow[3] || '';
+                    
+                    // Set ALP Designation
+                    const alpDesgSelect = document.getElementById('alpdesg');
+                    if (alpDesgSelect) {
+                        alpDesgSelect.value = matchingRow[4] || '';
+                    }
+                    
+                    // Set ALP HQ
+                    const alpHQSelect = document.getElementById('alphq');
+                    if (alpHQSelect) {
+                        alpHQSelect.value = matchingRow[6] || '';
+                    }
+                } else {
+                    clearALPFields();
+                }
+            }
+            
+            // Auto-fill CLI details based on Inspection ID
+            function autoFillDetails() {
+                const inspectionID = document.getElementById('inspectionid').value;
+                if (!inspectionID || !window.sheetData) return;
+                
+                const matchingRow = window.sheetData.find(row => row[0] == inspectionID);
+                if (matchingRow) {
+                    document.getElementById('cliname').value = matchingRow[1] || '';
+                }
+            }
+            
+            // Clear LP fields
+            function clearLPFields() {
+                document.getElementById('lpname').value = '';
+                document.getElementById('lptype').value = '';
+                document.getElementById('lpcat').value = '';
+                document.getElementById('lphq').value = '';
+            }
+            
+            // Clear ALP fields
+            function clearALPFields() {
+                document.getElementById('alpname').value = '';
+                document.getElementById('alpdesg').value = '';
+                document.getElementById('alphq').value = '';
+            }
+            
+            // Check train type based on train number
+            function checkTrainType() {
+                const trainNumber = document.getElementById('trainNumber').value;
+                const isNumeric = /^[0-9]+$/.test(trainNumber);
+                
+                if (isNumeric) {
+                    document.getElementById('coach').checked = true;
+                    document.getElementById('goods').checked = false;
+                } else {
+                    document.getElementById('goods').checked = true;
+                    document.getElementById('coach').checked = false;
+                }
+            }
+            
+            // Check train load (loaded/empty)
+            function checkTrainLoad() {
+                const trainLoad = parseFloat(document.getElementById('trainLoad').value) || 0;
+                
+                if (trainLoad > 1500) {
+                    document.getElementById('load').checked = true;
+                    document.getElementById('empty').checked = false;
+                } else {
+                    document.getElementById('empty').checked = true;
+                    document.getElementById('load').checked = false;
+                }
+            }
+            
+            // Set due date based on inspection date and LP category
+            function setDueDate() {
+                const inspectionDate = document.getElementById('inspectiondate').value;
+                const nominated = document.querySelector('input[name="selectlp"]:checked')?.value === 'NOMINATED';
+                const lpCategory = document.getElementById('lpcat').value;
+                
+                if (!inspectionDate || !lpCategory || !nominated) {
+                    document.getElementById('lpduedate').value = '';
+                    return;
+                }
+                
+                const date = new Date(inspectionDate);
+                
+                if (lpCategory === 'A') {
+                    date.setMonth(date.getMonth() + 2);
+                } else if (lpCategory === 'B') {
+                    date.setMonth(date.getMonth() + 1);
+                } else if (lpCategory === 'C') {
+                    date.setDate(date.getDate() + 15);
+                }
+                
+                document.getElementById('lpduedate').value = formatDate(date);
+            }
+            
+            // Check if it's day or night based on time
+            function checkDayNight() {
+                const startTime = document.getElementById('startTime').value;
+                const endTime = document.getElementById('endTime').value;
+                const timeToCheck = startTime || endTime;
+                
+                if (!timeToCheck) return;
+                
+                const hours = new Date(timeToCheck).getHours();
+                const isNight = hours >= 22 || hours < 6;
+                
+                document.getElementById('night').checked = isNight;
+                document.getElementById('day').checked = !isNight;
+            }
+            
+            // Handle form submission
+            function handleFormSubmit(e) {
+                e.preventDefault();
+                const submitBtn = document.querySelector("#sub");
+                const form = e.target;
+                
+                submitBtn.value = "Submitting...";
+                submitBtn.disabled = true;
+                
+                try {
+                    // Convert all text inputs to uppercase
+                    const inputs = form.querySelectorAll('input[type="text"], input[type="number"], textarea');
+                    inputs.forEach(input => {
+                        if (input.value) {
+                            input.value = input.value.toUpperCase();
+                        }
+                    });
+                    
+                    const data = new FormData(form);
+                    
+                    fetch('https://script.google.com/macros/s/AKfycbyCxim6E9lm4v8bfX2ItlVA8IPQb1s1v4kTUqTjAqiAfGmtT2nhb243pPLXVCUl8cU/exec', {
+                        method: "POST",
+                        body: data
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        alert("Footplating Data Saved Successfully!");
+                        form.reset();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("Error submitting form. Please try again.");
+                    })
+                    .finally(() => {
+                        submitBtn.value = "Submit";
+                        submitBtn.disabled = false;
+                    });
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    alert("Error submitting form. Please try again.");
+                    submitBtn.value = "Submit";
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,516 +1,425 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SPM Form</title>
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: 'Times New Roman', Times, serif;
-            }
-        
-            body {
-                background-color: aqua;
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background-repeat: no-repeat;
-                padding: 20px;
-            }
-        
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPM Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Times New Roman', Times, serif;
+        }
+    
+        body {
+            background-color: aqua;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-repeat: no-repeat;
+            padding: 20px;
+        }
+    
+        .main {
+            width: 100%;
+            max-width: 800px;
+            background: rgb(245, 242, 242);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        .main h3 {
+            padding-bottom: 20px;
+            font-size: 30px;
+            color: #333;
+            text-align: center;
+        }
+    
+        .main form {
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .form-outer {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    
+        .form-outer label {
+            display: block;
+            color: red;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+    
+        .form-outer input, 
+        .form-outer select {
+            width: 100%;
+            height: 40px;
+            padding: 8px;
+            background-color: rgb(203, 218, 223);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    
+        .form-outer button {
+            width: 100%;
+            padding: 12px;
+            background-color: blueviolet;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        .form-outer button:hover {
+            background-color: darkviolet;
+        }
+    
+        .radio-inline {
+            display: inline-block;
+            margin-right: 15px;
+        }
+    
+        .container {
+            margin: 10px 0;
+        }
+    
+        .uppercase {
+            text-transform: uppercase;
+        }
+    
+        .justify-content {
+            margin: 15px 0;
+        }
+    
+        /* For mobile responsiveness */
+        @media (max-width: 600px) {
             .main {
+                padding: 15px;
                 width: 100%;
-                max-width: 400px;
-                background: rgb(245, 242, 242);
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                text-align: center;
+                max-width: 100%;
             }
-        
-            .main h3 {
-                padding-bottom: 20px;
-                font-size: 30px;
-                color: #333;
-            }
-        
-            .main form {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-        
-            .form-outer {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-        
-            .form-outer label {
-                display: block;
-                color: red;
-                font-weight: bold;
-                margin-bottom: 8px;
-                text-align: left;
-            }
-        
-            .form-outer input {
-                width: 100%;
-                height: 40px;
-                padding: 8px;
-                background-color: rgb(203, 218, 223);
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 16px;
-            }
-        
+    
+            .form-outer input,
+            .form-outer select,
             .form-outer button {
-                width: 100%;
-                padding: 12px;
-                background-color: blueviolet;
-                color: white;
-                font-size: 18px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
-        
-            .form-outer button:hover {
-                background-color: darkviolet;
-            }
-        
-            /* For mobile responsiveness */
-            @media (max-width: 600px) {
-                .main {
-                    padding: 15px;
-                    width: 100%;
-                    max-width: 100%;
-                }
-        
-                .form-outer input,
-                .form-outer button {
-                    height: 45px;
-                    font-size: 16px;
-                }
-        
-                .main h3 {
-                    font-size: 26px;
-                }
-        
-                .form-outer label {
-                    font-size: 14px;
-                }
-            }
-        
-            .dropbtn {
-                background-color: #04AA6D;
-                color: white;
-                padding: 16px;
+                height: 45px;
                 font-size: 16px;
-                border: none;
-                cursor: pointer;
             }
-        </style>
-        
-        
+    
+            .main h3 {
+                font-size: 26px;
+            }
+    
+            .form-outer label {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<form id="tab3" class="tabcontent">
-    <div id="res" style="color: brown;font-size: 14px;" class="tabcontent">
-        <div class="form-outer">
-            <label style="color: red; font-weight: bold;">CMS ID<b style="color: blue;">**Enter last digits of CLI CMS Id Only,ex if CLI CMS ID is BSL0048 enter only 48,ex if CLI CMS id is BSL0106 enter only 106**</b></p></label>
-            <input type="number" name="spminspectionid" id="spminspectionid" required>
-        </div>
-        <div class="form-outer">
-            <label>Inspection Date</label>
-            <!-- <input type="date" name="spminspectiondate" id="spminspectiondate" required> -->
-            <input type="date" name="spminspectiondate" id="spminspectiondate" required>
-
-        </div>
-        <div class="form-outer">
-            <label style="color: red; font-weight: bold;">CLI Name</label>
-            <input type="text" name="spmcliname" id="spmcliname"  readonly>
-        </div>
-        <div class="form-outer">
-            <label>Train No</label>
-            <input type="text" name="spmTrainNumber" id="spmTrainNumber" required>
-        </div>
-        <div class="form-outer">
-            <label>Loco No</label>
-            <input type="text" name="spmlocono" id="spmlocono">
-        </div>
-        <div class="form-outer">
-            <label>From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
-            <input type="text" name="spmfromstation" id="spmfromstation" oninput="upperCase()" class="uppercase" >
-        </div>
-       
-        <div class="form-outer">
-            <label>To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
-            <input type="text" name="spmtostation" id="spmtostation" oninput="upperCase()" class="uppercase" >
-        </div>
-       
-
-        <!-- Select whether BMBS% Less Than 50% -->
-        <div class="justify-content">
-            <label style="color: red; font-weight: bold;">Select Whether BMBS% GREATER Than 50%</label><br><br>
-            <div class="container">
-                <label for="YES" class="radio-inline">YES
-                    <input type="radio" id="yes" name="spmselectbmbs" value="YES">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <label for="NO" class="radio-inline">NO
-                    <input type="radio" id="no" name="spmselectbmbs" value="NO">
-                </label><br><br>
-            </div>   
-        </div>
-
-        <div class="form-outer">
-            <label>Train Load In Tonn</label>
-            <input type="number" name="spmTrainLoad" id="spmTrainLoad" >
-        </div>
-
-        <!-- Auto-populate Loco Pilot info -->
-        <div class="form-outer">
-            <label style="color: red; font-weight: bold;">LP CMS ID</label>
-            <input type="text" name="spmlpcmsid" id="spmlpcmsid">
-        </div>
-        <div class="form-outer">
-            <label style="color: red; font-weight: bold;">LP Name</label>
-            <input type="text" name="spmlpname" id="spmlpname" >
-        </div>
-        <div class="form-outer">
-            <label style="color: red; font-weight: bold;">LP Type</label>
-            <input type="text" name="spmlptype" id="spmlptype" >
-        </div>
-        <div class="form-outer">
-            <label style="color: red; font-weight: bold;">LP Category</label>
-            <input type="text" name="spmlpcat" id="spmlpcat" >
-        </div>
-        <div class="form-outer">
-            <label style="color: red; font-weight: bold;">LP HQ</label>
-            <input type="text" name="spmlphq" id="spmlphq" >
-        </div>
-
-        <!-- Data Sent Date -->
-        <div class="form-outer">
-            <label>TRAIN DATE</label>
-            <input type="date" name="spmdatasent" id="spmdatasent" required>
-        </div>
-        <!-- <div class="justify-content">
-            <label style="color: red; font-weight: bold;">BFT</label><br><br>
-            <div class="container">
+    <div class="main">
+        <h3>SPM Form</h3>
+        <form id="tab3">
+            <div id="res" style="color: brown;font-size: 14px;">
+                <div class="form-outer">
+                    <label style="color: red; font-weight: bold;">CMS ID<b style="color: blue;">**Enter last digits of CLI CMS Id Only,ex if CLI CMS ID is BSL0048 enter only 48,ex if CLI CMS id is BSL0106 enter only 106**</b></label>
+                    <input type="number" name="spminspectionid" id="spminspectionid" required>
+                </div>
                 
-                <label for="YES" class="radio-inline">YES
-                    <input type="radio" id="yes" name="spmbft" value="YES">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <div class="form-outer">
+                    <label>Inspection Date</label>
+                    <input type="date" name="spminspectiondate" id="spminspectiondate" required>
+                </div>
                 
-                <label for="NO" class="radio-inline">NO
-                    <input type="radio" id="no" name="spmbft" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                </label><br><br>
-            </div>   
-        </div> -->
-        <!-- <div class="form-outer">
-            <label for="spmbft" style="color: red; font-weight: bold;">BFT</label>
-            <select name="spmbft" id="spmbft" onchange="handleSelectionChange(this)">
-                <option value="select">-------SELECT-------</option>
-                <option value="YES">YES</option>
-                <option value="CONDUCTED BUT NOT PROPER">CONDUCTED BUT NOT PROPER</option>
-                <option value="NO">NO</option>
-            </select>
-        </div>
-        <script>
-            function handleSelectionChange(selectElement) {
-                var value = selectElement.value;
-                if (value === 'CONDUCTED BUT NOT PROPER') {
-                    alert('You have selected CONDUCTED BUT NOT PROPER option, it will be considered as irregularity.');
-                } else if (value === 'NO') {
-                    alert('You have selected NO option, it will be considered as irregularity.');
-                }
-            }
-        </script> -->
-        <!-- <div class="justify-content">
-            <label style="color: red; font-weight: bold;">BPT</label><br><br>
-            <div class="container">
-                <label for="YES">YES
-                    <input type="radio" id="yes" name="spmbpt" value="YES">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                <div class="form-outer">
+                    <label style="color: red; font-weight: bold;">CLI Name</label>
+                    <input type="text" name="spmcliname" id="spmcliname" readonly>
+                </div>
                 
-                <label for="NO">NO
-                    <input type="radio" id="no" name="spmbpt" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                </label><br><br>
-            </div>   
-        </div> -->
-        
-
-
-    <div class="form-outer">
-        <label for="spmbft" style="color: red; font-weight: bold;">BFT</label>
-        <select name="spmbft" id="spmbft">
-            <option value="select">-------SELECT-------</option>
-            <option value="YES">YES</option>
-            <option value="NO">NO</option>
-            <option value="NOT APPLICABLE">NOT APPLICABLE</option>
-        </select>
+                <div class="form-outer">
+                    <label>Train No</label>
+                    <input type="text" name="spmTrainNumber" id="spmTrainNumber" required>
+                </div>
+                
+                <div class="form-outer">
+                    <label>Loco No</label>
+                    <input type="text" name="spmlocono" id="spmlocono">
+                </div>
+                
+                <div class="form-outer">
+                    <label>From Station<p><b style="color: blue;">**Enter Station Code Only**</b></p></label>
+                    <input type="text" name="spmfromstation" id="spmfromstation" oninput="upperCase()" class="uppercase">
+                </div>
+                
+                <div class="form-outer">
+                    <label>To Station<p style="color: blue;"><b>**Enter Station Code Only**</b></p></label>
+                    <input type="text" name="spmtostation" id="spmtostation" oninput="upperCase()" class="uppercase">
+                </div>
+                
+                <div class="justify-content">
+                    <label style="color: red; font-weight: bold;">Select Whether BMBS% GREATER Than 50%</label><br><br>
+                    <div class="container">
+                        <label for="spmyes" class="radio-inline">YES
+                            <input type="radio" id="spmyes" name="spmselectbmbs" value="YES">
+                        </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="spmno" class="radio-inline">NO
+                            <input type="radio" id="spmno" name="spmselectbmbs" value="NO">
+                        </label><br><br>
+                    </div>   
+                </div>
+                
+                <div class="form-outer">
+                    <label>Train Load In Tonn</label>
+                    <input type="number" name="spmTrainLoad" id="spmTrainLoad">
+                </div>
+                
+                <div class="form-outer">
+                    <label style="color: red; font-weight: bold;">LP CMS ID</label>
+                    <input type="text" name="spmlpcmsid" id="spmlpcmsid">
+                </div>
+                
+                <div class="form-outer">
+                    <label style="color: red; font-weight: bold;">LP Name</label>
+                    <input type="text" name="spmlpname" id="spmlpname">
+                </div>
+                
+                <div class="form-outer">
+                    <label style="color: red; font-weight: bold;">LP Type</label>
+                    <input type="text" name="spmlptype" id="spmlptype">
+                </div>
+                
+                <div class="form-outer">
+                    <label style="color: red; font-weight: bold;">LP Category</label>
+                    <input type="text" name="spmlpcat" id="spmlpcat">
+                </div>
+                
+                <div class="form-outer">
+                    <label style="color: red; font-weight: bold;">LP HQ</label>
+                    <input type="text" name="spmlphq" id="spmlphq">
+                </div>
+                
+                <div class="form-outer">
+                    <label>TRAIN DATE</label>
+                    <input type="date" name="spmdatasent" id="spmdatasent" required>
+                </div>
+                
+                <div class="form-outer">
+                    <label for="spmbft" style="color: red; font-weight: bold;">BFT</label>
+                    <select name="spmbft" id="spmbft">
+                        <option value="select">-------SELECT-------</option>
+                        <option value="YES">YES</option>
+                        <option value="NO">NO</option>
+                        <option value="NOT APPLICABLE">NOT APPLICABLE</option>
+                    </select>
+                </div>
+                
+                <div class="form-outer">
+                    <label for="spmbpt" style="color: red; font-weight: bold;">BPT</label>
+                    <select name="spmbpt" id="spmbpt">
+                        <option value="select">-------SELECT-------</option>
+                        <option value="YES">YES</option>
+                        <option value="NO">NO</option>
+                        <option value="NOT APPLICABLE">NOT APPLICABLE</option>
+                    </select>
+                </div>
+                
+                <div class="form-outer">
+                    <label>MPS Of Train</label>
+                    <input type="Number" name="spmmps" id="spmmps">
+                </div>
+                
+                <div class="justify-content">
+                    <label style="color: red; font-weight: bold;">Run With MPS</label><br><br>
+                    <div class="container">
+                        <label for="spmmpyes" class="radio-inline">YES
+                            <input type="radio" id="spmmpyes" name="spmmp" value="YES">
+                        </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="spmmpno" class="radio-inline">NO
+                            <input type="radio" id="spmmpno" name="spmmp" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                        </label><br><br>
+                    </div>   
+                </div>
+                
+                <div class="justify-content">
+                    <label style="color: red; font-weight: bold;">Poor Controlling At C/O</label><br><br>
+                    <div class="container">
+                        <label for="spmcontyes" class="radio-inline">YES
+                            <input type="radio" id="spmcontyes" name="spmcont" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
+                        </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="spmcontno" class="radio-inline">NO
+                            <input type="radio" id="spmcontno" name="spmcont" value="NO">
+                        </label><br><br>
+                    </div>   
+                </div>
+                
+                <div class="form-outer">
+                    <label for="spmconstsp" style="color: red; font-weight: bold;">RUN WITH CONSTANT SPEED</label>
+                    <select name="spmconstsp" id="spmconstsp">
+                        <option value="select">-------SELECT-------</option>
+                        <option value="YES">YES</option>
+                        <option value="MOMENTARY OVER SPEED-PERMISSIBLE">MOMENTARY OVER SPEED-PERMISSIBLE</option>
+                        <option value="MOMENTARY OVER SPEED-NOT PERMISSIBLE">MOMENTARY OVER SPEED-NOT PERMISSIBLE</option>
+                        <option value="CONTINUOUS OVER SPEED">CONTINUOUS OVER SPEED</option>
+                    </select>
+                </div>
+                
+                <div class="justify-content">
+                    <label style="color: red; font-weight: bold;">Short Controlling</label><br><br>
+                    <div class="container">
+                        <label for="spmshortyes" class="radio-inline">YES
+                            <input type="radio" id="spmshortyes" name="spmshort" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
+                        </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="spmshortno" class="radio-inline">NO
+                            <input type="radio" id="spmshortno" name="spmshort" value="NO">
+                        </label><br><br>
+                    </div>   
+                </div>
+                
+                <div class="justify-content">
+                    <label style="color: red; font-weight: bold;">COACHING/GOODS</label><br><br>
+                    <div class="container">
+                        <label for="spmco" class="radio-inline">COACHING
+                            <input type="radio" id="spmco" name="spmcogd" value="COACHING">
+                        </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="spmgd" class="radio-inline">GOODS
+                            <input type="radio" id="spmgd" name="spmcogd" value="GOODS">
+                        </label><br><br>
+                    </div>
+                </div>
+                
+                <div class="justify-content">
+                    <label style="color: red; font-weight: bold;">LOADED/EMPTY</label><br><br>
+                    <div class="container">
+                        <label for="spmld" class="radio-inline">LOADED
+                            <input type="radio" id="spmld" name="spmldemp" value="LOADED">
+                        </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="spmemp" class="radio-inline">EMPTY
+                            <input type="radio" id="spmemp" name="spmldemp" value="EMPTY">
+                        </label><br><br>
+                    </div>
+                </div>
+                
+                <div class="form-outer">
+                    <label style="color: red; font-weight: bold;">REMARK</label>
+                    <input type="text" name="spmremark" id="spmremark">
+                </div>
+                
+                <div class="form-outer">
+                    <input type="submit" id="sub3" value="Submit">
+                </div>
+            </div>
+        </form>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var selectElement = document.getElementById("spmbft");
-
-            selectElement.addEventListener("change", function () {
-                var value = selectElement.value;
-
-                if (value === 'CONDUCTED BUT NOT PROPER') {
-                    alert('You have selected CONDUCTED BUT NOT PROPER option, it will be considered as irregularity.');
-                } else if (value === 'NO') {
-                    alert('You have selected NO option, it will be considered as irregularity.');
-                }
+        // Function to convert input to uppercase
+        function upperCase() {
+            const inputs = document.querySelectorAll('.uppercase');
+            inputs.forEach(input => {
+                input.value = input.value.toUpperCase();
             });
-        });
-    </script>
-        <div class="form-outer">
-            <label for="spmbpt" style="color: red; font-weight: bold;">BPT</label>
-            <select name="spmbpt" id="spmbpt" onchange="handleSelectionChange(this)">
-                <option value="select">-------SELECT-------</option>
-                <option value="YES">YES</option>
-                 <option value="NO">NO</option>
-                 <option value="NOT APPLICABLE">NOT APPLICABLE</option>
-            </select>
-        </div>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var selectElement = document.getElementById("spmbpt");
-    
-                selectElement.addEventListener("change", function () {
-                    var value = selectElement.value;
-    
-                    if (value === 'CONDUCTED BUT NOT PROPER') {
-                        alert('You have selected CONDUCTED BUT NOT PROPER option, it will be considered as irregularity.');
-                    } else if (value === 'NO') {
-                        alert('You have selected NO option, it will be considered as irregularity.');
-                    }
-                });
-            });
-        </script>
-    
-        <div class="form-outer">
-            <label>MPS Of Train</label>
-            <input type="Number" name="spmmps" id="spmmps" >
-            </div>
-    
-        <div class="justify-content">
-            <label style="color: red; font-weight: bold;">Run With MPS</label><br><br>
-            <div class="container">
-                <label for="YES">YES
-                    <input type="radio" id="yes" name="spmmp" value="YES">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                
-                <label for="NO">NO
-                    <input type="radio" id="no" name="spmmp" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                </label><br><br>
-            </div>   
-        </div>
-        <div class="justify-content">
-            <label style="color: red; font-weight: bold;">Poor Controlling At C/O</label><br><br>
-            <div class="container">
-                <label for="YES">YES
-                    <input type="radio" id="yes" name="spmcont" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                
-                <label for="NO">NO
-                    <input type="radio" id="no" name="spmcont" value="NO">
-                </label><br><br>
-            </div>   
-        </div>
-        <!-- <div class="justify-content">
-            <label style="color: red; font-weight: bold;">Run With Constant Speed</label><br><br>
-            <div class="container">
-                <label for="YES">YES
-                    <input type="radio" id="yes" name="spmconstsp" value="YES">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                
-                <label for="NO">NO
-                    <input type="radio" id="no" name="spmconstsp" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
-                </label><br><br>
-            </div>   
-        </div> -->
-        <div class="form-outer">
-            <label for="spmconstsp" style="color: red; font-weight: bold;">RUN WITH CONSTANT SPEED</label>
-            <select name="spmconstsp" id="spmconstsp" onchange="handleSelectionChange(this)">
-                <option value="select">-------SELECT-------</option>
-                <option value="YES">YES</option>
-                <option value="MOMENTARY OVER SPEED-PERMISSIBLE">MOMENTARY OVER SPEED-PERMISSIBLE</option>
-                <option value="MOMENTARY OVER SPEED-NOT PERMISSIBLE">MOMENTARY OVER SPEED-NOT PERMISSIBLE</option>
-                <option value="CONTINUOUS OVER SPEED">CONTINUOUS OVER SPEED</option>
-            </select>
-        </div>
-        <script>
-            function handleSelectionChange(selectElement) {
-                var value = selectElement.value;
-                if (value === 'MOMENTARY OVER SPEED-NOT PERMISSIBLE') {
-                    alert('You have selected MOMENTARY OVER SPEED-NOT PERMISSIBLE option, it will be considered as irregularity.');
-                } else if (value === 'CONTINUOUS OVER SPEED') {
-                    alert('You have selected CONTINUOUS OVER SPEED option, it will be considered as irregularity.');
-                }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const sheetIDspm = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
+            const apiKeyspm = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+            const dataRangespm = 'Sheet1!A2:Z3000'; 
+            const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetIDspm}/values/${dataRangespm}?key=${apiKeyspm}`;
+
+            // Fetch data from Google Sheets
+            function fetchSheetDataspm() {
+                fetch(sheetURL)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        window.sheetData = data.values;
+                        console.log('Data loaded successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data from Google Sheets:', error);
+                        alert('Error loading data. Please refresh the page.');
+                    });
             }
-        </script>
-        <div class="justify-content">
-            <label style="color: red; font-weight: bold;">Short Controlling</label><br><br>
-            <div class="container">
-            <label for="YES">YES
-                <input type="radio" id="yes" name="spmshort" value="YES" onchange="if (this.value === 'YES') { alert('You have selected YES option, it will be considered as irregularity.'); }">
-            </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-            
-            <label for="NO">NO
-                <input type="radio" id="no" name="spmshort" value="NO">
-            </label><br><br>
-            </div>   
-        </div>
-        <!-- Auto-select Coaching/ Goods, Loaded/ Empty, Day/Night -->
-        <div class="justify-content">
-            <label style="color: red; font-weight: bold;">COACHING/GOODS</label><br><br>
-            <div class="container">
-                <label for="COACHING" class="radio-inline">COACHING
-                    <input type="radio" id="spmco" name="spmcogd" value="COACHING">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <label for="GOODS" class="radio-inline">GOODS
-                    <input type="radio" id="spmgd" name="spmcogd" value="GOODS">
-                </label><br><br>
-            </div>
-        </div>
-        <div class="justify-content">
-            <label style="color: red; font-weight: bold;">LOADED/EMPTY</label><br><br>
-            <div class="container">
-                <label for="LOADED" class="radio-inline">LOADED
-                    <input type="radio" id="spmld" name="spmldemp" value="LOADED">
-                </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <label for="EMPTY" class="radio-inline">EMPTY
-                    <input type="radio" id="spmemp" name="spmldemp" value="EMPTY">
-                </label><br><br>
-            </div>
-        </div>
-       
-        <div class="form-outer">
-            <label style="color: red; font-weight: bold;">REMARK</label>
-            <input type="text" name="spmremark" id="spmremark">
-        </div>
-        <!-- <div class="form-outer">
-            <label style="color: red; font-weight: bold;">REFERENCE NO</label>
-            <input type="text" name="spmrefno" id="spmrefno">
-        </div> -->
-        <!-- Submit Button -->
-        <div class="form-outer">
-            <input type="submit" id="sub3">
-        </div>
-    </div>
-</form>
 
-<script>
-    const sheetIDspm = '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08';
-    const apiKeyspm = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
-    const dataRangespm = 'Sheet1!A2:Z3000'; 
+            // Auto-fill fields based on LP CMS ID
+            document.getElementById('spmlpcmsid').addEventListener('input', function() {
+                const lpcmsid = this.value;
+                if (!lpcmsid) {
+                    clearLPFields();
+                    return;
+                }
 
-    const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetIDspm}/values/${dataRangespm}?key=${apiKeyspm}`;
+                const matchingRow = window.sheetData?.find(row => row[2] === lpcmsid);
 
-    // Fetch data from Google Sheets
-    function fetchSheetDataspm() {
-        fetch(sheetURL)
-            .then(response => response.json())
-            .then(data => {
-                const rows = data.values;
-                window.sheetData = rows;
-                // Optionally populate dropdowns if needed
-            })
-            .catch(error => console.error('Error fetching data from Google Sheets:', error));
-    }
+                if (matchingRow) {
+                    document.getElementById('spmlpname').value = matchingRow[3] || '';
+                    document.getElementById('spmlptype').value = matchingRow[4] || '';
+                    document.getElementById('spmlpcat').value = matchingRow[5] || '';
+                    document.getElementById('spmlphq').value = matchingRow[6] || '';
+                } else {
+                    clearLPFields();
+                }
+            });
 
-    // Auto-fill fields based on LP CMS ID
-    document.getElementById('spmlpcmsid').addEventListener('input', function() {
-        const lpcmsid = this.value; // Get current value of LP CMS ID
-        if (!lpcmsid) {
-            clearLPFields(); // Clear fields if input is empty
-            return;
-        }
+            // Clear LP fields
+            function clearLPFields() {
+                document.getElementById('spmlpname').value = '';
+                document.getElementById('spmlptype').value = '';
+                document.getElementById('spmlpcat').value = '';
+                document.getElementById('spmlphq').value = '';
+            }
 
-        const matchingRow = window.sheetData?.find(row => row[2] === lpcmsid); // Assuming CMS ID is in column A (index 0)
+            // Auto-fill CLI Name based on Inspection ID
+            document.getElementById('spminspectionid').addEventListener('input', function() {
+                const inspectionID = this.value;
+                if (!inspectionID) {
+                    document.getElementById('spmcliname').value = '';
+                    return;
+                }
 
-        if (matchingRow) {
-            document.getElementById('spmlpname').value = matchingRow[3]; // LP Name (column C)
-            document.getElementById('spmlptype').value = matchingRow[4]; // LP Type (column D)
-            document.getElementById('spmlpcat').value = matchingRow[5]; // LP Category (column E)
-            document.getElementById('spmlphq').value = matchingRow[6]; // LP HQ (column F)
-        } else {
-            clearLPFields(); // Clear fields if no matching CMS ID is found
-        }
-    });
+                const matchingRow = window.sheetData?.find(row => row[0] == inspectionID);
 
-    // Clear LP fields
-    function clearLPFields() {
-        document.getElementById('spmlpname').value = '';
-        document.getElementById('spmlptype').value = '';
-        document.getElementById('spmlpcat').value = '';
-        document.getElementById('spmlphq').value = '';
-    }
+                if (matchingRow) {
+                    document.getElementById('spmcliname').value = matchingRow[1] || '';
+                } else {
+                    document.getElementById('spmcliname').value = '';
+                }
+            });
 
-    // Auto-fill CLI Name and Inspection Date based on Inspection ID
-    document.getElementById('spminspectionid').addEventListener('input', function() {
-        const inspectionID = this.value;
-        if (!inspectionID) {
-            document.getElementById('spmcliname').value = ''; // Clear CLI Name field if no input
-            document.getElementById('spminspectiondate').value = ''; // Clear date if no input
-            return;
-        }
+            // Set radio buttons based on input values
+            function setRadioButtons() {
+                const trainNumber = document.getElementById('spmTrainNumber').value;
+                const isNumeric = /^\d+$/.test(trainNumber);
+                
+                document.getElementById('spmco').checked = isNumeric;
+                document.getElementById('spmgd').checked = !isNumeric;
 
-        const matchingRow = window.sheetData?.find(row => row[0] == inspectionID); // Assuming Inspection ID is in column A (index 0)
+                const trainLoad = parseInt(document.getElementById('spmTrainLoad').value) || 0;
+                document.getElementById('spmld').checked = trainLoad > 1500;
+                document.getElementById('spmemp').checked = trainLoad <= 1500;
+            }
 
-        if (matchingRow) {
-            document.getElementById('spmcliname').value = matchingRow[1]; // CLI Name (column B)
-            
-            // Set today's date in the Inspection Date field
-            //const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
-            //document.getElementById('spminspectiondate').value = today;
-        } else {
-            // Optional: You might want to handle the scenario when the Inspection ID is not found
-            document.getElementById('spmcliname').value = ''; // Clear CLI Name if no match
-            const today = new Date().toISOString().split('T')[0]; // Set date even if not found
-            document.getElementById('spminspectiondate').value = today;
-        }
-    });
+            // Add event listeners for the inputs to trigger radio button selection
+            document.getElementById('spmTrainNumber').addEventListener('input', setRadioButtons);
+            document.getElementById('spmTrainLoad').addEventListener('input', setRadioButtons);
 
-    // Set radio buttons based on input values (keeping your original logic)
-    function setRadioButtons() {
-        const trainNumber = document.getElementById('spmTrainNumber').value;
-        document.getElementById('spmco').checked = /\d/.test(trainNumber); // COACHING
-        document.getElementById('spmgd').checked = !/\d/.test(trainNumber); // GOODS
-
-        const trainLoad = parseInt(document.getElementById('spmTrainLoad').value);
-        if (!isNaN(trainLoad)) {
-            document.getElementById('spmld').checked = trainLoad > 1500; // LOADED
-            document.getElementById('spmemp').checked = trainLoad <= 1500; // EMPTY
-        }
-
-        // Time Logic for Day/Night
-    //     const startTime = document.getElementById('spmstarttime').value;
-    //     const endTime = document.getElementById('spmendtime').value;
-    //     if (
-    //         (startTime >= "22:00" && startTime <= "23:59") ||
-    //         (endTime >= "22:00" && endTime <= "23:59") ||
-    //         (startTime >= "00:00" && startTime <= "06:00") ||
-    //         (endTime >= "00:00" && endTime <= "06:00")
-    //     ) {
-    //         document.getElementById('spmn').checked = true; // NIGHT
-    //     } else {
-    //         document.getElementById('spmd').checked = true; // DAY
-    //     }
-     }
-
-    // Add event listeners for the inputs to trigger radio button selection
-    document.getElementById('spmTrainNumber').addEventListener('input', setRadioButtons);
-    document.getElementById('spmTrainLoad').addEventListener('input', setRadioButtons);
+            // Handle select changes for alerts
+           
     //document.getElementById('spmstarttime').addEventListener('input', setRadioButtons);
     //document.getElementById('spmendtime').addEventListener('input', setRadioButtons);
 
@@ -559,13 +468,15 @@
     // Fetch sheet data on page load
     fetchSheetDataspm();
      // Function to generate a 2 or 3 digit random reference number
-     function generateReferenceNumber() {
-            var referenceNumber = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
-            document.getElementById('spmrefno').value = referenceNumber; // Set the input value to the generated number
-        }
+    //  function generateReferenceNumber() {
+    //         var referenceNumber = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
+    //         document.getElementById('spmrefno').value = referenceNumber; // Set the input value to the generated number
+    //     }
 
-        // Generate the reference number when the page loads
-        window.onload = generateReferenceNumber;
+    //     // Generate the reference number when the page loads
+    //     window.onload = generateReferenceNumber;
+  //)};
+        })
 </script>
 </body>
 </html>
