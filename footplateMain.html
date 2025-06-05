@@ -2,19 +2,27 @@
 <html>
 <head>
     <title>Footplate Inspection Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Your existing CSS styles here */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Times New Roman', Times, serif;
+        }
+    
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 20px;
-            background-color: #f4f4f4;
+            /* background-color: #f4f4f4; */
+            background-color: aquamarine;
         }
         .container {
             max-width: 800px;
             margin: auto;
-            background: #fff;
+            background: #ffffff;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -62,8 +70,8 @@
             </div> -->
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">Inspection Date</label>
-                <input type="date" name="inspectiondate" id="inspectiondate" required min="" max=""> 
-                       
+                <!-- <input type="date" name="inspectiondate" id="inspectiondate" required min="" max="">  -->
+                <input type="date" name="inspectiondate" id="inspectiondate">       
             </div>
             
             <!-- <script>
