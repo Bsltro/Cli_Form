@@ -1,58 +1,142 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Footplate Inspection Form</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Times New Roman', Times, serif;
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    body {
+        background-color: #e0f7fa;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .main {
+        width: 100%;
+        max-width: 600px;
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .main h3 {
+        font-size: 1.75rem;
+        color: #222;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .main form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-outer {
+        width: 100%;
+    }
+
+    .form-outer label {
+        display: block;
+        color: #d32f2f;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-outer input,
+    .form-outer select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.375rem;
+        font-size: 1rem;
+        transition: border 0.2s ease;
+    }
+
+    .form-outer input:focus,
+    .form-outer select:focus {
+        border-color: #7c3aed;
+        outline: none;
+        background-color: #ffffff;
+    }
+
+    .form-outer button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #7c3aed;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .form-outer button:hover {
+        background-color: #5b21b6;
+    }
+
+    .radio-inline {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 1rem;
+    }
+
+    .radio-inline input {
+        margin-right: 0.4rem;
+    }
+
+    .container {
+        margin: 0.75rem 0;
+    }
+
+    .uppercase {
+        text-transform: uppercase;
+    }
+
+    .justify-content {
+        margin: 1rem 0;
+    }
+
+    /* Mobile-specific tweaks */
+    @media (max-width: 600px) {
+        .main {
+            padding: 1.25rem;
+            border-radius: 0.375rem;
         }
-    
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            /* background-color: #f4f4f4; */
-            background-color: aquamarine;
+
+        .main h3 {
+            font-size: 1.5rem;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+        .form-outer input,
+        .form-outer select,
+        .form-outer button {
+            font-size: 1rem;
+            padding: 0.75rem;
         }
-        .form-outer {
-            margin-bottom: 15px;
+
+        .form-outer label {
+            font-size: 0.9rem;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"],
-        input[type="number"],
-        input[type="date"],
-        input[type="datetime-local"],
-        select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .radio-inline {
-            display: inline-block;
-            margin-right: 15px;
-        }
-        .uppercase {
-            text-transform: uppercase;
-        }
+    }
+</style>
+
     </style>
 </head>
 <body>
@@ -633,10 +717,10 @@
                 <div class="container">
                     <label for="sd1" class="radio-inline">10/2025
                         <input type="checkbox" id="sd1" name="sd1" value="10/2025">
-                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </label>&nbsp;&nbsp;&nbsp;
                    <label for="sd2" class="radio-inline">11/2025
                         <input type="checkbox" id="sd2" name="sd2" value="11/2025">
-                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </label>&nbsp;&nbsp;&nbsp;
                    <label for="sd3" class="radio-inline">12/2025
                            <input type="checkbox" id="sd3" name="sd3" value="12/2025">
                     </label><br> <br><br>
@@ -650,10 +734,10 @@
                     <div class="container">
                         <label for="gi1" class="radio-inline">07/2025
                             <input type="checkbox" id="gi1" name="gi1" value="07/2025">
-                        </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </label>&nbsp;&nbsp;&nbsp;
                         <label for="gi2" class="radio-inline">08/2025
                             <input type="checkbox" id="gi2" name="gi2" value="08/2025">
-                        </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </label>&nbsp;&nbsp;&nbsp;
                         <label for="gi3" class="radio-inline">09/2025
                             <input type="checkbox" id="gi3" name="gi3" value="09/2025">
                         </label><br><br>
@@ -667,10 +751,10 @@
             <div class="container">
                 <label for="cs1" class="radio-inline">07/2025
                     <input type="checkbox" id="cs1" name="cs1" value="07/2025">
-                </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </label>&nbsp;&nbsp;&nbsp;&nbsp;
                  <label for="cs2" class="radio-inline">05/2025
                     <input type="checkbox" id="cs2" name="cs2" value="02/2025">
-                </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </label>&nbsp;&nbsp;&nbsp;&nbsp;
                <label for="cs3" class="radio-inline">06/2025
                     <input type="checkbox" id="cs3" name="cs3" value="06/2025">
                 </label><br><br>
