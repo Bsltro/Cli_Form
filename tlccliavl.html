@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LI AVAILABILITY AT HQ REPORT</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    .button-container {
+      margin-top: 20px;
+    }
+    .filters {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>LI AVAILABILITY AT HQ REPORT</h1>
+
+  <!-- Filters -->
+  <div class="filters">
+    <label for="datePicker">Select Date:</label>
+    <input type="date" id="datePicker" />
+
+    <label for="locationFilter">Select Location:</label>
+    <select id="locationFilter">
+      <option value="">All</option>
+      <option value="BSL">BSL</option>
+      <option value="BSLX">BSLX</option>
+      <option value="AK">AK</option>
+      <option value="KNW">KNW</option>
+      <option value="BD">BD</option>
+      <option value="NGN">NGN</option>
+      <option value="MMR">MMR</option>
+      <option value="IGP">IGP</option>
+      <option value="IGPX">IGPX</option>
+    </select>
+  </div>
+
+  <!-- Data Table -->
+  <table id="dataTable">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Action Buttons -->
+  <div class="button-container">
+    <button onclick="printTable()">Print</button>
+    <button onclick="downloadCSV()">Download CSV</button>
+  </div>
+
+  <script>
+    const sheetId = '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM';
+    const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+    const sheetName = 'Sheet1';
+
+    const relevantColumns = [1, 2, 20, 21]; // Columns B, C, U, V
+    const allowedLocations = ['BSL', 'BSLX', 'AK', 'KNW', 'BD', 'NGN', 'MMR', 'IGP', 'IGPX'];
+    let selectedDate = new Date().toISOString().split('T')[0];
+
+    document.getElementById('datePicker').value = selectedDate;
+
+    document.getElementById('datePicker').addEventListener('change', (e) => {
+      selectedDate = e.target.value;
+      fetchData();
+    });
+
+    document.getElementById('locationFilter').addEventListener('change', fetchData);
+
+    async function fetchData() {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const rows = data.values;
+
+      if (!rows || rows.length < 2) {
+        alert('No data found!');
+        return;
+      }
+
+      const headers = rows[0];
+      const selectedLocation = document.getElementById('locationFilter').value;
+
+      const filteredRows = rows.slice(1).filter(row => {
+        const rowDate = formatDate(row[1]); // Column B
+        const rowLocation = row[20] ? row[20].trim() : ''; // Column U
+        return rowDate === selectedDate &&
+               allowedLocations.includes(rowLocation) &&
+               (selectedLocation === '' || rowLocation === selectedLocation);
+      });
+
+      populateHeaders(headers);
+      if (filteredRows.length > 0) {
+        populateTable(filteredRows);
+      } else {
+        document.querySelector("#dataTable tbody").innerHTML = '';
+        alert(`No data found for ${selectedDate} with selected filter.`);
+      }
+    }
+
+    function formatDate(dateString) {
+      return dateString ? dateString.trim() : '';
+    }
+
+    function populateHeaders(headers) {
+      const tableHead = document.querySelector("#dataTable thead");
+      tableHead.innerHTML = '';
+      const tr = document.createElement("tr");
+
+      relevantColumns.forEach(colIndex => {
+        const th = document.createElement("th");
+        th.textContent = headers[colIndex];
+        tr.appendChild(th);
+      });
+
+      tableHead.appendChild(tr);
+    }
+
+    function populateTable(rows) {
+      const tableBody = document.querySelector("#dataTable tbody");
+      tableBody.innerHTML = '';
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+        relevantColumns.forEach(colIndex => {
+          const td = document.createElement("td");
+          td.textContent = row[colIndex] || '';
+          tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function printTable() {
+      const printWindow = window.open('', '', 'height=600,width=800');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>DAILY LI MONITORING REPORT</title>
+            <style>
+              table {
+                width: 100%;
+                border-collapse: collapse;
+              }
+              table, th, td {
+                border: 1px solid black;
+              }
+              th, td {
+                padding: 8px;
+                text-align: center;
+              }
+            </style>
+          </head>
+          <body>
+            ${document.getElementById('dataTable').outerHTML}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+
+    function downloadCSV() {
+      const table = document.getElementById('dataTable');
+      let csv = [];
+      for (let row of table.rows) {
+        const rowData = [];
+        for (let cell of row.cells) {
+          rowData.push(cell.innerText);
+        }
+        csv.push(rowData.join(','));
+      }
+
+      const csvData = new Blob([csv.join('\n')], { type: 'text/csv' });
+      const url = URL.createObjectURL(csvData);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'li_availability_report.csv';
+      a.click();
+    }
+
+    // Initial load
+    fetchData();
+  </script>
+</body>
+</html>
