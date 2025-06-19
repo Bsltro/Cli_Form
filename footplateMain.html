@@ -444,16 +444,30 @@
             </div>
             <br>
             <div class="justify-content">
-                <label style="color: red; font-weight: bold;" style="color: red; font-weight: bold;">BFT/BPT</label><br><br>
+                <label style="color: red; font-weight: bold;" style="color: red; font-weight: bold;">BFT</label><br><br>
                 <div class="container">
                     <label for="YES" class="radio-inline">YES
-                        <input type="radio" id="yes" name="bftbpt" value="YES">
+                        <input type="radio" id="yes" name="bft" value="YES">
                     </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     <label for="NO" class="radio-inline">NO
-                        <input type="radio" id="no" name="bftbpt" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                        <input type="radio" id="no" name="bft" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
                     </label> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     <label for="NA" class="radio-inline">NA
-                        <input type="radio" id="na" name="bftbpt" value="NA">
+                        <input type="radio" id="na" name="bft" value="N A">
+                    </label><br><br>
+                </div>   
+            </div>
+            <div class="justify-content">
+                <label style="color: red; font-weight: bold;" style="color: red; font-weight: bold;">BPT</label><br><br>
+                <div class="container">
+                    <label for="YES" class="radio-inline">YES
+                        <input type="radio" id="yes" name="bpt" value="YES">
+                    </label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="NO" class="radio-inline">NO
+                        <input type="radio" id="no" name="bpt" value="NO" onchange="if (this.value === 'NO') { alert('You have selected NO option, it will be considered as irregularity.'); }">
+                    </label> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <label for="NA" class="radio-inline">NA
+                        <input type="radio" id="na" name="bpt" value="N A">
                     </label><br><br>
                 </div>   
             </div>
@@ -1043,7 +1057,7 @@
                     
                     const data = new FormData(form);
                     
-                    fetch('https://script.google.com/macros/s/AKfycbxQsugF-Aw4wW64MyfsYjCMUjJFXqAe8d80IGnq2yFatJkazoQ0XuqHXaNrV_-OtZqH/exec', {
+                    fetch('https://script.google.com/macros/s/AKfycbwzHA5OhG2wZoYAOk9GfoNVgo3JKRGukBgoV0zXmeDrttkrx8rOZWDgH5L8nCDPnxkk/exec', {
                         method: "POST",
                         body: data
                     })
