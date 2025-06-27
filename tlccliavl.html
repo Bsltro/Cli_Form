@@ -38,6 +38,8 @@
       <option value="BSL">BSL</option>
       <option value="BSLX">BSLX</option>
       <option value="AK">AK</option>
+      <option value="BAU">BAU</option>
+      <option value="CSN">CSN</option>
       <option value="KNW">KNW</option>
       <option value="BD">BD</option>
       <option value="NGN">NGN</option>
@@ -65,7 +67,7 @@
     const sheetName = 'Sheet1';
 
     const relevantColumns = [1, 2, 20, 21]; // Columns B, C, U, V
-    const allowedLocations = ['BSL', 'BSLX', 'AK', 'KNW', 'BD', 'NGN', 'MMR', 'IGP', 'IGPX'];
+    const allowedLocations = ['BSL', 'BSLX', 'AK', 'KNW', 'BD', 'NGN', 'MMR', 'IGP', 'IGPX','CSN','BAU'];
     let selectedDate = new Date().toISOString().split('T')[0];
 
     document.getElementById('datePicker').value = selectedDate;

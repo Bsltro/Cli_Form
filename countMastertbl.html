@@ -1,102 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CLI INSPECTION COUNT/PCDO</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CLI PERFORMANCE/PCDO DATA</title>
   <style>
+    /* ... (styles remain unchanged) ... */
     body {
       font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 20px;
     }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    /* Tabs styling */
     .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       margin: 20px 0;
     }
     .tabs button {
-      padding: 10px;
-      margin-right: 5px;
+      padding: 12px 20px;
+      margin: 5px;
       cursor: pointer;
-      background-color: #4CAF50;
+      background-color: #4cafaf;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .tabs button:hover {
+      background-color: #45a098;
     }
     .tabs button.active {
-      background-color: #45a049;
+      background-color: #338a3e;
     }
+    /* Table styling */
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #fff;
+    }
+    thead {
+      background-color: #af4c6d;
+      color: #fff;
     }
     th, td {
-      padding: 8px;
+      padding: 12px;
       border: 1px solid #ddd;
       text-align: center;
-      max-width: 85px;
+      max-width: 100px;
       word-wrap: break-word;
     }
     th {
-      background-color: #f2f2f2;
-      word-wrap: break-word;
+      font-weight: bold;
+      font-size: 14px;
     }
+    tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    /* Buttons container */
     .btn-container {
+      display: flex;
+      justify-content: center;
       margin-top: 20px;
     }
     .btn-container button {
-      padding: 10px;
-      margin-right: 10px;
+      padding: 12px 20px;
+      margin: 0 10px;
       cursor: pointer;
-      background-color: #4CAF50;
+      background-color: #4cacaf;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: background-color 0.3s;
     }
-    .date-filter {
-      margin: 15px 0;
-      padding: 10px;
-      background-color: #f5f5f5;
-      border-radius: 5px;
-    }
-    .date-filter label {
-      margin-right: 10px;
-    }
-    .date-filter input {
-      padding: 5px;
-      margin-right: 15px;
-    }
-    .date-filter button {
-      padding: 5px 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
+    .btn-container button:hover {
+      background-color: #a045a0;
     }
   </style>
 </head>
 <body>
 
-<h1>CLI INSPECTION COUNT TABLE</h1>
+<h1>CLI PERFORMANCE TABLE</h1>
 
 <!-- Tabs -->
-<div class="tabs">
-  <button id="tab1" class="tab-button active" onclick="switchTab(0)">Footplate count</button>
-  <button id="tab2" class="tab-button" onclick="switchTab(1)">CVVRS count</button>
-  <button id="tab3" class="tab-button" onclick="switchTab(2)">SPM count</button>
-  <button id="tab4" class="tab-button" onclick="switchTab(3)">RR</button>
-  <button id="tab5" class="tab-button" onclick="switchTab(4)">Loco Stabling count</button>
-  <button id="tab6" class="tab-button" onclick="switchTab(5)">Lobby count</button>
-  <button id="tab7" class="tab-button" onclick="switchTab(6)">SUMMARY</button>
-</div>
-
-<!-- Date Filter -->
-<div id="date-filter" class="date-filter">
-  <label for="from-date">From:</label>
-  <input type="date" id="from-date">
-  <label for="to-date">To:</label>
-  <input type="date" id="to-date">
-  <button onclick="applyDateFilter()">Apply Filter</button>
-  <button onclick="resetDateFilter()">Reset</button>
+<div class="tabs" id="tabs-container">
+  <button id="tab1" class="tab-button active" onclick="switchTab(0)">CLI CURRENT MONTH SUMMARY</button>
+  <button id="tab2" class="tab-button" onclick="switchTab(1)">DETAILED LP AND ALP SUMMARY</button>
+  <button id="tab3" class="tab-button" onclick="switchTab(2)">CURRENT MONTH OVERALL SUMMARY</button>
+  <button id="tab4" class="tab-button" onclick="switchTab(3)">CLI PREVIOUS MONTH SUMMARY</button>
+  <button id="tab5" class="tab-button" onclick="switchTab(4)">PREVIOUS MONTH LP AND ALP SUMMARY</button>
+  <button id="tab6" class="tab-button" onclick="switchTab(5)">PREVIOUS MONTH OVERALL SUMMARY</button>
 </div>
 
 <!-- Data Table -->
@@ -120,108 +124,133 @@
   // Google Sheets API configuration
   const sheetId = '1C6cXq3L-0cQY6YOv1fnQ1pCptqqy1TWxqNTBYVF636s';
   const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
-  const range = 'Sheet2!A1:AZ1000';  // Adjust the range if needed
+  const range = 'Sheet5!A1:GZ105';  // Adjust the range if needed
   const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
   let data = [];
-  let currentTab = 0; // Default tab (Footplate count)
-  let filteredData = [];
-  
-  // Tab-specific columns
- const tabColumns = [
-    [ 'C',  'G', 'H', 'I', 'J'],  //FP
-    ['AK', 'AL'],   //CVVRS
-    ['AO', 'AP'],   //SPM
-    ['AC','AF','AG','AH'],  //RR
-    ['U', 'X','Y','Z'],    //STB
-    ['M','P','Q', 'R'],   //LB
-    ['AS', 'AT' ,'AU' ,'AV'],   //SUM
-  ];
-  
-  // Date column for each tab (sheet column letters)
-  const tabDateColumns = [
-    'C',  // Footplate count - Column B
-    'AK', // CVVRS count - Column AT
-    'AO', // SPM count - Column AY
-    'AC', // RR/Lobby count - Column BD
-    'U', // Loco Stabling count - Column BJ
-    'M',  // SUMMARY - Column BM
-   null //'AS'
+  let currentTab = 0; // Default tab
+  // Define tab columns
+  const tabColumns = [
+    ['BE', 'BF', 'BG', 'BH', 'BI','BJ','BK','BL','BM','BN','BO','BP','BQ','BR','BS','BT','BU','BX','CP'],  // CLI CURRENT MONTH
+    ['BE','BY', 'BZ','CA','CB','CC','CD','CE','CF','CG','CH','CI','CJ','AX'],   // DETAILED LP AND ALP
+    ['CK', 'CL','CM'],   // CURRENT MONTH OVERALL
+    ['FL','FM','FN','FO','FP','FQ','FR','FS','FT','FU','FV','FW','FX','FY','FZ','GA','GB'],  // CLI PREVIOUS MONTH
+    ['FL','EY', 'EZ','FA','FB','FC','FD','FE','FF','FG','FH','FI','FJ','FK'],    // PREVIOUS LP AND ALP
+    ['GG','GH','GI', 'GJ'],   // PREVIOUS OVERALL
   ];
 
-  // Fetch the Google Sheets data
+  // Fetch data
   fetch(apiUrl)
-    .then(response => response.json())  // Parse the response as JSON
+    .then(response => response.json())
     .then(responseData => {
       data = responseData.values;
-      filteredData = data.slice(1); // Skip header row
-      loadTabData(currentTab);  // Load the first tab (Footplate count)
-      
-      // Set default date range to cover all dates
-      updateDateRange();
+      loadTabData(currentTab);
     })
     .catch(error => {
       console.error('Error fetching data:', error);
     });
 
-  // Load data for the current tab
+  // Utility to get month name
+  function getMonthName(monthIndex) {
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return monthNames[monthIndex];
+  }
+
+  // Load data for a tab
   function loadTabData(tabIndex) {
     const columnsToDisplay = tabColumns[tabIndex];
-    const rows = (tabIndex === 6) ? data.slice(0, 16) : filteredData; // For SUMMARY tab, show first 16 rows (header + 15 rows)
+    const rows = data.slice(1); // all data except header
+    const headers = data[0];
 
+    // Clear table
     const table = document.getElementById('sheet-data');
-    const tbody = table.querySelector('tbody');
-    tbody.innerHTML = '';  // Clear existing rows
+    table.innerHTML = '';
 
-    const headers = data[0]; // First row is header
+    // Determine header title based on tab
+    let headerTitle = 'CLI PERFORMANCE FOR THE MONTH - ';
+    if (tabIndex < 3) {
+      // Current month
+      const now = new Date();
+      const monthName = getMonthName(now.getMonth());
+      headerTitle += monthName;
+    } else {
+      // Previous month
+      const now = new Date();
+      const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const monthName = getMonthName(prevMonth.getMonth());
+      headerTitle += monthName;
+    }
+
+    // Create header with title
     const headerRow = document.createElement('tr');
+    const headerTh = document.createElement('th');
+    headerTh.colSpan = columnsToDisplay.length;
+    headerTh.innerText = headerTitle;
+    headerTh.style.fontSize = '18px';
+    headerTh.style.fontWeight = 'bold';
+    headerTh.style.textAlign = 'center';
+    headerRow.appendChild(headerTh);
 
-    columnsToDisplay.forEach(col => {
+    // Create new table head
+    const thead = document.createElement('thead');
+
+    // Create header row for columns
+    const colHeaderRow = document.createElement('tr');
+
+    // Calculate column sums
+    const colSums = new Array(columnsToDisplay.length).fill(0);
+
+    columnsToDisplay.forEach((col, index) => {
       const th = document.createElement('th');
       const colIndex = parseColumnLetterToIndex(col);
-      th.innerText = headers[colIndex] || `Column ${col}`;
-      headerRow.appendChild(th);
+      const headerName = headers[colIndex] || `Column ${col}`;
+
+      // Sum numeric values
+      let sum = 0;
+      rows.forEach(row => {
+        const cellVal = row[colIndex] || '';
+        const num = parseFloat(cellVal);
+        if (!isNaN(num)) {
+          sum += num;
+        }
+      });
+      colSums[index] = sum;
+      th.innerText = `${headerName}\n(Total: ${sum})`;
+      colHeaderRow.appendChild(th);
     });
+    thead.appendChild(headerRow);
+    thead.appendChild(colHeaderRow);
+    table.appendChild(thead);
 
-    table.querySelector('thead').innerHTML = '';  // Clear existing header
-    table.querySelector('thead').appendChild(headerRow);
-
-    // Add rows
-    const rowsToShow = (tabIndex === 6) ? rows.slice(1, 16) : rows; // For SUMMARY tab, show rows 1-15
-    rowsToShow.forEach(row => {
+    // Create tbody with data rows
+    const tbody = document.createElement('tbody');
+    rows.forEach(row => {
       const tr = document.createElement('tr');
       columnsToDisplay.forEach(col => {
         const td = document.createElement('td');
         const colIndex = parseColumnLetterToIndex(col);
-        td.innerText = row[colIndex] || '';  // If cell is empty, show blank
+        td.innerText = row[colIndex] || '';
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
     });
+    table.appendChild(tbody);
   }
 
-  // Switch between tabs
+  // Switch tabs
   function switchTab(tabIndex) {
     currentTab = tabIndex;
-    // Hide date filter for SUMMARY tab (tabIndex 6)
-    document.getElementById('date-filter').style.display = (tabIndex === 6) ? 'none' : 'block';
-    
-    if (tabIndex !== 6) {
-      updateDateRange();
-      applyDateFilter();
-    } else {
-      // For SUMMARY tab, just load the data without filtering
-      filteredData = data.slice(1);
-      loadTabData(tabIndex);
-    }
-    
-    document.querySelectorAll('.tab-button').forEach(button => {
-      button.classList.remove('active');
+    // Update button styles
+    document.querySelectorAll('.tab-button').forEach((btn, index) => {
+      btn.classList.toggle('active', index === tabIndex);
     });
-    document.getElementById(`tab${tabIndex + 1}`).classList.add('active');
+    loadTabData(tabIndex);
   }
 
-  // Convert column letter (e.g. "A") to column index (e.g. 0)
+  // Convert column letter to index
   function parseColumnLetterToIndex(col) {
     const column = col.toUpperCase();
     let index = 0;
@@ -231,146 +260,51 @@
     return index - 1;
   }
 
-  // Print the table
+  // Print table
   function printTable() {
     window.print();
   }
 
-  // Download the table data as a CSV file
+  // Download CSV
   function downloadCSV() {
     const columnsToDisplay = tabColumns[currentTab];
-    const rows = (currentTab === 6) ? data.slice(0, 16) : filteredData;
+    const rows = data.slice(1);
+    const headers = data[0];
 
     const csvRows = [];
-    const headers = [];
-    
-    // Get headers from the first row of data
-    columnsToDisplay.forEach(col => {
-      headers.push(data[0][parseColumnLetterToIndex(col)]);
-    });
-    csvRows.push(headers.join(','));
 
-    const rowsToShow = (currentTab === 6) ? rows.slice(1, 16) : rows;
-    rowsToShow.forEach(row => {
+    // Add headers
+    const headerNames = columnsToDisplay.map(col => {
+      const colIndex = parseColumnLetterToIndex(col);
+      return headers[colIndex] || '';
+    });
+    csvRows.push(headerNames.join(','));
+
+    // Calculate column sums
+    const colSums = new Array(columnsToDisplay.length).fill(0);
+    rows.forEach(row => {
+      columnsToDisplay.forEach((col, index) => {
+        const colIndex = parseColumnLetterToIndex(col);
+        const val = parseFloat(row[colIndex]);
+        if (!isNaN(val)) colSums[index] += val;
+      });
+    });
+
+    // Add data rows
+    rows.forEach(row => {
       const rowData = columnsToDisplay.map(col => row[parseColumnLetterToIndex(col)] || '');
       csvRows.push(rowData.join(','));
     });
 
+    // Create CSV
     const csvContent = csvRows.join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `cli_inspection_${currentTab + 1}.csv`;
+    link.download = `cli_inspection_tab${currentTab + 1}.csv`;
     link.click();
     URL.revokeObjectURL(url);
-  }
-  
-  // Update the date range inputs based on available data
-  function updateDateRange() {
-    if (data.length === 0 || currentTab === 6) return;
-    
-    const dateColumn = tabDateColumns[currentTab];
-    if (!dateColumn) return;
-    
-    const dateColumnIndex = parseColumnLetterToIndex(dateColumn);
-    const dates = data.slice(1).map(row => row[dateColumnIndex]).filter(date => date);
-    
-    if (dates.length === 0) {
-      document.getElementById('date-filter').style.display = 'none';
-      return;
-    }
-    
-    document.getElementById('date-filter').style.display = 'block';
-    
-    // Parse dates and find min/max
-    const parsedDates = dates.map(dateStr => {
-      // Handle different date formats (YYYY-MM-DD or other formats)
-      const parts = dateStr.split('-');
-      if (parts.length === 3) {
-        // Assume YYYY-MM-DD format
-        return new Date(dateStr);
-      } else {
-        // Try to parse as is (might need adjustment based on your actual date format)
-        return new Date(dateStr);
-      }
-    }).filter(date => !isNaN(date.getTime())); // Filter out invalid dates
-    
-    if (parsedDates.length === 0) {
-      document.getElementById('date-filter').style.display = 'none';
-      return;
-    }
-    
-    // Sort dates
-    parsedDates.sort((a, b) => a - b);
-    const minDate = parsedDates[0];
-    const maxDate = parsedDates[parsedDates.length - 1];
-    
-    // Format dates as YYYY-MM-DD for date inputs
-    const formatDate = (date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    };
-    
-    // Set date inputs
-    document.getElementById('from-date').min = formatDate(minDate);
-    document.getElementById('from-date').max = formatDate(maxDate);
-    document.getElementById('to-date').min = formatDate(minDate);
-    document.getElementById('to-date').max = formatDate(maxDate);
-    
-    document.getElementById('from-date').value = formatDate(minDate);
-    document.getElementById('to-date').value = formatDate(maxDate);
-  }
-  
-  // Apply date filter
-  function applyDateFilter() {
-    if (currentTab === 6) return; // Skip for SUMMARY tab
-    
-    const fromDate = document.getElementById('from-date').value;
-    const toDate = document.getElementById('to-date').value;
-    
-    if (!fromDate || !toDate) {
-      alert('Please select both from and to dates');
-      return;
-    }
-    
-    const dateColumn = tabDateColumns[currentTab];
-    const dateColumnIndex = parseColumnLetterToIndex(dateColumn);
-    
-    filteredData = data.slice(1).filter(row => {
-      const rowDateStr = row[dateColumnIndex];
-      if (!rowDateStr) return false;
-      
-      // Parse the row date
-      let rowDate;
-      const parts = rowDateStr.split('-');
-      if (parts.length === 3) {
-        // Assume YYYY-MM-DD format
-        rowDate = new Date(rowDateStr);
-      } else {
-        // Try to parse as is
-        rowDate = new Date(rowDateStr);
-      }
-      
-      if (isNaN(rowDate.getTime())) return false;
-      
-      // Format as YYYY-MM-DD for comparison
-      const rowDateFormatted = rowDate.toISOString().split('T')[0];
-      
-      return rowDateFormatted >= fromDate && rowDateFormatted <= toDate;
-    });
-    
-    loadTabData(currentTab);
-  }
-  
-  // Reset date filter
-  function resetDateFilter() {
-    if (currentTab === 6) return; // Skip for SUMMARY tab
-    filteredData = data.slice(1);
-    updateDateRange();
-    loadTabData(currentTab);
   }
 </script>
 
