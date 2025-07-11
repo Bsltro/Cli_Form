@@ -148,31 +148,10 @@
                 <input type="number" name="inspectionid" id="inspectionid" required>
             </div>
 
-            <!-- <div class="form-outer">
-                <label style="color: red; font-weight: bold;">Inspection Date</label>
-                <input type="date" name="inspectiondate" id="inspectiondate" required >
-            </div> -->
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">Inspection Date</label>
-                <!-- <input type="date" name="inspectiondate" id="inspectiondate" required min="" max="">  -->
                 <input type="date" name="inspectiondate" id="inspectiondate" required>       
             </div>
-            
-            <!-- <script>
-                // Set today's date as the max value
-                let today = new Date();
-                let yesterday = new Date(today);
-                yesterday.setDate(today.getDate() - 1); // Set to yesterday
-            
-                // Format date to yyyy-mm-dd
-                function formatDate(date) {
-                    return date.toISOString().split('T')[0];
-                }
-            
-                // Set the min and max attributes
-                document.getElementById('inspectiondate').min = formatDate(yesterday);
-                document.getElementById('inspectiondate').max = formatDate(today);
-            </script> -->
             
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">CLI Name</label>
@@ -254,11 +233,6 @@
                 </div>
             </div>
 
-            <!-- <div class="form-outer">
-                <label style="color: red; font-weight: bold;">LP HQ</label>
-                <input type="text" name="lphq" id="lphq" >
-            </div> -->
-            
             <div class="justify-content">
                 <label style="color: red; font-weight: bold;">Select ALP Nominated Or Other</label><br><br>
                 <div class="container">
@@ -320,10 +294,6 @@
                     </select> 
                 </div>
             </div>
-            <!-- <div class="form-outer">
-                <label style="color: red; font-weight: bold;">ALP HQ</label>
-                <input type="text" name="alphq" id="alphq">
-            </div> -->
             <div class="form-outer">
                 <label for="trainNumber" style="color: red; font-weight: bold;">Train Number:</label>
                 <input type="text" name="trainNumber" id="trainNumber" placeholder="Enter train number" class="uppercase" 
@@ -411,15 +381,6 @@
                     <option value="POOR">POOR(NOT CALLING)</option>
                 </select>
             </div>
-            <!-- <div class="form-outer">
-                <label for="signalcallinglp" style="color: red; font-weight: bold;">Signal Caling By LP</label>
-                <select name="sigcalllp" id="sigcalllp">
-                    <option value="select">-------Select Signal Calling By Loco Pilot-------</option>
-                    <option value="GOOD">GOOD(WITH HAND GESTURE)</option>
-                    <option value="AVERAGE">AVERAGE(WITHOUT HAND GESTURE)</option>
-                    <option value="POOR">POOR(NOT CALLING)</option>
-                </select>
-            </div> -->
             <br>
             <div class="form-outer">
                 <label for="signalcallingalp" style="color: red; font-weight: bold;">Signal Caling By ALP</label>
@@ -805,6 +766,9 @@
             // Set up all event listeners
             setupEventListeners();
             
+            // Load saved form data if it exists
+            loadFormData();
+            
             // Function to set up date restrictions
             function setupDateRestrictions() {
                 const today = new Date();
@@ -839,6 +803,85 @@
                     });
             }
             
+            // Save form data to localStorage
+            function saveFormData() {
+                const formData = {};
+                const form = document.getElementById('inspectionForm');
+                const formElements = form.elements;
+                
+                // Save all form inputs
+                for (let i = 0; i < formElements.length; i++) {
+                    const element = formElements[i];
+                    
+                    if (element.name) {
+                        if (element.type === 'checkbox' || element.type === 'radio') {
+                            if (element.checked) {
+                                formData[element.name] = element.value;
+                            }
+                        } else {
+                            formData[element.name] = element.value;
+                        }
+                    }
+                }
+                
+                // Save checkboxes separately since multiple can be checked
+                const checkboxes = ['sd1', 'sd2', 'sd3', 'gi1', 'gi2', 'gi3', 'cs1', 'cs2', 'cs3'];
+                checkboxes.forEach(name => {
+                    const checkbox = document.querySelector(`input[name="${name}"]`);
+                    if (checkbox) {
+                        formData[name] = checkbox.checked;
+                    }
+                });
+                
+                localStorage.setItem('footplateInspectionFormData', JSON.stringify(formData));
+            }
+            
+            // Load form data from localStorage
+            function loadFormData() {
+                const savedData = localStorage.getItem('footplateInspectionFormData');
+                if (!savedData) return;
+                
+                const formData = JSON.parse(savedData);
+                const form = document.getElementById('inspectionForm');
+                const formElements = form.elements;
+                
+                // Restore all form inputs
+                for (let i = 0; i < formElements.length; i++) {
+                    const element = formElements[i];
+                    
+                    if (element.name && formData[element.name] !== undefined) {
+                        if (element.type === 'checkbox' || element.type === 'radio') {
+                            if (element.value === formData[element.name]) {
+                                element.checked = true;
+                            }
+                        } else {
+                            element.value = formData[element.name];
+                        }
+                    }
+                }
+                
+                // Restore checkboxes
+                const checkboxes = ['sd1', 'sd2', 'sd3', 'gi1', 'gi2', 'gi3', 'cs1', 'cs2', 'cs3'];
+                checkboxes.forEach(name => {
+                    const checkbox = document.querySelector(`input[name="${name}"]`);
+                    if (checkbox && formData[name] !== undefined) {
+                        checkbox.checked = formData[name];
+                    }
+                });
+                
+                // Trigger any necessary change events
+                if (formData.trainNumber) checkTrainType();
+                if (formData.trainLoad) checkTrainLoad();
+                if (formData.startTime || formData.endTime) checkDayNight();
+                
+                console.log('Form data restored from localStorage');
+            }
+            
+            // Clear form data from localStorage
+            function clearFormData() {
+                localStorage.removeItem('footplateInspectionFormData');
+            }
+            
             // Set up all event listeners
             function setupEventListeners() {
                 // Form submission
@@ -846,6 +889,16 @@
                 if (form) {
                     form.addEventListener('submit', handleFormSubmit);
                 }
+                
+                // Save form data on any input change
+                form.addEventListener('input', function() {
+                    saveFormData();
+                });
+                
+                // Save form data on any checkbox/radio change
+                form.addEventListener('change', function() {
+                    saveFormData();
+                });
                 
                 // Input fields
                 const lpcmsid = document.getElementById('lpcmsid');
@@ -983,6 +1036,8 @@
                     document.getElementById('goods').checked = true;
                     document.getElementById('coach').checked = false;
                 }
+                
+                saveFormData();
             }
             
             // Check train load (loaded/empty)
@@ -996,6 +1051,8 @@
                     document.getElementById('empty').checked = true;
                     document.getElementById('load').checked = false;
                 }
+                
+                saveFormData();
             }
             
             // Set due date based on inspection date and LP category
@@ -1020,6 +1077,7 @@
                 }
                 
                 document.getElementById('lpduedate').value = formatDate(date);
+                saveFormData();
             }
             
             // Check if it's day or night based on time
@@ -1035,6 +1093,8 @@
                 
                 document.getElementById('night').checked = isNight;
                 document.getElementById('day').checked = !isNight;
+                
+                saveFormData();
             }
             
             // Handle form submission
@@ -1070,6 +1130,7 @@
                     .then(data => {
                         alert("Footplating Data Saved Successfully!");
                         form.reset();
+                        clearFormData(); // Clear saved data after successful submission
                     })
                     .catch(error => {
                         console.error('Error:', error);
