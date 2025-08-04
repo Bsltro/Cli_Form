@@ -6,77 +6,198 @@
     <title>FOOTPLATE MONITORING REPORT</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f9f9f9;
+            background-color: #f5f7fa;
+            color: #333;
         }
 
         h1 {
             text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 28px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
         }
 
         .filter-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .filter-container label {
-            margin-right: 10px;
+            margin-right: 5px;
+            font-weight: 600;
+            color: #2c3e50;
         }
 
-        .filter-container input, .filter-container button {
-            padding: 5px;
-            margin-right: 10px;
+        .filter-container input {
+            padding: 8px 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-container button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .filter-container button:hover {
+            background-color: #2980b9;
+        }
+
+        .button-group {
+            text-align: center;
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .button-group button {
+            padding: 10px 20px;
+            margin: 0;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+
+        #clearFiltersButton {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        #clearFiltersButton:hover {
+            background-color: #c0392b;
+        }
+
+        #printButton {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        #printButton:hover {
+            background-color: #27ae60;
+        }
+
+        #downloadButton {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        #downloadButton:hover {
+            background-color: #8e44ad;
+        }
+
+        #inspectionCountDisplay {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            padding: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            display: inline-block;
+            width: auto;
+            margin-left: 50%;
+            transform: translateX(-50%);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 12px 15px;
             text-align: center;
             word-wrap: break-word;
         }
 
         th {
-            background-color: #f2f2f2;
-            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
             position: sticky;
             top: 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         th:hover {
-            background-color: #ddd;
+            background-color: #2980b9;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e8f4fc;
         }
 
         .filter-row select {
             width: 100%;
-            padding: 5px;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 14px;
         }
 
-        .button-group {
-            text-align: center;
-            margin: 20px 0;
+        .sort-indicator {
+            margin-left: 5px;
+            font-size: 12px;
         }
 
-        button {
-            padding: 10px;
-            margin: 5px;
-            cursor: pointer;
-            border: none;
-            background-color: #007bff;
-            color: white;
+        @media print {
+            body {
+                background-color: white;
+                padding: 10px;
+            }
+            .filter-container, .button-group {
+                display: none;
+            }
+            table {
+                box-shadow: none;
+            }
         }
 
-        button:hover {
-            background-color: #0056b3;
+        @media (max-width: 768px) {
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            th, td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -110,6 +231,7 @@
     <script>
         const sheetId = '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM'; // Your Google Sheet ID
         const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0'; // Your API Key
+        const DATE_COLUMN_INDEX = 1; // Column B (0-based index)
 
         let allData = []; // Store all data from the sheet
         let filteredData = []; // Store currently filtered data
@@ -131,12 +253,41 @@
 
                     columnNames = rows[0];
                     allData = rows.slice(1);
-                    filteredData = [...allData]; // Initialize filteredData with all data
-
-                    renderTable();
+                    
+                    // Filter for current month by default
+                    filterCurrentMonth();
+                    
+                    // Sort by date in ascending order by default
+                    sortOrder[DATE_COLUMN_INDEX] = 'asc';
+                    sortTable(DATE_COLUMN_INDEX);
+                    
+                    // Initialize filters
                     createFilters();
                 })
                 .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function filterCurrentMonth() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            // Set default date range in the UI
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            
+            document.getElementById('fromDate').valueAsDate = firstDay;
+            document.getElementById('toDate').valueAsDate = lastDay;
+            
+            // Filter data for current month
+            filteredData = allData.filter(row => {
+                const rowDate = new Date(row[DATE_COLUMN_INDEX]);
+                if (isNaN(rowDate.getTime())) return false;
+                return rowDate.getMonth() === currentMonth && 
+                       rowDate.getFullYear() === currentYear;
+            });
+            
+            renderTable();
         }
 
         function createFilters() {
@@ -145,6 +296,8 @@
 
             columnNames.forEach((colName, index) => {
                 const th = document.createElement('th');
+                th.style.backgroundColor = '#f2f2f2';
+                th.style.color = '#333';
 
                 const select = document.createElement('select');
                 select.innerHTML = '<option value="">All</option>';
@@ -176,78 +329,55 @@
         }
 
         function applyFilters() {
-    filteredData = [...allData]; // Start with all data
+            filteredData = [...allData]; // Start with all data
 
-    // Apply date filter first
-    const fromDate = document.getElementById('fromDate').value;
-    const toDate = document.getElementById('toDate').value;
+            // Apply date filter first
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
 
-    if (fromDate || toDate) {
-        filteredData = filteredData.filter(row => {
-            const rowDate = row[1]; // Column B (index 1, since indexing starts at 0)
-            if (!rowDate) return false;
+            if (fromDate || toDate) {
+                filteredData = filteredData.filter(row => {
+                    const rowDateStr = row[DATE_COLUMN_INDEX];
+                    if (!rowDateStr) return false;
 
-            try {
-                // Convert the row date (which is in yyyy-mm-dd format) to a Date object
-                const rowDateObj = new Date(rowDate);
-                if (isNaN(rowDateObj.getTime())) return false; // If the date is invalid
+                    try {
+                        const rowDate = new Date(rowDateStr);
+                        if (isNaN(rowDate.getTime())) return false;
 
-                // Convert the input dates to Date objects
-                const fromDateObj = fromDate ? new Date(fromDate) : null;
-                const toDateObj = toDate ? new Date(toDate) : null;
+                        const fromDateObj = fromDate ? new Date(fromDate) : null;
+                        const toDateObj = toDate ? new Date(toDate) : null;
 
-                // Ensure time is set to midnight for comparison
-                rowDateObj.setHours(0, 0, 0, 0);
-                if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
-                if (toDateObj) toDateObj.setHours(0, 0, 0, 0);
+                        // Set time to midnight for comparison
+                        rowDate.setHours(0, 0, 0, 0);
+                        if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
+                        if (toDateObj) toDateObj.setHours(0, 0, 0, 0);
 
-                // Check if the rowDate falls within the specified range
-                if (
-                    (fromDateObj && rowDateObj < fromDateObj) || // before the start date
-                    (toDateObj && rowDateObj > toDateObj) // after the end date
-                ) {
-                    return false;
-                }
-
-                return true; // Date is within the range
-            } catch (e) {
-                return false; // In case of any errors in date parsing
+                        if ((fromDateObj && rowDate < fromDateObj) || 
+                            (toDateObj && rowDate > toDateObj)) {
+                            return false;
+                        }
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                });
             }
-        });
-    }
 
-    // Apply column filters (if any)
-    Object.keys(filters).forEach(index => {
-        if (filters[index]) {
-            filteredData = filteredData.filter(row => row[index] === filters[index]);
-        }
-    });
-
-    // Apply sorting if any column is sorted
-    const sortedColumn = Object.keys(sortOrder).find(key => sortOrder[key] !== undefined);
-    if (sortedColumn !== undefined) {
-        sortTable(parseInt(sortedColumn), true);
-    } else {
-        renderTable();
-    }
-}
-
-
-            // Apply column filters
+            // Apply column filters (if any)
             Object.keys(filters).forEach(index => {
                 if (filters[index]) {
                     filteredData = filteredData.filter(row => row[index] === filters[index]);
                 }
             });
 
-            // Apply sorting if any column is sorted
+            // Apply sorting
             const sortedColumn = Object.keys(sortOrder).find(key => sortOrder[key] !== undefined);
             if (sortedColumn !== undefined) {
                 sortTable(parseInt(sortedColumn), true);
             } else {
                 renderTable();
             }
-        
+        }
 
         function renderTable() {
             const tableBody = document.getElementById('tableBody');
@@ -257,9 +387,19 @@
 
             columnNames.forEach((col, index) => {
                 const th = document.createElement('th');
-                const sortIndicator = sortOrder[index] === 'asc' ? '▲' : 
-                                    sortOrder[index] === 'desc' ? '▼' : '⇅';
-                th.innerHTML = `${col} <span id="sort${index}">${sortIndicator}</span>`;
+                const sortIndicator = document.createElement('span');
+                sortIndicator.className = 'sort-indicator';
+                
+                if (sortOrder[index] === 'asc') {
+                    sortIndicator.textContent = '▲';
+                } else if (sortOrder[index] === 'desc') {
+                    sortIndicator.textContent = '▼';
+                } else {
+                    sortIndicator.textContent = '⇅';
+                }
+                
+                th.textContent = col;
+                th.appendChild(sortIndicator);
                 th.addEventListener('click', () => sortTable(index));
                 headerRow.appendChild(th);
             });
@@ -284,26 +424,36 @@
         function sortTable(index, fromFilter = false) {
             if (!fromFilter) {
                 // Toggle sort order if not called from filter
-                sortOrder = {}; // Reset other sort orders
-                sortOrder[index] = sortOrder[index] === 'asc' ? 'desc' : 'asc';
+                if (sortOrder[index] === 'asc') {
+                    sortOrder[index] = 'desc';
+                } else {
+                    sortOrder[index] = 'asc';
+                }
+                
+                // Clear other sort orders
+                Object.keys(sortOrder).forEach(key => {
+                    if (parseInt(key) !== index) delete sortOrder[key];
+                });
             }
 
             filteredData.sort((a, b) => {
                 let valA = a[index] || "";
                 let valB = b[index] || "";
 
-                // Try to compare as numbers first
+                // Special handling for date column
+                if (index === DATE_COLUMN_INDEX) {
+                    const dateA = new Date(valA);
+                    const dateB = new Date(valB);
+                    if (!isNaN(dateA.getTime())) {
+                        return sortOrder[index] === 'asc' ? dateA - dateB : dateB - dateA;
+                    }
+                }
+
+                // Try to compare as numbers
                 const numA = parseFloat(valA);
                 const numB = parseFloat(valB);
                 if (!isNaN(numA) && !isNaN(numB)) {
                     return sortOrder[index] === 'asc' ? numA - numB : numB - numA;
-                }
-
-                // Try to compare as dates
-                const dateA = new Date(valA);
-                const dateB = new Date(valB);
-                if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
-                    return sortOrder[index] === 'asc' ? dateA - dateB : dateB - dateA;
                 }
 
                 // Fall back to string comparison
@@ -325,7 +475,10 @@
             document.getElementById('toDate').value = '';
             document.querySelectorAll('#filterRow select').forEach(select => select.value = '');
             filteredData = [...allData];
-            renderTable();
+            // Reset to default sorting by date ascending
+            sortOrder = {};
+            sortOrder[DATE_COLUMN_INDEX] = 'asc';
+            sortTable(DATE_COLUMN_INDEX);
         }
 
         function downloadCSV() {
