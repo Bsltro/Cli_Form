@@ -36,15 +36,16 @@
 
         /* Container Style */
         .container {
-            max-width: 100%;
-            width: 100%;
+            max-width: 150%;
+            width: 150%;
             padding: 20px;
             box-sizing: border-box;
             background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
             border-radius: 8px;
             margin: 0 auto;
-            max-width: 400px;
-            background-image: url('img5.jpg'); /* Your image URL */
+            max-width: 500px;
+            background-image: url('flag1.jfif'); /* Your image URL */
+            
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -157,11 +158,29 @@
     <div class="container">
         <marquee behavior="scroll" direction="left">WELCOME TO CENTRAL RAILWAY</marquee>
         <!-- <h1>WELCOME TO CENTRAL RAILWAY,</h1> -->
-        <h1>BHUSAWAL DIVISION,</h1>
-        <h1>TRO BRANCH</h1>
-        <!-- <marquee scrollamount="10" direction="left">Wishing you all a very Happy Republic Day! Let's honor the spirit of our nation and remember the sacrifices of our heroes. Jai Hind!</marquee> -->
-        <!-- Tabs for Admin Login, CLI Login, Password Login, and TLC Login -->
-        <div>
+         <!-- <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg" alt="Indian Flag" width="100" height="60" style="vertical-align: middle;" /> -->
+
+<!-- Marquee with greeting -->
+
+  <!-- <div style="display: flex; align-items: center;">
+    <h1 style="margin: 0; font-size: 1.5em;">
+      <span style="color: orange;">HAPPY</span> 
+      <span style="color: white;">INDE<span style="color: navy;">PEND</span>ENCE</span> 
+      <span style="color: green;">DAY</span>
+    </h1>
+  </div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+ -->
+         <!-- <h2>BHUSAWAL DIVISION</h2> -->
+        <!-- <h1>TRO BRANCH</h1>  -->
+         <marquee>
+       <!-- <marquee scrollamount="10" direction="left">Wishing you all a very Happy Indepence Day! Let's honor the spirit of our nation and remember the sacrifices of our heroes. Jai Hind!</marquee>  -->
+       <span style="color: orange;">Wishing you all a very Happy Indepence Day! </span>
+       <span style="color: white;">Let's honor the spirit of our nation and remember </span> 
+       <span style="color: green;"> the sacrifices of our heroes. Jai Hind! </span>  
+       </marquee>
+       <!-- Tabs for Admin Login, CLI Login, Password Login, and TLC Login -->
+       <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br> 
+       <div>
             <div class="tab admin-tab" onclick="showTab('adminTab')">Admin Login</div><br><br>
             <div class="tab password-tab" onclick="showTab('passwordTab')">CLI Movement Entry</div><br><br>
             <div class="tab cli-tab" onclick="showTab('cliTab')">CLI Login</div>
