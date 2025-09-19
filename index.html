@@ -5,72 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAIN PAGE</title>
     <style>
-        /* Styling the table for better presentation */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        /* General Body Styles */
+        /* Full screen background styling */
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
             margin: 0;
+            padding: 0;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: url('img2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Overlay for better text readability */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: -1;
         }
 
         /* Container Style */
         .container {
-            max-width: 150%;
-            width: 150%;
+            width: 90%;
+            max-width: 500px;
             padding: 20px;
             box-sizing: border-box;
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 8px;
-            margin: 0 auto;
-            max-width: 500px;
-            background-image: url('flag1.jfif'); /* Your image URL */
-            
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
         }
 
         /* Header Style */
         h1 {
-            color: rgb(225, 240, 9);
+            color: #e1f009;
             font-size: 24px;
             margin-bottom: 20px;
             font-weight: bold;
             text-transform: uppercase;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         /* Marquee Element for scrolling text */
         marquee {
             font-size: 1.5em;
-            color: rgb(248, 244, 7);
+            color: #f8f407;
             padding: 10px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         /* Input Field Styles */
         input[type="text"], input[type="password"] {
             padding: 12px;
-            font-size: 18px;
+            font-size: 16px;
             width: 100%;
             margin-bottom: 15px;
             border-radius: 4px;
@@ -88,6 +90,7 @@
             border-radius: 4px;
             color: white;
             width: 100%;
+            transition: background-color 0.3s;
         }
 
         button:hover {
@@ -102,12 +105,28 @@
         }
 
         /* Tabs Style */
+        .tabs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
         .tab {
-            display: inline-block;
-            padding: 10px;
+            padding: 12px 15px;
             cursor: pointer;
-            margin-right: 10px;
             border-radius: 4px;
+            font-weight: bold;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .admin-tab {
@@ -126,10 +145,6 @@
             background-color: #e2e3e5; /* Light grey */
         }
 
-        .tab:hover {
-            background-color: #ddd;
-        }
-
         .tab-content {
             display: none;
         }
@@ -138,54 +153,63 @@
             display: block;
         }
 
+        /* Footer text styles */
+        .footer {
+            width: 90%;
+            max-width: 500px;
+            margin: 10px auto;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 8px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
         /* Responsive Layout */
         @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            
             h1 {
                 font-size: 20px;
-                margin-bottom: 10px;
             }
-
+            
+            marquee {
+                font-size: 1.2em;
+            }
+            
+            .tabs-container {
+                flex-direction: column;
+            }
+            
+            .tab {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            
             input[type="text"], input[type="password"], button {
                 font-size: 16px;
                 padding: 10px;
             }
         }
     </style>
-
-    </head>
+</head>
 <body>
 
     <div class="container">
-        <marquee behavior="scroll" direction="left">WELCOME TO CENTRAL RAILWAY</marquee>
-        <!-- <h1>WELCOME TO CENTRAL RAILWAY,</h1> -->
-         <!-- <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg" alt="Indian Flag" width="100" height="60" style="vertical-align: middle;" /> -->
-
-<!-- Marquee with greeting -->
-
-  <!-- <div style="display: flex; align-items: center;">
-    <h1 style="margin: 0; font-size: 1.5em;">
-      <span style="color: orange;">HAPPY</span> 
-      <span style="color: white;">INDE<span style="color: navy;">PEND</span>ENCE</span> 
-      <span style="color: green;">DAY</span>
-    </h1>
-  </div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
- -->
-         <!-- <h2>BHUSAWAL DIVISION</h2> -->
-        <!-- <h1>TRO BRANCH</h1>  -->
-         <marquee>
-       <!-- <marquee scrollamount="10" direction="left">Wishing you all a very Happy Indepence Day! Let's honor the spirit of our nation and remember the sacrifices of our heroes. Jai Hind!</marquee>  -->
-       <span style="color: orange;">Wishing you all a very Happy Indepence Day! </span>
-       <span style="color: white;">Let's honor the spirit of our nation and remember </span> 
-       <span style="color: green;"> the sacrifices of our heroes. Jai Hind! </span>  
-       </marquee>
-       <!-- Tabs for Admin Login, CLI Login, Password Login, and TLC Login -->
-       <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br> 
-       <div>
-            <div class="tab admin-tab" onclick="showTab('adminTab')">Admin Login</div><br><br>
-            <div class="tab password-tab" onclick="showTab('passwordTab')">CLI Movement Entry</div><br><br>
+        <marquee style="text-align: center; color: #ec2308;" behavior="scroll" direction="left">WELCOME TO CENTRAL RAILWAY</marquee>
+        <h2 style="text-align: center; color: #ec2308;">BHUSAWAL DIVISION</h2> 
+        <h1 style="text-align: center; color: #ec2308;">TRO BRANCH</h1> 
+        
+        <div class="tabs-container">
+            <div class="tab admin-tab" onclick="showTab('adminTab')">Admin Login</div>
+            <div class="tab password-tab" onclick="showTab('passwordTab')">CLI Movement Entry</div>
             <div class="tab cli-tab" onclick="showTab('cliTab')">CLI Login</div>
             <div class="tab tlc-tab" onclick="showTab('tlcTab')">TLC Login</div>
-        </div><br>
+        </div>
 
         <!-- Admin Login Tab -->
         <div id="adminTab" class="tab-content">
@@ -216,12 +240,13 @@
             <p id="tlcError">Incorrect password. Please try again.</p>
         </div>
     </div>
-    <div>
-        <p><b style="color: rgb(236, 35, 8);">**FOR QUERY CALL ON 9096071343/ALP SAURABH KALBANDE**</b></p>
-        <p><b style="color: rgb(18, 2, 56);">**Dear CLI please fill the movement data within 48 hrs!!!**</b></p>
-        <p><b style="color: blue;">**TO VIEW THE MOVEMENT FILLED CLICK ON CLI LOGIN TAB- USER NAME IS :"CLI NAME" & PASSWORD IS: CLI CMS ID**</b></p>
-        <!-- <p><b style="color: rgb(236, 35, 8);">**FOR QUERY CALL ON 9096071343/ALP SAURABH KALBANDE**</b></p> -->
+    
+    <div class="footer">
+        <p><b style="color: #ece808; font-size: large;">**THIS SOFTWARE IS MADE BY SAURABH N KALBANDE FOR QUERY CALL ON 9096071343**</b></p>
+        <!-- <p><b style="color: #120238;">**Dear CLI please fill the movement data within 48 hrs!!!**</b></p>
+        <p><b style="color: blue;">**TO VIEW THE MOVEMENT FILLED CLICK ON CLI LOGIN TAB- USER NAME IS :"CLI NAME" & PASSWORD IS: CLI CMS ID**</b></p> -->
     </div>
+    
     <script>
         // Define the correct credentials for CLI users
         const cliUsers = {
@@ -229,7 +254,7 @@
             'A M SURADKAR': 'BSL0054','IBRAHIM KHAN' :'BSL0123','M S INGLE' :'BSL0122','D D KOLHE' : 'BSL0129',
             'A T NEWARE': 'password6','SATYAPAL SINGH' : 'BSL0119','ADITYA KUMAR SINGH' : 'BSL0120','Y A TADVI' :'BSL0114',
             'B S YADAV': 'BSL0047','R K MEGHWAL':'BSL0121','B D BIRHADE':'BSL0124','R K SINGH':'BSL0125','M K VERMA':'BSL0132',
-            'CHANDRAPRAKASH': 'BSL0084','AMIT SAXENA':'BSL0110','T M KULKARNI':'BSL0111','J W SHIVABHAKTA':'BSL0126','S B RAJBHAR':'BSL0130',
+            'CHANDRA PRAKASH': 'BSL0084','AMIT SAXENA':'BSL0110','T M KULKARNI':'BSL0111','J W SHIVABHAKTA':'BSL0126','S B RAJBHAR':'BSL0130',
             'DHANANJAY SINGH': 'BSL0046','MAHESH KUMAR':'BSL0116','R D MORE':'BSL0117','C R BHALERAO':'BSL0117','S S NARNAWARE':'BSL0131',
             'DEEPAK PAWAR': 'BSL0073','H B WANKHEDE':'BSL0127','B K KAITHWAS':'BSL0133','V M PAHURKAR':'BSL0134','J S BHATTAL':'BSL0136',
             'FARUK DESHPANDEY': 'password11','J G PARATE':'BSL0138','G R DAWANGE':'BSL0139','P S BHOLE':'BSL0146','R C MEENA':'BSL0145',
