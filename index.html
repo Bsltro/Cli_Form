@@ -1,10 +1,361 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAIN PAGE</title>
+    <style>
+        /* Full screen background styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: url('img2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Overlay for better text readability */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        /* Container Style */
+        .container {
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
+        }
+
+        /* Header Style */
+        h1 {
+            color: #e1f009;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Marquee Element for scrolling text */
+        marquee {
+            font-size: 1.5em;
+            color: #f8f407;
+            padding: 10px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Input Field Styles */
+        input[type="text"], input[type="password"] {
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 2px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        /* Button Style */
+        button {
+            padding: 12px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: orange;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff6600;
+        }
+
+        /* Error Message Style */
+        #error, #cliError, #adminError, #tlcError {
+            color: red;
+            display: none;
+            margin-top: 10px;
+        }
+
+        /* Tabs Style */
+        .tabs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-tab {
+            background-color: #cce5ff; /* Light blue */
+        }
+
+        .password-tab {
+            background-color: #d4edda; /* Light green */
+        }
+
+        .cli-tab {
+            background-color: #fff3cd; /* Light yellow */
+        }
+
+        .tlc-tab {
+            background-color: #e2e3e5; /* Light grey */
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* Footer text styles */
+        .footer {
+            width: 90%;
+            max-width: 500px;
+            margin: 10px auto;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 8px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            marquee {
+                font-size: 1.2em;
+            }
+            
+            .tabs-container {
+                flex-direction: column;
+            }
+            
+            .tab {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            
+            input[type="text"], input[type="password"], button {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
 <body>
 
-<h1>CLI MONITORING MODULE TRO BRANCH ,BHUSAWAL</h1>
+    <div class="container">
+        <marquee style="text-align: center; color: #ec2308;" behavior="scroll" direction="left">WELCOME TO CENTRAL RAILWAY</marquee>
+        <h2 style="text-align: center; color: #ec2308;">BHUSAWAL DIVISION</h2> 
+        <h1 style="text-align: center; color: #ec2308;">TRO BRANCH</h1> 
+        
+        <div class="tabs-container">
+            <div class="tab admin-tab" onclick="showTab('adminTab')">Admin Login</div>
+            <div class="tab password-tab" onclick="showTab('passwordTab')">CLI Movement Entry</div>
+            <div class="tab cli-tab" onclick="showTab('cliTab')">CLI Login</div>
+            <div class="tab tlc-tab" onclick="showTab('tlcTab')">TLC Login</div>
+        </div>
 
-<h2>SITE UNDER MAINTAINANCE.</h2>
+        <!-- Admin Login Tab -->
+        <div id="adminTab" class="tab-content">
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+            <button onclick="checkAdmin()">Submit</button>
+            <p id="adminError">Incorrect password. Please try again.</p>
+        </div>
+
+        <!-- Password Login Tab -->
+        <div id="passwordTab" class="tab-content active">
+            <input type="password" id="password" placeholder="Enter password">
+            <button onclick="checkPassword()">Submit</button>
+            <p id="error">Incorrect password. Please try again.</p>
+        </div>
+
+        <!-- CLI Login Tab -->
+        <div id="cliTab" class="tab-content">
+            <input type="text" id="cliUsername" placeholder="Enter username">
+            <input type="password" id="cliPassword" placeholder="Enter password">
+            <button onclick="checkCLI()">Login</button>
+            <p id="cliError">Incorrect credentials. Please try again.</p>
+        </div>
+
+        <!-- TLC Login Tab -->
+        <div id="tlcTab" class="tab-content">
+            <input type="password" id="tlcPassword" placeholder="Enter TLC password">
+            <button onclick="checkTLC()">Login</button>
+            <p id="tlcError">Incorrect password. Please try again.</p>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p><b style="color: #ece808; font-size: large;">**THIS SOFTWARE IS MADE BY SAURABH N KALBANDE FOR QUERY CALL ON 9096071343**</b></p>
+        <!-- <p><b style="color: #120238;">**Dear CLI please fill the movement data within 48 hrs!!!**</b></p>
+        <p><b style="color: blue;">**TO VIEW THE MOVEMENT FILLED CLICK ON CLI LOGIN TAB- USER NAME IS :"CLI NAME" & PASSWORD IS: CLI CMS ID**</b></p> -->
+    </div>
+    
+    <script>
+        // Define the correct credentials for CLI users
+        const cliUsers = {
+            'A K PANDEY': 'BSL0012','RAMNATH MEENA' : 'BSL0128','SANJIV RAM' :'BSL0112','MD EJAZ KHAN' :'BSL0113',
+            'A M SURADKAR': 'BSL0054','IBRAHIM KHAN' :'BSL0123','M S INGLE' :'BSL0122','D D KOLHE' : 'BSL0129',
+            'A T NEWARE': 'password6','SATYAPAL SINGH' : 'BSL0119','ADITYA KUMAR SINGH' : 'BSL0120','Y A TADVI' :'BSL0114',
+            'B S YADAV': 'BSL0047','R K MEGHWAL':'BSL0121','B D BIRHADE':'BSL0124','R K SINGH':'BSL0125','M K VERMA':'BSL0132',
+            'CHANDRA PRAKASH': 'BSL0084','AMIT SAXENA':'BSL0110','T M KULKARNI':'BSL0111','J W SHIVABHAKTA':'BSL0126','S B RAJBHAR':'BSL0130',
+            'DHANANJAY SINGH': 'BSL0046','MAHESH KUMAR':'BSL0116','R D MORE':'BSL0117','C R BHALERAO':'BSL0117','S S NARNAWARE':'BSL0131',
+            'DEEPAK PAWAR': 'BSL0073','H B WANKHEDE':'BSL0127','B K KAITHWAS':'BSL0133','V M PAHURKAR':'BSL0134','J S BHATTAL':'BSL0136',
+            'FARUK DESHPANDEY': 'password11','J G PARATE':'BSL0138','G R DAWANGE':'BSL0139','P S BHOLE':'BSL0146','R C MEENA':'BSL0145',
+            'G M SABLE': 'BSL0080','V S SATHE':'BSL0137','S S AVHARKAR':'BSLBSL0094','D B HIWALE':'BSL0144','S C PATIL':'BSL0142','SURENDRA R':'BSL0135',
+            'H S SHARMA': 'BSL0087','R N JAYKAR':'BSL0141','K M MALVIYA':'BSL0140','OMPAL SINGH':'BSL0143','J S BHATHAL':'BSL0136',
+            'ISMAIL KHAN': 'BSL0006','B K KETHWAS':'BSL0133','SATYA DEO RAO':'BSL0147','T N KHONGARE':'BSL0148',
+            'J P SINGH': 'BSL0045',
+            'JAVED KHAN': 'BSL0091',
+            'K K RAI': 'BSL0103',
+            'K P BABY': 'BSL0093',
+            'K S RAJPUT': 'BSL0048',
+            'M P NIKAM': 'BSL0106',
+            'MAHARAJ SINGH': 'BSL0082',
+            'MANVIR SINGH': 'BSL0102',
+            'N K GUPTA': 'BSL0061',
+            'N K SINGH': 'BSL0005',
+            'P M GAWANDE': 'BSL0056',
+            'P R TIKAS': 'BSL0099',
+            'P T CHANDANKHEDE': 'BSL0092',
+            'R L PATIL': 'BSL0104',
+            'R M KANOJIYA': 'BSL0105',
+            'R N GHATE': 'BSL0098',
+            'R R BANSELE': 'BSL0074',
+            'R R MAHOUR': 'BSL0036',
+            'SATISH KUMAR': 'BSL0107',
+            'T P SINGH': 'BSL0083',
+            'U S MEENA': 'BSL0058',
+            'U S SAVITA': 'BSL0043',
+            'V K KORETI': 'BSL0095',
+            'V N BARHATE': 'BSL0097',
+            'V M RAJPUT': 'password39',
+            'N M SIVADAS': 'BSL0101',
+            'UMESH S KALE': 'BSL0108',
+            'P K AGRAWAL': 'BSL0109',
+            'SANJEEV KUMAR': 'BSL0067',
+            'V K DUBEY' : 'BSL0096','T C SIPPY' : 'BSL0081' 
+        };
+
+        // Show specific tab when clicked
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Check Admin Login
+        function checkAdmin() {
+            const enteredAdminPassword = document.getElementById('adminPassword').value;
+            const adminErrorMessage = document.getElementById('adminError');
+            const correctAdminPassword = 'admintro'; // Admin password
+
+            if (enteredAdminPassword === correctAdminPassword) {
+                window.location.href = 'admindashboard.html'; // Redirect to admin dashboard
+            } else {
+                adminErrorMessage.style.display = 'block'; // Show error message
+            }
+        }
+
+        // Check Password Login
+        function checkPassword() {
+            const enteredPassword = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error');
+            const correctPassword = 'BHUSAWAL'; // Password for the password login
+
+            if (enteredPassword === correctPassword) {
+                window.location.href = 'password.html'; // Redirect to another page
+            } else {
+                errorMessage.style.display = 'block'; // Show error message
+            }
+        }
+
+        // Check CLI Login
+        function checkCLI() {
+            const enteredUsername = document.getElementById('cliUsername').value.trim(); // Trim spaces from the username
+            const enteredPassword = document.getElementById('cliPassword').value.trim(); // Trim spaces from the password
+            const cliErrorMessage = document.getElementById('cliError');
+
+            // Check if the entered username and password match what's in the cliUsers object
+            if (cliUsers[enteredUsername] && cliUsers[enteredUsername] === enteredPassword) {
+                // If credentials are correct, redirect to cliDashboard page with the username in the URL
+                window.location.href = 'cliDashboard.html?user=' + encodeURIComponent(enteredUsername); 
+            } else {
+                // If credentials are incorrect, show the error message
+                cliErrorMessage.style.display = 'block'; // Show error message
+            }
+        }
+
+        // Check TLC Login
+        function checkTLC() {
+            const enteredTlcPassword = document.getElementById('tlcPassword').value;
+            const tlcErrorMessage = document.getElementById('tlcError');
+            const correctTlcPassword = 'bsltlc'; // Password for TLC login
+
+            if (enteredTlcPassword === correctTlcPassword) {
+                window.location.href = 'tlcdashboard.html'; // Redirect to TLC dashboard
+            } else {
+                tlcErrorMessage.style.display = 'block'; // Show error message
+            }
+        }
+    </script>
 
 </body>
 </html>
