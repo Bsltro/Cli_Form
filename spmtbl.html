@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPM ANALYSIS REPORT</title>
+    <title>SPM REPORT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>SPM ANALYSIS REPORT</h1>
+    <h1>SPM REPORT</h1>
 
     <div class="filter-container">
         <label for="fromDate">From Date:</label>
@@ -116,6 +116,7 @@
         let columnNames = [];
         let filters = {};
         let sortOrder = {}; 
+        let dateColumnIndex = -1; // Will be determined dynamically
 
         function fetchDataFromSheet() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
@@ -133,10 +134,55 @@
                     allData = rows.slice(1);
                     filteredData = [...allData]; // Initialize filteredData with all data
 
+                    // Find the date column index (look for column AA or date-like columns)
+                    dateColumnIndex = findDateColumnIndex();
+                    console.log("Date column index:", dateColumnIndex);
+                    console.log("Date column name:", columnNames[dateColumnIndex]);
+
                     renderTable();
                     createFilters();
                 })
                 .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function findDateColumnIndex() {
+            // First, try to find column AA by name or index
+            for (let i = 0; i < columnNames.length; i++) {
+                if (columnNames[i] === 'AA' || i === 26) { // AA is the 27th column (index 26)
+                    return i;
+                }
+            }
+            
+            // If AA not found, look for any column that contains dates in dd/mm/yyyy format
+            for (let i = 0; i < columnNames.length; i++) {
+                // Check first few rows for date patterns
+                for (let j = 0; j < Math.min(5, allData.length); j++) {
+                    if (allData[j] && allData[j][i] && isValidDDMMYYYY(allData[j][i])) {
+                        return i;
+                    }
+                }
+            }
+            
+            return 26; // Default to index 26 if nothing else works
+        }
+
+        function isValidDDMMYYYY(dateStr) {
+            if (!dateStr || typeof dateStr !== 'string') return false;
+            
+            const parts = dateStr.split('/');
+            if (parts.length !== 3) return false;
+            
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const year = parseInt(parts[2], 10);
+            
+            // Basic validation
+            if (isNaN(day) || isNaN(month) || isNaN(year)) return false;
+            if (day < 1 || day > 31) return false;
+            if (month < 1 || month > 12) return false;
+            if (year < 1900 || year > 2100) return false;
+            
+            return true;
         }
 
         function createFilters() {
@@ -175,6 +221,39 @@
             applyFilters();
         }
 
+        // Function to parse dd/mm/yyyy date format
+        function parseDDMMYYYY(dateString) {
+            if (!dateString) return null;
+            
+            // Remove any extra spaces
+            dateString = dateString.trim();
+            
+            // Split the date string by slash
+            const parts = dateString.split('/');
+            if (parts.length !== 3) return null;
+            
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // Months are 0-indexed in JavaScript
+            const year = parseInt(parts[2], 10);
+            
+            // Validate the components
+            if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
+            if (day < 1 || day > 31) return null;
+            if (month < 0 || month > 11) return null;
+            if (year < 1900 || year > 2100) return null;
+            
+            // Create date object
+            const date = new Date(year, month, day);
+            
+            // Validate the date (catch invalid dates like 31/02/2023)
+            if (isNaN(date.getTime())) return null;
+            if (date.getDate() !== day || date.getMonth() !== month || date.getFullYear() !== year) {
+                return null;
+            }
+            
+            return date;
+        }
+
         function applyFilters() {
             filteredData = [...allData]; // Start with all data
 
@@ -182,27 +261,44 @@
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
 
-            if (fromDate || toDate) {
+            if ((fromDate || toDate) && dateColumnIndex !== -1) {
+                console.log("Applying date filter:", { fromDate, toDate, dateColumnIndex });
+                
                 filteredData = filteredData.filter(row => {
-                    const rowDate = row[1]; // Column R (index 17)
-                    if (!rowDate) return false;
-
-                    try {
-                        const rowDateObj = new Date(rowDate);
-                        if (isNaN(rowDateObj.getTime())) return false;
-                        
-                        const rowTimestamp = rowDateObj.getTime();
-                        const fromTimestamp = fromDate ? new Date(fromDate).getTime() : -Infinity;
-                        const toTimestamp = toDate ? new Date(toDate).getTime() + 86400000 : Infinity; // Add 1 day to include the end date
-
-                        return rowTimestamp >= fromTimestamp && rowTimestamp <= toTimestamp;
-                    } catch (e) {
+                    if (!row || !row[dateColumnIndex]) return false;
+                    
+                    const rowDateStr = row[dateColumnIndex];
+                    const rowDate = parseDDMMYYYY(rowDateStr);
+                    
+                    if (!rowDate) {
+                        console.log("Invalid date format:", rowDateStr);
                         return false;
                     }
+
+                    // Convert the input dates to Date objects
+                    const fromDateObj = fromDate ? new Date(fromDate) : null;
+                    const toDateObj = toDate ? new Date(toDate) : null;
+
+                    // Ensure time is set to midnight for comparison
+                    rowDate.setHours(0, 0, 0, 0);
+                    if (fromDateObj) fromDateObj.setHours(0, 0, 0, 0);
+                    if (toDateObj) toDateObj.setHours(0, 0, 0, 0);
+
+                    // Check if the rowDate falls within the specified range
+                    if (fromDateObj && rowDate < fromDateObj) {
+                        return false; // before the start date
+                    }
+                    if (toDateObj && rowDate > toDateObj) {
+                        return false; // after the end date
+                    }
+
+                    return true; // Date is within the range
                 });
+                
+                console.log("Records after date filtering:", filteredData.length);
             }
 
-            // Apply column filters
+            // Apply column filters (if any)
             Object.keys(filters).forEach(index => {
                 if (filters[index]) {
                     filteredData = filteredData.filter(row => row[index] === filters[index]);
@@ -261,6 +357,17 @@
                 let valA = a[index] || "";
                 let valB = b[index] || "";
 
+                // For date columns, parse as date
+                if (index === dateColumnIndex) {
+                    const dateA = parseDDMMYYYY(valA);
+                    const dateB = parseDDMMYYYY(valB);
+                    
+                    if (dateA && dateB) {
+                        return sortOrder[index] === 'asc' ? dateA - dateB : dateB - dateA;
+                    }
+                    // If one or both dates are invalid, fall back to string comparison
+                }
+
                 // Try to compare as numbers first
                 const numA = parseFloat(valA);
                 const numB = parseFloat(valB);
@@ -268,11 +375,11 @@
                     return sortOrder[index] === 'asc' ? numA - numB : numB - numA;
                 }
 
-                // Try to compare as dates
-                const dateA = new Date(valA);
-                const dateB = new Date(valB);
-                if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
-                    return sortOrder[index] === 'asc' ? dateA - dateB : dateB - dateA;
+                // Try to compare as standard dates
+                const stdDateA = new Date(valA);
+                const stdDateB = new Date(valB);
+                if (!isNaN(stdDateA.getTime()) && !isNaN(stdDateB.getTime())) {
+                    return sortOrder[index] === 'asc' ? stdDateA - stdDateB : stdDateB - stdDateA;
                 }
 
                 // Fall back to string comparison
