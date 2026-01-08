@@ -5,167 +5,302 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CLI Data Portal</title>
     <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #004080;
+            --accent-color: #4CAF50;
+            --light-bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
         }
+        
         .container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 10px;
-            box-sizing: border-box;
+            padding: 15px;
         }
+        
         header {
-            background-color: #003366;
+            background: linear-gradient(135deg, var(--primary-color), #002244);
             color: white;
-            padding: 10px 0;
+            padding: 15px 0;
             text-align: center;
             margin-bottom: 20px;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
         }
+        
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+        }
+        
+        #usernameDisplay {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .info-banner {
+            background-color: #e6f2ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        
+        .tabs-container {
+            margin-bottom: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         .tabs {
             display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
+            flex-wrap: nowrap;
             gap: 5px;
+            padding-bottom: 5px;
         }
+        
         .tab {
-            padding: 8px 12px;
+            padding: 10px 15px;
             background-color: #e0e0e0;
             cursor: pointer;
-            border-radius: 5px 5px 0 0;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
             font-size: 14px;
             white-space: nowrap;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
         }
+        
+        .tab:hover {
+            background-color: #d0d0d0;
+        }
+        
         .tab.active {
-            background-color: #003366;
+            background-color: var(--primary-color);
             color: white;
+            border-bottom: 3px solid var(--accent-color);
         }
+        
         .controls {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             align-items: center;
         }
+        
         button {
-            padding: 8px 12px;
-            background-color: #003366;
+            padding: 10px 15px;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
+        
         button:hover {
-            background-color: #004080;
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        #clearFilters {
+            background-color: #6c757d;
+        }
+        
+        #clearFilters:hover {
+            background-color: #5a6268;
+        }
+        
+        #copyData {
+            background-color: var(--accent-color);
+        }
+        
+        #copyData:hover {
+            background-color: #45a049;
+        }
+        
         #filters {
-            background-color: #fff;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: var(--card-bg);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             display: none;
         }
+        
         .filter-label {
             margin-right: 5px;
             font-size: 14px;
+            font-weight: 500;
         }
+        
         .filter-date, .filter-select {
-            padding: 6px;
+            padding: 8px 10px;
             margin-right: 10px;
             margin-bottom: 5px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
+            background-color: white;
         }
+        
         #dataTable {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: var(--card-bg);
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius);
+            overflow: hidden;
         }
+        
         #dataTable th, #dataTable td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 12px 10px;
             text-align: left;
             font-size: 14px;
         }
+        
         #dataTable th {
-            background-color: #003366;
+            background-color: var(--primary-color);
             color: white;
             position: sticky;
             top: 0;
+            font-weight: 600;
         }
+        
         #dataTable tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #f8f9fa;
         }
+        
         #dataTable tr:hover {
             background-color: #e6f2ff;
         }
+        
         #rowCount {
             font-size: 14px;
             color: #666;
             margin-bottom: 10px;
+            font-weight: 500;
+            margin-left: auto;
         }
-        #columnCheckboxes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        #columnCheckboxes label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-            cursor: pointer;
-        }
+        
         .copyButton {
-            background-color: #4CAF50;
-            padding: 4px 8px;
+            background-color: var(--accent-color);
+            padding: 6px 10px;
             font-size: 12px;
         }
+        
         .copyButton:hover {
             background-color: #45a049;
         }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+            color: #666;
+        }
+        
         @media (max-width: 768px) {
-            .tabs {
-                overflow-x: auto;
-                white-space: nowrap;
-                display: block;
-                padding-bottom: 5px;
+            .container {
+                padding: 10px;
             }
+            
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .tabs-container {
+                margin-bottom: 15px;
+            }
+            
             .tab {
-                display: inline-block;
-                margin-right: 5px;
+                padding: 8px 12px;
+                font-size: 13px;
             }
+            
             .controls {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
             }
+            
+            .controls button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            #rowCount {
+                margin-left: 0;
+                text-align: center;
+            }
+            
             #filters {
                 display: flex;
                 flex-direction: column;
             }
+            
             .filter-label, .filter-date, .filter-select {
                 margin-right: 0;
-                margin-bottom: 5px;
+                margin-bottom: 8px;
                 width: 100%;
             }
+            
             #dataTable {
                 font-size: 12px;
+                display: block;
+                overflow-x: auto;
             }
+            
+            #dataTable th, #dataTable td {
+                padding: 8px 6px;
+            }
+            
+            .info-banner {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .tab {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
             #dataTable th, #dataTable td {
                 padding: 6px 4px;
             }
@@ -175,536 +310,534 @@
 <body>
     <div class="container">
         <header>
-            <h1>**WELCOME**</h1>
+            <h1>CLI Data Portal</h1>
             <div id="usernameDisplay"></div>
         </header>
 
-         
-       <h3> your current month data is available by default.To view previous data apply Date filter</h3>
-        <div class="tabs">
-            <div id="footplateTab" class="tab active">Footplate</div>
-            <div id="cvvrsTab" class="tab">CVVRS</div>
-            <div id="spmTab" class="tab">SPM</div>
-            <div id="rrTab" class="tab">RR</div>
-            <div id="lobbyTab" class="tab">Lobby</div>
-            <div id="stablingTab" class="tab">Stabling</div>
-            <div id="nominatedTab" class="tab">VIEW OVERDUE DATE OF Nominated LP</div>
-            <div id="cvvrspendingTab" class="tab">Pending CVVRS</div>
+        <div class="info-banner">
+            <strong>Note:</strong> Your current month data is available by default. To view previous data, apply the Date filter.
+        </div>
+
+        <div class="tabs-container">
+            <div class="tabs">
+                <div id="footplateTab" class="tab active">Footplate</div>
+                <div id="cvvrsTab" class="tab">CVVRS</div>
+                <div id="spmTab" class="tab">SPM</div>
+                <div id="rrTab" class="tab">RR</div>
+                <div id="lobbyTab" class="tab">Lobby</div>
+                <div id="stablingTab" class="tab">Stabling</div>
+                <div id="nominatedTab" class="tab">Nominated LP</div>
+                <div id="clicurrentTab" class="tab">CLI Current Month</div>
+                <div id="cliprevTab" class="tab">CLI Previous Month</div>
+            </div>
         </div>
 
         <div class="controls">
-            <button id="clearFilters">Clear Filters</button>
-            <button id="copyData">Copy Data</button>
-            <button id="downloadTable">Download CSV</button>
-            <button id="printTable">Print Table</button>
+            <button id="clearFilters">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+                </svg>
+                Clear Filters
+            </button>
+            <button id="copyData">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                </svg>
+                Copy Data
+            </button>
+            <button id="downloadTable">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 9H15V3H9V9H5L12 16L19 9ZM5 18V20H19V18H5Z" fill="currentColor"/>
+                </svg>
+                Download CSV
+            </button>
+            <button id="printTable">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 8H5C3.34 8 2 9.34 2 11V17H6V21H18V17H22V11C22 9.34 20.66 8 19 8ZM16 19H8V14H16V19ZM19 12C18.45 12 18 11.55 18 11C18 10.45 18.45 10 19 10C19.55 10 20 10.45 20 11C20 11.55 19.55 12 19 12ZM18 3H6V7H18V3Z" fill="currentColor"/>
+                </svg>
+                Print Table
+            </button>
             <div id="rowCount">Rows: 0</div>
         </div>
 
         <div id="filters"></div>
-        <div id="columnCheckboxes"></div>
 
-        <table id="dataTable">
-            <thead></thead>
-            <tbody></tbody>
-        </table>
+        <div id="dataTableContainer">
+            <table id="dataTable">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
-<script>
-    // Define Google Sheet URLs for each tab
-    const sheetURLs = {
-        footplate: {
-            sheetID: '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM',
-            range: 'Sheet1!A1:AW8000',
-            dateColumn: 1 // Column B (0-based index)
-        },
-        cvvrs: {
-            sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
-            range: 'Sheet1!A1:AP5000',
-            dateColumn: 17 // Column R (0-based index)
-        },
-        spm: {
-            sheetID: '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI',
-            range: 'Sheet1!A1:AD8000',
-            dateColumn: 1 // Column B (0-based index)
-        },
-        rr: {
-            sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
-            range: 'Sheet1!A1:Z2000',
-            dateColumn: 1 // Column B (0-based index)
-        },
-        lobby: {
-            sheetID: '1YSWVlZ-cN4R3fKrT0OOc8Vm7PqKimyfuRoS4ZLUU2eM',
-            range: 'Sheet1!A1:Z2000',
-            dateColumn: 1 // Column B (0-based index)
-        },
-        stabling: {
-            sheetID: '1w0YUowbIImh-W1OOtGg3Tpsf_nir6mhZ6004FUlahKU',
-            range: 'Sheet1!A1:AA2000',
-            dateColumn: 1 // Column B (0-based index)
-        },
-        nominated: {
-            sheetID: '1MFtqC6Gq17KN6-afXXH1I8oIT3JfJ1qRiOh0dOj-S58',
-            range: 'Sheet1!A1:I3000',
-            dateColumn: null // No date filter for this tab
-        },
-        cvvrspending: {
-            sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
-            range: 'Sheet3!A1:S1000',
-            dateColumn: null // No date filter for this tab
-        }
-    };
-
-    // Get the username from the URL query parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('user');
-    document.getElementById('usernameDisplay').textContent = username;
-
-    let currentTab = 'footplate'; // Default tab is footplate
-    let currentData = [];
-    let currentHeaders = [];
-
-    // Function to get current month date range
-    function getCurrentMonthRange() {
-        const now = new Date();
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        
-        return {
-            from: formatDate(firstDay),
-            to: formatDate(lastDay)
+    <script>
+        // Define Google Sheet URLs for each tab
+        const sheetURLs = {
+            footplate: {
+                sheetID: '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM',
+                range: 'Sheet1!A1:AW8000',
+                dateColumn: 1, // Column B (0-based index)
+                // Define columns to show for footplate tab
+                columns: [
+                    { index: 1, name: "Date" },           // Column B
+                    { index: 15, name: "Train no" },      // Column P
+                    { index: 19, name: "Departure" },     // Column T
+                    { index: 21, name: "Arrival" },       // Column V
+                    { index: 18, name: "From" },          // Column S
+                    { index: 20, name: "To" },            // Column U
+                    { index: -1, name: "KM" },            // Blank column
+                    { index: 38, name: "Day/Night" },     // Column am
+                    { index: 48, name: "Remark" },        // Column AW (0-based index 48)
+                    { index: 5, name: "LP Name" }         // Column F
+                ]
+            },
+            cvvrs: {
+                sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
+                range: 'Sheet1!A1:AP5000',
+                dateColumn: 17 // Column R (0-based index)
+            },
+            spm: {
+                sheetID: '1Q7SinsMgE-lbHLK4LbISxsoM49kyxQl2fwS5RHG_zTI',
+                range: 'Sheet1!A1:AD8000',
+                dateColumn: 1 // Column B (0-based index)
+            },
+            rr: {
+                sheetID: '1vnPgIYJqVA_n3mRvdjGq4_gFBGCG-lk8-XQ4PBzHTaA',
+                range: 'Sheet1!A1:Z2000',
+                dateColumn: 1 // Column B (0-based index)
+            },
+            lobby: {
+                sheetID: '1YSWVlZ-cN4R3fKrT0OOc8Vm7PqKimyfuRoS4ZLUU2eM',
+                range: 'Sheet1!A1:Z2000',
+                dateColumn: 1 // Column B (0-based index)
+            },
+            stabling: {
+                sheetID: '1w0YUowbIImh-W1OOtGg3Tpsf_nir6mhZ6004FUlahKU',
+                range: 'Sheet1!A1:AA2000',
+                dateColumn: 1 // Column B (0-based index)
+            },
+            nominated: {
+                sheetID: '1MFtqC6Gq17KN6-afXXH1I8oIT3JfJ1qRiOh0dOj-S58',
+                range: 'Sheet1!A1:I3000',
+                dateColumn: null // No date filter for this tab
+            },
+            clicurrent: {
+                sheetID: '1bGIcj3rrwJANyo3LOgiYxvXtjLmA_jLb3j2Ol0Mtd08',
+                range: 'Sheet3!A1:T1000',
+                dateColumn: null // No date filter for this tab
+            },
+            cliprev: {
+                sheetID: '1yrii3lXVs_DydQKFIlYyPBS4WSJdymC1YoP8AZpSCNk',
+                range: 'Sheet4!A1:T1000', // Assuming previous month data is in Sheet4
+                dateColumn: null // No date filter for this tab
+            }
         };
-    }
 
-    // Function to format date as yyyy-mm-dd
-    function formatDate(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
+        // Get the username from the URL query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('user');
+        document.getElementById('usernameDisplay').textContent = username ? `Welcome, ${username}` : 'Welcome';
 
-    // Function to parse date from string (handles different formats)
-    function parseDate(dateStr) {
-        if (!dateStr) return null;
-        
-        // Try ISO format (yyyy-mm-dd)
-        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        let currentTab = 'footplate'; // Default tab is footplate
+        let currentData = [];
+        let currentHeaders = [];
+
+        // Function to get current month date range
+        function getCurrentMonthRange() {
+            const now = new Date();
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            
+            return {
+                from: formatDate(firstDay),
+                to: formatDate(lastDay)
+            };
+        }
+
+        // Function to format date as yyyy-mm-dd
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Function to parse date from string (handles different formats)
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            
+            // Try ISO format (yyyy-mm-dd)
+            if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                return new Date(dateStr);
+            }
+            
+            // Try other formats if needed
             return new Date(dateStr);
         }
-        
-        // Try other formats if needed
-        return new Date(dateStr);
-    }
 
-    // Function to fetch data from a given Google Sheet based on the tab
-    function fetchDataFromGoogleSheet(sheetType) {
-        const sheet = sheetURLs[sheetType];
-        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${sheet.range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`;
+        // Function to fetch data from a given Google Sheet based on the tab
+        function fetchDataFromGoogleSheet(sheetType) {
+            const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            const tableHead = document.getElementById('dataTable').getElementsByTagName('thead')[0];
+            
+            // Show loading state
+            tableBody.innerHTML = '<tr><td colspan="10" class="loading">Loading data...</td></tr>';
+            tableHead.innerHTML = '';
+            
+            const sheet = sheetURLs[sheetType];
+            const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheet.sheetID}/values/${sheet.range}?key=AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0`;
 
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (data.values) {
-                    const rows = data.values;
-                    console.log("Fetched Rows:", rows);
-                    const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-                    const tableHead = document.getElementById('dataTable').getElementsByTagName('thead')[0];
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.values) {
+                        const rows = data.values;
+                        console.log("Fetched Rows:", rows);
 
-                    // Clear previous table data
-                    tableBody.innerHTML = '';
-                    tableHead.innerHTML = '';
+                        // Clear previous table data
+                        tableBody.innerHTML = '';
+                        tableHead.innerHTML = '';
 
-                    // Get column headers from the first row
-                    currentHeaders = rows[0];
-                    console.log("Headers:", currentHeaders);
+                        // Get column headers from the first row
+                        currentHeaders = rows[0];
+                        console.log("Headers:", currentHeaders);
 
-                    // Insert table headers dynamically
-                    let headerRow = tableHead.insertRow();
-                    currentHeaders.forEach(header => {
-                        let th = document.createElement('th');
-                        th.textContent = header;
-                        headerRow.appendChild(th);
-                    });
+                        // For footplate tab, use predefined columns
+                        if (sheetType === 'footplate' && sheet.columns) {
+                            // Create header row with predefined columns
+                            let headerRow = tableHead.insertRow();
+                            sheet.columns.forEach(col => {
+                                let th = document.createElement('th');
+                                th.textContent = col.name;
+                                headerRow.appendChild(th);
+                            });
+                        } else {
+                            // Insert table headers dynamically for other tabs
+                            let headerRow = tableHead.insertRow();
+                            currentHeaders.forEach(header => {
+                                let th = document.createElement('th');
+                                th.textContent = header;
+                                headerRow.appendChild(th);
+                            });
+                        }
 
-                    // Filter data by username for nominated tab
-                    if (sheetType === 'nominated') {
-                        currentData = rows.filter(row => row[0] === username);
+                        // Filter data by username for nominated tab
+                        if (sheetType === 'nominated') {
+                            currentData = rows.filter(row => row[0] === username);
+                        } else {
+                            currentData = rows.filter(row => row[2] === username);
+                        }
+
+                        // Set up date filters for applicable tabs
+                        const filtersDiv = document.getElementById('filters');
+                        if (sheet.dateColumn !== null && sheetType !== 'nominated') {
+                            filtersDiv.style.display = 'block';
+                            setupDateFilters(sheet.dateColumn);
+                        } else {
+                            filtersDiv.style.display = 'none';
+                        }
+
+                        // Apply current month filter by default for tabs with date column
+                        if (sheet.dateColumn !== null && sheetType !== 'nominated') {
+                            const currentMonth = getCurrentMonthRange();
+                            document.getElementById('fromDate').value = currentMonth.from;
+                            document.getElementById('toDate').value = currentMonth.to;
+                            applyFilters();
+                        } else {
+                            renderFilteredData(currentData, currentHeaders);
+                        }
+
+                        // Highlight rows based on the value in column I for nominated tab
+                        if (sheetType === 'nominated') {
+                            highlightRowsBasedOnColumnValue(currentData);
+                        }
                     } else {
-                        currentData = rows.filter(row => row[2] === username);
+                        alert('No data found.');
                     }
-
-                    // Set up date filters for applicable tabs
-                    const filtersDiv = document.getElementById('filters');
-                    if (sheet.dateColumn !== null && sheetType !== 'nominated' && sheetType !== 'cvvrspending') {
-                        filtersDiv.style.display = 'block';
-                        setupDateFilters(sheet.dateColumn);
-                    } else {
-                        filtersDiv.style.display = 'none';
-                    }
-
-                    // Apply current month filter by default for tabs with date column
-                    if (sheet.dateColumn !== null && sheetType !== 'nominated' && sheetType !== 'cvvrspending') {
-                        const currentMonth = getCurrentMonthRange();
-                        document.getElementById('fromDate').value = currentMonth.from;
-                        document.getElementById('toDate').value = currentMonth.to;
-                        applyFilters();
-                    } else {
-                        renderFilteredData(currentData, currentHeaders);
-                    }
-
-                    // Highlight rows based on the value in column I for nominated tab
-                    if (sheetType === 'nominated') {
-                        highlightRowsBasedOnColumnValue(currentData);
-                    }
-
-                    // Create column checkboxes for the Footplate tab
-                    if (currentTab === 'footplate') {
-                        createColumnCheckboxes(currentHeaders);
-                    } else {
-                        document.getElementById('columnCheckboxes').innerHTML = '';
-                    }
-                } else {
-                    alert('No data found.');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching Google Sheet data:', error);
-                alert('Error fetching data from Google Sheets.');
-            });
-    }
-
-    // Function to set up date filters
-    function setupDateFilters(dateColumnIndex) {
-        const filterContainer = document.getElementById('filters');
-        filterContainer.innerHTML = '';
-
-        // Date filters
-        const fromDateLabel = document.createElement('label');
-        fromDateLabel.classList.add('filter-label');
-        fromDateLabel.textContent = "From Date:";
-        const fromDateInput = document.createElement('input');
-        fromDateInput.type = 'date';
-        fromDateInput.id = 'fromDate';
-        fromDateInput.classList.add('filter-date');
-        filterContainer.appendChild(fromDateLabel);
-        filterContainer.appendChild(fromDateInput);
-
-        const toDateLabel = document.createElement('label');
-        toDateLabel.classList.add('filter-label');
-        toDateLabel.textContent = "To Date:";
-        const toDateInput = document.createElement('input');
-        toDateInput.type = 'date';
-        toDateInput.id = 'toDate';
-        toDateInput.classList.add('filter-date');
-        filterContainer.appendChild(toDateLabel);
-        filterContainer.appendChild(toDateInput);
-
-        // Add event listeners
-        fromDateInput.addEventListener('change', applyFilters);
-        toDateInput.addEventListener('change', applyFilters);
-    }
-
-    // Function to apply filters
-    function applyFilters() {
-        const fromDateInput = document.getElementById('fromDate');
-        const toDateInput = document.getElementById('toDate');
-        
-        let filteredData = [...currentData];
-        const sheet = sheetURLs[currentTab];
-
-        // Apply date filter if date column exists and dates are selected
-        if (sheet.dateColumn !== null && fromDateInput && toDateInput) {
-            const fromDate = fromDateInput.value ? new Date(fromDateInput.value) : null;
-            const toDate = toDateInput.value ? new Date(toDateInput.value) : null;
-
-            filteredData = filteredData.filter(row => {
-                const rowDateStr = row[sheet.dateColumn];
-                if (!rowDateStr) return false;
-                
-                const rowDate = parseDate(rowDateStr);
-                if (!rowDate) return false;
-                
-                // Set time to midnight for proper date comparison
-                rowDate.setHours(0, 0, 0, 0);
-                
-                if (fromDate && rowDate < fromDate) return false;
-                if (toDate && rowDate > toDate) return false;
-                
-                return true;
-            });
+                })
+                .catch(error => {
+                    console.error('Error fetching Google Sheet data:', error);
+                    tableBody.innerHTML = '<tr><td colspan="10" class="loading">Error loading data. Please try again.</td></tr>';
+                    alert('Error fetching data from Google Sheets.');
+                });
         }
 
-        renderFilteredData(filteredData, currentHeaders);
-    }
+        // Function to set up date filters
+        function setupDateFilters(dateColumnIndex) {
+            const filterContainer = document.getElementById('filters');
+            filterContainer.innerHTML = '';
 
-    // Function to highlight rows based on the value in column I
-    function highlightRowsBasedOnColumnValue(rows) {
-        const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            // Date filters
+            const fromDateLabel = document.createElement('label');
+            fromDateLabel.classList.add('filter-label');
+            fromDateLabel.textContent = "From Date:";
+            const fromDateInput = document.createElement('input');
+            fromDateInput.type = 'date';
+            fromDateInput.id = 'fromDate';
+            fromDateInput.classList.add('filter-date');
+            filterContainer.appendChild(fromDateLabel);
+            filterContainer.appendChild(fromDateInput);
 
-        rows.forEach((row, index) => {
-            let rowValue = Number(row[8]); // Assuming column I is the 9th column (0-based index)
+            const toDateLabel = document.createElement('label');
+            toDateLabel.classList.add('filter-label');
+            toDateLabel.textContent = "To Date:";
+            const toDateInput = document.createElement('input');
+            toDateInput.type = 'date';
+            toDateInput.id = 'toDate';
+            toDateInput.classList.add('filter-date');
+            filterContainer.appendChild(toDateLabel);
+            filterContainer.appendChild(toDateInput);
 
-            if (rowValue <= 0) {
-                tableBody.rows[index].style.backgroundColor = 'red'; // Highlight in red
-            } else if (rowValue <= 3) {
-                tableBody.rows[index].style.backgroundColor = 'orange'; // Highlight in orange
-            } else if (rowValue <= 7) {
-                tableBody.rows[index].style.backgroundColor = 'yellow'; // Highlight in yellow
-            }
-        });
-    }
-
-    const checkboxContainer = document.getElementById('columnCheckboxes');
-
-    // Function to create checkboxes for the Footplate tab columns
-    function createColumnCheckboxes(headers) {
-        checkboxContainer.innerHTML = ''; 
-        
-        headers.forEach((header, index) => {
-            const label = document.createElement('label');
-            label.textContent = header;
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.checked = true; // Default: all columns are checked
-            checkbox.setAttribute('data-index', index);
-
-            // Add event listener to handle visibility changes
-            checkbox.addEventListener('change', toggleColumnVisibility);
-
-            label.appendChild(checkbox);
-            checkboxContainer.appendChild(label);
-        });
-    }
-
-    // Function to toggle column visibility based on checkbox status
-    function toggleColumnVisibility() {
-        const checkboxes = checkboxContainer.getElementsByTagName('input');
-        const table = document.getElementById('dataTable');
-        const rows = table.rows;
-
-        for (let i = 0; i < checkboxes.length; i++) {
-            const isChecked = checkboxes[i].checked;
-
-            // Show or hide the column based on checkbox status
-            for (let row of rows) {
-                const cell = row.cells[i];
-                if (cell) {
-                    cell.style.display = isChecked ? '' : 'none';
-                }
-            }
+            // Add event listeners
+            fromDateInput.addEventListener('change', applyFilters);
+            toDateInput.addEventListener('change', applyFilters);
         }
-    }
 
-    // Function to render filtered data
-    function renderFilteredData(data, headers) {
-        const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = '';
+        // Function to apply filters
+        function applyFilters() {
+            const fromDateInput = document.getElementById('fromDate');
+            const toDateInput = document.getElementById('toDate');
+            
+            let filteredData = [...currentData];
+            const sheet = sheetURLs[currentTab];
 
-        data.forEach(row => {
-            let newRow = tableBody.insertRow();
-            row.forEach(cell => {
-                let newCell = newRow.insertCell();
-                newCell.textContent = cell || '';
-            });
+            // Apply date filter if date column exists and dates are selected
+            if (sheet.dateColumn !== null && fromDateInput && toDateInput) {
+                const fromDate = fromDateInput.value ? new Date(fromDateInput.value) : null;
+                const toDate = toDateInput.value ? new Date(toDateInput.value) : null;
 
-            // Highlight according to the logic for nominated tab
-            if (currentTab === 'nominated' && row.length > 8) {
-                let rowValue = Number(row[8]); // Column I
+                filteredData = filteredData.filter(row => {
+                    const rowDateStr = row[sheet.dateColumn];
+                    if (!rowDateStr) return false;
+                    
+                    const rowDate = parseDate(rowDateStr);
+                    if (!rowDate) return false;
+                    
+                    // Set time to midnight for proper date comparison
+                    rowDate.setHours(0, 0, 0, 0);
+                    
+                    if (fromDate && rowDate < fromDate) return false;
+                    if (toDate && rowDate > toDate) return false;
+                    
+                    return true;
+                });
+            }
+
+            renderFilteredData(filteredData, currentHeaders);
+        }
+
+        // Function to highlight rows based on the value in column I
+        function highlightRowsBasedOnColumnValue(rows) {
+            const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+
+            rows.forEach((row, index) => {
+                let rowValue = Number(row[8]); // Assuming column I is the 9th column (0-based index)
+
                 if (rowValue <= 0) {
-                    newRow.style.backgroundColor = 'red';
+                    tableBody.rows[index].style.backgroundColor = 'red'; // Highlight in red
                 } else if (rowValue <= 3) {
-                    newRow.style.backgroundColor = 'orange';
+                    tableBody.rows[index].style.backgroundColor = 'orange'; // Highlight in orange
                 } else if (rowValue <= 7) {
-                    newRow.style.backgroundColor = 'yellow';
+                    tableBody.rows[index].style.backgroundColor = 'yellow'; // Highlight in yellow
                 }
-            }
+            });
+        }
 
-            // Add Copy button for each row only if the current tab is "cvvrspending"
-            if (currentTab === 'cvvrspending') {
-                const copyButtonCell = newRow.insertCell();
-                const copyButton = document.createElement('button');
-                copyButton.textContent = 'Copy';
-                copyButton.className = 'copyButton';
-                copyButton.addEventListener('click', () => {
-                    const textToCopy = row.join('\t');
-                    navigator.clipboard.writeText(textToCopy).then(() => {
-                        alert('Row data copied to clipboard!');
-                    }).catch(err => {
-                        console.error('Failed to copy: ', err);
+        // Function to render filtered data
+        function renderFilteredData(data, headers) {
+            const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            const tableHead = document.getElementById('dataTable').getElementsByTagName('thead')[0];
+            tableBody.innerHTML = '';
+
+            // For footplate tab, use predefined columns
+            if (currentTab === 'footplate' && sheetURLs.footplate.columns) {
+                data.forEach(row => {
+                    let newRow = tableBody.insertRow();
+                    sheetURLs.footplate.columns.forEach(col => {
+                        let newCell = newRow.insertCell();
+                        if (col.index === -1) {
+                            // Blank column for KM
+                            newCell.textContent = '';
+                        } else {
+                            newCell.textContent = row[col.index] || '';
+                        }
                     });
                 });
-                copyButtonCell.appendChild(copyButton);
-            }
-        });
+            } else {
+                // For other tabs, show all columns
+                data.forEach(row => {
+                    let newRow = tableBody.insertRow();
+                    row.forEach(cell => {
+                        let newCell = newRow.insertCell();
+                        newCell.textContent = cell || '';
+                    });
 
-        // Update row count
-        document.getElementById('rowCount').textContent = `Rows: ${data.length}`;
-    }
-
-    // Function to clear all filters
-    function clearAllFilters() {
-        const filtersDiv = document.getElementById('filters');
-        
-        // Reset date filters if they exist
-        const fromDateInput = document.getElementById('fromDate');
-        const toDateInput = document.getElementById('toDate');
-        
-        if (fromDateInput && toDateInput) {
-            // Set to current month by default
-            const currentMonth = getCurrentMonthRange();
-            fromDateInput.value = currentMonth.from;
-            toDateInput.value = currentMonth.to;
-        }
-
-        applyFilters();
-    }
-
-    // Function to switch tabs
-    function switchTab(tabId) {
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => tab.classList.remove('active'));
-
-        const tabElement = document.getElementById(tabId);
-        tabElement.classList.add('active');
-        currentTab = tabId.replace('Tab', '').toLowerCase();
-
-        fetchDataFromGoogleSheet(currentTab);
-    }
-
-    // Event listeners for tab clicks
-    document.getElementById('footplateTab').addEventListener('click', () => switchTab('footplateTab'));
-    document.getElementById('cvvrsTab').addEventListener('click', () => switchTab('cvvrsTab'));
-    document.getElementById('spmTab').addEventListener('click', () => switchTab('spmTab'));
-    document.getElementById('rrTab').addEventListener('click', () => switchTab('rrTab'));
-    document.getElementById('lobbyTab').addEventListener('click', () => switchTab('lobbyTab'));
-    document.getElementById('stablingTab').addEventListener('click', () => switchTab('stablingTab'));
-    document.getElementById('nominatedTab').addEventListener('click', () => switchTab('nominatedTab'));
-    document.getElementById('cvvrspendingTab').addEventListener('click', () => switchTab('cvvrspendingTab'));
-
-    // Event listeners for action buttons
-    document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
-
-    // Function to copy table data to clipboard
-    document.getElementById('copyData').addEventListener('click', () => {
-        const table = document.getElementById('dataTable');
-        let textToCopy = '';
-
-        // Get headers
-        const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
-
-        // Prepare the data based on headerOrder
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const formData = headerOrder.map(header => {
-                const index = headers.indexOf(header);
-                if (index !== -1) {
-                    let cellValue = row.cells[index].textContent;
-
-                    // Convert date format for "Train Arrival Date" and "Train Departure Date"
-                    if (header === "Train Arrival Date" || header === "Train Departure Date") {
-                        // Ensure the date is in the correct format
-                        if (cellValue && cellValue.includes(' ')) {
-                            // Split into date and time parts
-                            const [datePart, timePart] = cellValue.split(' ');
-
-                            // Ensure two-digit hour and minute
-                            const [hour, minute] = timePart.split(':');
-                            const formattedTime = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
-                            cellValue = `${datePart}T${formattedTime}`;
+                    // Highlight according to the logic for nominated tab
+                    if (currentTab === 'nominated' && row.length > 8) {
+                        let rowValue = Number(row[8]); // Column I
+                        if (rowValue <= 0) {
+                            newRow.style.backgroundColor = 'red';
+                        } else if (rowValue <= 3) {
+                            newRow.style.backgroundColor = 'orange';
+                        } else if (rowValue <= 7) {
+                            newRow.style.backgroundColor = 'yellow';
                         }
                     }
+                });
+            }
 
-                    return cellValue;
-                } else {
-                    return ''; // Fill with empty string if header not found
-                }
+            // Update row count
+            document.getElementById('rowCount').textContent = `Rows: ${data.length}`;
+        }
+
+        // Function to clear all filters
+        function clearAllFilters() {
+            const filtersDiv = document.getElementById('filters');
+            
+            // Reset date filters if they exist
+            const fromDateInput = document.getElementById('fromDate');
+            const toDateInput = document.getElementById('toDate');
+            
+            if (fromDateInput && toDateInput) {
+                // Set to current month by default
+                const currentMonth = getCurrentMonthRange();
+                fromDateInput.value = currentMonth.from;
+                toDateInput.value = currentMonth.to;
+            }
+
+            applyFilters();
+        }
+
+        // Function to switch tabs
+       function switchTab(tabId) {
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+
+    const tabElement = document.getElementById(tabId);
+    tabElement.classList.add('active');
+
+    // Set currentTab based on id
+    currentTab = tabId.replace('Tab', '').toLowerCase();
+
+    console.log('Switched to tab:', currentTab);
+        
+    fetchDataFromGoogleSheet(currentTab);
+}
+
+        // Event listeners for tab clicks
+        document.getElementById('footplateTab').addEventListener('click', () => switchTab('footplateTab'));
+        document.getElementById('cvvrsTab').addEventListener('click', () => switchTab('cvvrsTab'));
+        document.getElementById('spmTab').addEventListener('click', () => switchTab('spmTab'));
+        document.getElementById('rrTab').addEventListener('click', () => switchTab('rrTab'));
+        document.getElementById('lobbyTab').addEventListener('click', () => switchTab('lobbyTab'));
+        document.getElementById('stablingTab').addEventListener('click', () => switchTab('stablingTab'));
+        document.getElementById('nominatedTab').addEventListener('click', () => switchTab('nominatedTab'));
+        document.getElementById('clicurrentTab').addEventListener('click', () => switchTab('clicurrentTab'));
+        document.getElementById('cliprevTab').addEventListener('click', () => switchTab('cliprevTab'));
+
+        // Event listeners for action buttons
+        document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
+
+        // Function to copy table data to clipboard
+        document.getElementById('copyData').addEventListener('click', () => {
+            const table = document.getElementById('dataTable');
+            let textToCopy = '';
+
+            // Get headers
+            const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+            textToCopy += headers.join('\t') + '\n';
+
+            // Get rows
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent);
+                textToCopy += rowData.join('\t') + '\n';
             });
 
-            textToCopy += formData.join('\t') + '\n';
-        });
-
-        // Use a textarea to copy the data
-        const textarea = document.createElement('textarea');
-        textarea.value = textToCopy;
-        document.body.appendChild(textarea);
-        textarea.select();
-
-        try {
-            const successful = document.execCommand('copy');
-            if (successful) {
-                alert('Table data copied to clipboard! Please paste it into the form.');
+            // Use the Clipboard API if available
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    alert('Table data copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    fallbackCopyTextToClipboard(textToCopy);
+                });
             } else {
-                alert('Failed to copy data. Please manually copy the data.');
+                fallbackCopyTextToClipboard(textToCopy);
             }
-        } catch (err) {
-            console.error('Failed to copy: ', err);
-            alert('Failed to copy data. Please manually copy the data.');
-        } finally {
-            document.body.removeChild(textarea);
-        }
-    });
-
-    // Function to download filtered data as CSV
-    document.getElementById('downloadTable').addEventListener('click', () => {
-        const table = document.getElementById('dataTable');
-        let csvContent = '';
-
-        // Get headers
-        const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent).join(',');
-        csvContent += headers + '\n';
-
-        // Get rows
-        const rows = table.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent).join(',');
-            csvContent += rowData + '\n';
         });
 
-        // Create a Blob and download it
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'filtered_data.csv';
-        link.click();
-        URL.revokeObjectURL(url);
-    });
+        // Fallback method for copying to clipboard
+        function fallbackCopyTextToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('Table data copied to clipboard!');
+                } else {
+                    alert('Failed to copy data. Please manually copy the data.');
+                }
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy data. Please manually copy the data.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
 
-    // Function to print filtered table data
-    document.getElementById('printTable').addEventListener('click', () => {
-        const printWindow = window.open('', '', 'height=600,width=800');
-        printWindow.document.write('<html><head><title>Print Table</title></head><body>');
-        printWindow.document.write('<h1>Filtered Table Data</h1>');
-        printWindow.document.write(document.getElementById('dataTable').outerHTML);
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-        printWindow.print();
-    });
+        // Function to download filtered data as CSV
+        document.getElementById('downloadTable').addEventListener('click', () => {
+            const table = document.getElementById('dataTable');
+            let csvContent = '';
 
-    const headerOrder = [
-        "CMS ID",                    
-        "CVVRS Inspection Date",      
-        "CLI Name",                  
-        "Train Number", 
-        "TRAIN LOAD",             
-        "LOCO Number",               
-        "From Station",              
-        "Train Departure Date",      
-        "To Station",                
-        "Train Arrival Date" || "MISSING VALUE",        
-        "LP CMS ID",                 
-        "LP Name",                   
-        "LP Designation",            
-        "LP Category",               
-        "LP HQ",                     
-        "ALP CMS ID",                
-        "ALP Name",                  
-        "ALP DESG", "ALP HQ"          
-    ];
+            // Get headers
+            const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent).join(',');
+            csvContent += headers + '\n';
 
-    // Initial load - fetch data for Footplate tab by default
-    fetchDataFromGoogleSheet('footplate');
-</script>
+            // Get rows
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const rowData = Array.from(row.querySelectorAll('td')).map(td => `"${td.textContent}"`).join(',');
+                csvContent += rowData + '\n';
+            });
+
+            // Create a Blob and download it
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${currentTab}_data.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Function to print filtered table data
+        document.getElementById('printTable').addEventListener('click', () => {
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Print Table</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write('body { font-family: Arial, sans-serif; }');
+            printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+            printWindow.document.write('th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }');
+            printWindow.document.write('th { background-color: #003366; color: white; }');
+            printWindow.document.write('tr:nth-child(even) { background-color: #f2f2f2; }');
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write('<h1>' + document.querySelector('.tab.active').textContent + ' Data</h1>');
+            printWindow.document.write(document.getElementById('dataTable').outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        });
+
+        // Initial load - fetch data for Footplate tab by default
+        fetchDataFromGoogleSheet('footplate');
+    </script>
 </body>
 </html>
