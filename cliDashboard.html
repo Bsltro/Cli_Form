@@ -375,20 +375,25 @@
         const sheetURLs = {
             footplate: {
                 sheetID: '1HDBieARU2yEJZGAqus4S1JfF_oECrzbwADfyNY42rCM',
-                range: 'Sheet1!A1:AW8000',
+                range: 'Sheet1!A1:AW12000',
                 dateColumn: 1, // Column B (0-based index)
                 // Define columns to show for footplate tab
                 columns: [
                     { index: 1, name: "Date" },           // Column B
-                    { index: 15, name: "Train no" },      // Column P
+                    { index: 14, name: "Train no" },      // Column P
+                    { index: 16, name: "Loco no" },      // Column q
                     { index: 19, name: "Departure" },     // Column T
                     { index: 21, name: "Arrival" },       // Column V
                     { index: 18, name: "From" },          // Column S
                     { index: 20, name: "To" },            // Column U
-                    { index: -1, name: "KM" },            // Blank column
+                    // { index: -1, name: "KM" },            // Blank column
+                     { index: 5, name: "LP Name" },         // Column F
+                     { index: 3, name: "Nom/Oth" },         // Column d
+                     { index: 11, name: "ALP Name" },         // Column l
+                     { index: 9, name: "Nom/Oth" },        // Column j
                     { index: 38, name: "Day/Night" },     // Column am
                     { index: 48, name: "Remark" },        // Column AW (0-based index 48)
-                    { index: 5, name: "LP Name" }         // Column F
+                   
                 ]
             },
             cvvrs: {
