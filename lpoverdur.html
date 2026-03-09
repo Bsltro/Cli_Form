@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LP OVERDUE REPORT</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 28px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filter-container label {
+            margin-right: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .filter-container input {
+            padding: 8px 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-container button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .filter-container button:hover {
+            background-color: #2980b9;
+        }
+
+        .button-group {
+            text-align: center;
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .button-group button {
+            padding: 10px 20px;
+            margin: 0;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+
+        #clearFiltersButton {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        #clearFiltersButton:hover {
+            background-color: #c0392b;
+        }
+
+        #printButton {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        #printButton:hover {
+            background-color: #27ae60;
+        }
+
+        #downloadButton {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        #downloadButton:hover {
+            background-color: #8e44ad;
+        }
+
+        #inspectionCountDisplay {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            padding: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            display: inline-block;
+            width: auto;
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        th:hover {
+            background-color: #2980b9;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e8f4fc;
+        }
+
+        .filter-row select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 14px;
+        }
+
+        .sort-indicator {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                padding: 10px;
+            }
+            .filter-container, .button-group {
+                display: none;
+            }
+            table {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            th, td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>LP OVERDUE REPORT</h1>
+
+    <div class="button-group">
+        <button id="clearFiltersButton">Clear Filters</button>
+        <button id="printButton">Print</button>
+        <button id="downloadButton">Download CSV</button>
+    </div>
+
+    <div id="inspectionCountDisplay"></div>
+
+    <table>
+        <thead>
+            <tr id="headerRow"></tr>
+            <tr id="filterRow" class="filter-row"></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+const sheetId = '1MFtqC6Gq17KN6-afXXH1I8oIT3JfJ1qRiOh0dOj-S58';
+const apiKey = 'AIzaSyBG5Y_6PX9WT-0Mu5-Wv8Z9hA6ATF3TqR0';
+
+let allData = [];
+let filteredData = [];
+let columnNames = [];
+let filters = {};
+let sortOrder = {};
+
+function fetchDataFromSheet() {
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/overdue?key=${apiKey}`;
+
+    fetch(url)
+    .then(response => response.json())
+    .then(responseData => {
+
+        const rows = responseData.values;
+
+        if (!rows || rows.length === 0) {
+            console.error("No data found.");
+            return;
+        }
+
+        columnNames = rows[0];
+        allData = rows.slice(1);
+
+        filteredData = [...allData];
+
+        createFilters();
+        renderTable();
+
+    })
+    .catch(error => console.error('Error fetching data:', error));
+}
+
+function createFilters() {
+
+    const filterRow = document.getElementById('filterRow');
+    filterRow.innerHTML = '';
+
+    columnNames.forEach((colName, index) => {
+
+        const th = document.createElement('th');
+        th.style.backgroundColor = '#f2f2f2';
+        th.style.color = '#333';
+
+        const select = document.createElement('select');
+        select.innerHTML = '<option value="">All</option>';
+
+        const uniqueValues = new Set();
+
+        allData.forEach(row => {
+            if (row[index]) uniqueValues.add(row[index]);
+        });
+
+        [...uniqueValues].sort().forEach(value => {
+
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+
+            select.appendChild(option);
+
+        });
+
+        select.addEventListener('change', () => {
+
+            filters[index] = select.value;
+            applyFilters();
+
+        });
+
+        th.appendChild(select);
+        filterRow.appendChild(th);
+
+    });
+
+}
+
+function applyFilters() {
+
+    filteredData = [...allData];
+
+    Object.keys(filters).forEach(index => {
+
+        if (filters[index]) {
+
+            filteredData = filteredData.filter(row => row[index] === filters[index]);
+
+        }
+
+    });
+
+    renderTable();
+
+}
+
+function renderTable() {
+
+    const tableBody = document.getElementById('tableBody');
+    const headerRow = document.getElementById('headerRow');
+
+    tableBody.innerHTML = '';
+    headerRow.innerHTML = '';
+
+    columnNames.forEach((col, index) => {
+
+        const th = document.createElement('th');
+
+        const sortIndicator = document.createElement('span');
+        sortIndicator.className = 'sort-indicator';
+
+        if (sortOrder[index] === 'asc') {
+            sortIndicator.textContent = '▲';
+        } else if (sortOrder[index] === 'desc') {
+            sortIndicator.textContent = '▼';
+        } else {
+            sortIndicator.textContent = '⇅';
+        }
+
+        th.textContent = col;
+        th.appendChild(sortIndicator);
+
+        th.addEventListener('click', () => sortTable(index));
+
+        headerRow.appendChild(th);
+
+    });
+
+    filteredData.forEach(row => {
+
+        const tr = document.createElement('tr');
+
+        row.forEach(cell => {
+
+            const td = document.createElement('td');
+            td.textContent = cell;
+
+            tr.appendChild(td);
+
+        });
+
+        tableBody.appendChild(tr);
+
+    });
+
+    updateInspectionCount();
+
+}
+
+function sortTable(index) {
+
+    if (sortOrder[index] === 'asc') {
+        sortOrder[index] = 'desc';
+    } else {
+        sortOrder[index] = 'asc';
+    }
+
+    Object.keys(sortOrder).forEach(key => {
+        if (parseInt(key) !== index) delete sortOrder[key];
+    });
+
+    filteredData.sort((a, b) => {
+
+        let valA = a[index] || "";
+        let valB = b[index] || "";
+
+        const numA = parseFloat(valA);
+        const numB = parseFloat(valB);
+
+        if (!isNaN(numA) && !isNaN(numB)) {
+
+            return sortOrder[index] === 'asc'
+                ? numA - numB
+                : numB - numA;
+
+        }
+
+        return sortOrder[index] === 'asc'
+            ? valA.toString().localeCompare(valB.toString())
+            : valB.toString().localeCompare(valA.toString());
+
+    });
+
+    renderTable();
+
+}
+
+function updateInspectionCount() {
+
+    document.getElementById('inspectionCountDisplay')
+    .textContent = `Total Records: ${filteredData.length}`;
+
+}
+
+function clearFilters() {
+
+    filters = {};
+
+    document.querySelectorAll('#filterRow select')
+    .forEach(select => select.value = '');
+
+    filteredData = [...allData];
+
+    renderTable();
+
+}
+
+function downloadCSV() {
+
+    if (filteredData.length === 0) return;
+
+    let csvContent = columnNames.join(',') + '\n';
+
+    filteredData.forEach(row => {
+
+        csvContent += row
+        .map(cell => `"${cell ? cell.toString().replace(/"/g,'""') : ''}"`)
+        .join(',') + '\n';
+
+    });
+
+    const blob = new Blob([csvContent], {type:'text/csv;charset=utf-8;'});
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = 'LP_OVERDUE_REPORT.csv';
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+}
+
+document.getElementById('clearFiltersButton').addEventListener('click', clearFilters);
+document.getElementById('printButton').addEventListener('click', () => window.print());
+document.getElementById('downloadButton').addEventListener('click', downloadCSV);
+
+window.onload = fetchDataFromSheet;
+
+</script>
+
+</body>
+</html>
