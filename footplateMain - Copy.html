@@ -155,7 +155,7 @@
             
             <div class="form-outer">
                 <label style="color: red; font-weight: bold;">CLI Name</label>
-                <input type="text" name="cliname" id="cliname" required >
+                <input type="text" name="cliname" id="cliname" required readonly>
             </div>
             <br>
             <div class="justify-content">
@@ -696,7 +696,7 @@
                 <label style="color: red; font-weight: bold;">REMARK</label>
                 <input type="text" name="remark" id="remark">
             </div>
-             <!-- <div class="justify-content">
+             <!--<div class="justify-content">
                 <label style="color: red; font-weight: bold;">Select SAFETY DRIVE</label>
                 <div class="container">
                     <label for="sd1" class="radio-inline">04/2026
@@ -704,13 +704,13 @@
                     </label>&nbsp;&nbsp;&nbsp;
                     <label for="sd2" class="radio-inline">05/2026
                         <input type="checkbox" id="sd2" name="sd2" value="05/2026">
-                    </label>&nbsp;&nbsp;&nbsp;<br><br>
+                    </label>&nbsp;&nbsp;&nbsp;
                    <label for="sd3" class="radio-inline">06/2026
                         <input type="checkbox" id="sd3" name="sd3" value="06/2026"> 
                     </label><br> <br><br> 
                     <a style="color:red;" href="https://drive.google.com/file/d/1hlcIF1Ff9LMaQPsCqARPB2TP12wyfVgp/view?usp=sharing">***Click Here To View PDF of Safety Drive-04/2026***</a><br><br>
                     <a style="color:red;" href="https://drive.google.com/file/d/1Msojn3o_LUd36Ahe7axXKHqcqyjMtqyK/view?usp=sharing">***Click Here To View PDF of Safety Drive-05/2026***</a><br><br>
-                    <a style="color:red;" href="https://drive.google.com/file/d/1gVoX59Em8Qk4jPnOgQXgtQUFQMqE5soO/view?usp=sharing">***Click Here To View PDF of Safety Drive-06/2026***</a>   
+                    <a style="color:red;" href="https://drive.google.com/file/d/1aBCiKW8TZN34DmQm83jep_VWZQsL2rUs/view?usp=sharing">***Click Here To View PDF of Safety Drive-06/2026***</a>   
                 </div> <br>  
                 </div>
                 <div class="justify-content">
@@ -746,7 +746,7 @@
               <a style="color:red;" href="https://drive.google.com/file/d/1PuxAHXGn5uNEbLC-hfAX2bBJU4SWZvze/view?usp=sharing">***Click Here To View PDF Case Study-02/2026***</a><br><br>
                <a style="color:red;" href="https://drive.google.com/file/d/1Ju2DQaho4T2BnhFAMxLgLmm9GRIDGWK6/view?usp=sharing">***Click Here To View PDF Case Study-03/2026***</a> 
                 
-            </div>--> <br> 
+            </div>--> <br>
             <div class="form-outer">
                 <input type="submit" id="sub" style="background: #140149;color: rgb(247, 243, 243); height: 70px; font-size: x-large;">
             </div>
@@ -763,7 +763,7 @@
             const sheetURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${dataRange}?key=${apiKey}`;
             
             // Initialize date restrictions
-            setupDateRestrictions();
+            //setupDateRestrictions();
             
             // Fetch sheet data when page loads
             fetchSheetData();
@@ -774,15 +774,17 @@
             // Load saved form data if it exists
             loadFormData();
             
-            // Function to set up date restrictions
-            // function setupDateRestrictions() {
-            //     const today = new Date();
-            //     const yesterday = new Date(today);
-            //     yesterday.setDate(today.getDate() - 1);
-                
-            //     document.getElementById('inspectiondate').min = formatDate(yesterday);
-            //     document.getElementById('inspectiondate').max = formatDate(today);
-            // }
+           // Keep only the inspection date restriction:
+// today and yesterday are allowed.
+// function setupDateRestrictions() {
+//     const today = new Date();
+//     const yesterday = new Date(today);
+
+//     yesterday.setDate(today.getDate() - 1);
+
+//     document.getElementById('inspectiondate').min = formatDate(yesterday);
+//     document.getElementById('inspectiondate').max = formatDate(today);
+// }
             
             // Helper function to format date as YYYY-MM-DD
             function formatDate(date) {
